@@ -1,4 +1,15 @@
+export {
+  BROWSER,
+  isBrowser,
+  isMobile
+} from './browser';
+
+export {
+  breakOnConsoleWarnings,
+  throwOnConsoleWarnings,
+  interceptRejectedPromises
+} from './error-utils';
+
 import Probe from './probe';
-export {Probe as Probe};
-export * from './error-utils';
+export {Probe};
 export default new Probe();

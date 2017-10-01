@@ -1,0 +1,10 @@
+{
+  "main": "index.js",
+  "scripts": {
+    "start": "ocular start",
+    "build": "ocular build"
+  },
+  "dependencies": {
+    "ocular": "^0.1.5"
+  }
+}
