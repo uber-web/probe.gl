@@ -47,7 +47,7 @@ const LIBRARY_BUNDLE_CONFIG = Object.assign({}, COMMON_CONFIG, {
   output: {
     path: resolve('./dist'),
     filename: '[name]-bundle.js',
-    library: 'math.gl',
+    library: 'probe.gl',
     libraryTarget: 'umd'
   },
 
@@ -84,7 +84,7 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
 
   resolve: {
     alias: {
-      'math.gl': resolve('./src')
+      'probe.gl': resolve('./src')
     }
   }
 });

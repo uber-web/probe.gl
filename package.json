@@ -40,6 +40,8 @@
     "bench-browser": "webpack-dev-server --env.bench --progress --hot --open"
   },
   "dependencies": {
+    "babel-runtime": "^6.11.6",
+    "d3-format": "^1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",

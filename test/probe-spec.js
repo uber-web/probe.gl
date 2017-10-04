@@ -1,25 +1,5 @@
-// Copyright (c) 2017 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 /* eslint-disable max-statements */
-import Probe from '../src/probe';
+import {Probe} from 'probe.gl';
 import test from 'tape';
 
 function getInstance() {
@@ -29,6 +9,14 @@ function getInstance() {
     ignoreEnvironment: true
   });
 }
+
+test('Probe#VERSION', assert => {
+  const probe = getInstance();
+
+  assert.equal(typeof probe.VERSION, 'string', 'VERSION is set');
+
+  assert.end();
+});
 
 test('Probe#probe', assert => {
   const probe = getInstance();
@@ -97,7 +85,7 @@ test('Probe#probe - level methods, lower level set', assert => {
   assert.end();
 });
 
-test('Probe#probe - disabled', assert => {
+test('Probe#probe - level methods, disabled', assert => {
   const probe = getInstance().disable();
 
   probe.probe('test0');
@@ -180,6 +168,7 @@ test('Probe#fps - log once per count', assert => {
   const probe = getInstance().setLevel(3);
   const count = 3;
   const cycles = 4;
+  // TODO - add test for head parameter
 
   for (let i = 0; i < count * cycles; i++) {
     probe.fps('test', {count});
@@ -226,6 +215,17 @@ test('Probe#disable / Probe#enable', assert => {
   assert.end();
 });
 
+test('Probe#readBrokenEnvironment', assert => {
+  const probe = getInstance();
+  probe._getConfigFromEnvironment = () => ({a: true});
+  probe._initConfig();
+
+  assert.strictEqual(probe.getOption('a'), null,
+    'Get broken option');
+
+  assert.end();
+});
+
 test('Probe#configure', assert => {
   const probe = getInstance()
     .configure({
@@ -238,5 +238,41 @@ test('Probe#configure', assert => {
   assert.strictEqual(probe.getOption('foo'), 'bar',
     'Set unknown option');
 
+  assert.end();
+});
+
+test('Probe#xprobe - invoke', assert => {
+  const probe = getInstance().setLevel(1);
+
+  probe.xprobe(1, 'test xprobe')();
+
+  const log = probe.getLog();
+
+  assert.equals(log.length, 1,
+    'Expected rows logged');
+
+  assert.end();
+});
+
+test('Probe#group - create, log, end', assert => {
+  const probe = getInstance().setLevel(1);
+
+  const group = probe.group('test-group');
+  group.probe(1, 'test0');
+  group.end();
+
+  const log = probe.getLog();
+
+  assert.equals(log.length, 1,
+    'Expected rows logged');
+
+  assert.end();
+});
+
+test('Probe#getInteractiveRatio', assert => {
+  const probe = getInstance().setLevel(1);
+  const percentage = probe.getInteractiveRatio();
+
+  assert.ok(percentage >= 0 && percentage <= 1, 'Expected 0-1');
   assert.end();
 });

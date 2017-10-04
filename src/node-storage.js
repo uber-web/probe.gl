@@ -18,45 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// This function is needed in initialization stages,
-// make sure it can be imported in isolation
-
-/* global navigator, window, process */
-
-// Simple browser detection
-function detectBrowser() {
-  /* global process */
-  const isNode =
-    typeof process === 'object' &&
-    String(process) === '[object process]' &&
-    !process.browser;
-  if (isNode) {
-    return 'Node';
+export default class NodeStorage {
+  /**
+   * @classdesc
+   * At the moment, just a mock
+   *
+   */
+  constructor() {
+    this.storage = {};
   }
 
-  /* global navigator */
-  const {userAgent} = navigator;
-  if (userAgent.indexOf('Chrome') > -1) {
-    return 'Chrome';
+  /**
+   * Sets string value for a key
+   * @param {String} key - key to update
+   * @param {String} value - string to be stored under key
+   */
+  set(key, value) {
+    this.storage[key] = value;
   }
-  if (userAgent.indexOf('Firefox') > -1) {
-    return 'Firefox';
+
+  /**
+   * Gets string value for a key
+   * @param {String} key - key to retrieve
+   * @return {String} value stored under key, or undefined
+   */
+  get(key) {
+    return this.storage[key];
   }
-  if (userAgent.indexOf('Safari') > -1) {
-    return 'Safari';
+
+  /**
+   * Removed a key and its associated value
+   * @param {String} key - key to remove
+   */
+  remove(key) {
+    delete this.storage[key];
   }
-  if (userAgent.indexOf('MSIE') > -1) {
-    return navigator.appVersion.indexOf('Trident') > -1 ? 'IE11' : 'Edge';
-  }
-  return 'Unknown';
 }
-
-export const BROWSER = detectBrowser();
-
-export const isBrowser = BROWSER !== 'Node';
-
-export const isMobile =
-  typeof window !== 'undefined' &&
-  typeof window.orientation !== 'undefined';
-
-export default isBrowser;

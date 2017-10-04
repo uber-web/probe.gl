@@ -18,45 +18,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// This function is needed in initialization stages,
-// make sure it can be imported in isolation
+// Enables ES2015 import/export in Node.js
+require('reify');
 
-/* global navigator, window, process */
+// Registers an alias for this module
+const path = require('path');
+const moduleAlias = require('module-alias');
+moduleAlias.addAlias('probe.gl', path.resolve('../dist'));
 
-// Simple browser detection
-function detectBrowser() {
-  /* global process */
-  const isNode =
-    typeof process === 'object' &&
-    String(process) === '[object process]' &&
-    !process.browser;
-  if (isNode) {
-    return 'Node';
-  }
+require('babel-polyfill');
 
-  /* global navigator */
-  const {userAgent} = navigator;
-  if (userAgent.indexOf('Chrome') > -1) {
-    return 'Chrome';
-  }
-  if (userAgent.indexOf('Firefox') > -1) {
-    return 'Firefox';
-  }
-  if (userAgent.indexOf('Safari') > -1) {
-    return 'Safari';
-  }
-  if (userAgent.indexOf('MSIE') > -1) {
-    return navigator.appVersion.indexOf('Trident') > -1 ? 'IE11' : 'Edge';
-  }
-  return 'Unknown';
-}
-
-export const BROWSER = detectBrowser();
-
-export const isBrowser = BROWSER !== 'Node';
-
-export const isMobile =
-  typeof window !== 'undefined' &&
-  typeof window.orientation !== 'undefined';
-
-export default isBrowser;
+// Run the tests
+require('./index');
