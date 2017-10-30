@@ -19,12 +19,16 @@
 // THE SOFTWARE.
 
 /* eslint-disable no-console, no-try-catch */
-import {isBrowser, VERSION, logger, timestamp, timestamp0} from './env';
-import {formatTime, formatSI, leftPad} from './formatters';
-import LocalStorage from './local-storage';
-import NodeStorage from './node-storage';
+/* global console */
+import {isBrowser} from './utils/globals';
+import {formatTime, formatSI, leftPad} from './utils/formatters';
+import LocalStorage from './utils/local-storage';
+import NodeStorage from './utils/node-storage';
+import {VERSION, getTimestamp, startTimestamp} from './env';
 import Group from './group';
 import assert from 'assert';
+
+const logger = console;
 
 const DEFAULT_CONFIG = {
   isEnabled: {value: false, doc: 'Whether probe is enabled (off by default)'},
@@ -65,7 +69,7 @@ export default class Probe {
 
     this.reset();
     // Timestamps - pegged to best estimate of system/program start time
-    this._startTs = timestamp0;
+    this._startTs = startTimestamp;
     // Other systems passing in epoch info require an epoch ts to convert
     this._startEpochTs = Date.now();
 
@@ -96,8 +100,8 @@ export default class Probe {
     this._firstStore = {};
 
     // Timestamps
-    this._startTs = timestamp();
-    this._deltaTs = timestamp();
+    this._startTs = getTimestamp();
+    this._deltaTs = getTimestamp();
     this._iterationsTs = null;
   }
 
@@ -263,28 +267,28 @@ export default class Probe {
    * Reset the long timer
    */
   resetStart() {
-    this._startTs = this._deltaTs = timestamp();
+    this._startTs = this._deltaTs = getTimestamp();
   }
 
   /**
    * Reset the time since last probe
    */
   resetDelta() {
-    this._deltaTs = timestamp();
+    this._deltaTs = getTimestamp();
   }
 
   /**
    * @return {Number} milliseconds, with fractions
    */
   getTotal() {
-    return timestamp() - this._startTs;
+    return getTimestamp() - this._startTs;
   }
 
   /**
    * @return {Number} milliseconds, with fractions
    */
   getDelta() {
-    return timestamp() - this._deltaTs;
+    return getTimestamp() - this._deltaTs;
   }
 
   /**
@@ -385,7 +389,7 @@ export default class Probe {
     let logFunc = noop;
     if (!this._firstStore[name]) {
       this._firstStore[name] = {
-        time: formatTime(timestamp()),
+        time: formatTime(getTimestamp()),
         message
       };
 
@@ -399,7 +403,7 @@ export default class Probe {
 
   firstTable(tail) {
     this._firstStore['INTERACTIVE PERCENTAGE'] = {
-      time: formatTime(timestamp()),
+      time: formatTime(getTimestamp()),
       message: `${this.getInteractiveRatio() * 100}%`
     };
     const rows = tail ? this._firstStore.slice(-tail) : this._firstStore;
@@ -450,7 +454,7 @@ export default class Probe {
   // PROFILING
 
   startIiterations() {
-    this._iterationsTs = timestamp();
+    this._iterationsTs = getTimestamp();
     return this;
   }
 
@@ -474,7 +478,7 @@ export default class Probe {
         }
       }
     }
-    const elapsedMillis = timestamp() - this._iterationsTs;
+    const elapsedMillis = getTimestamp() - this._iterationsTs;
     const iterationsPerSecond = formatSI(iterations * 1000 / elapsedMillis);
     return iterationsPerSecond;
   }
@@ -493,7 +497,7 @@ export default class Probe {
   }
 
   getInteractiveRatio() {
-    const time = timestamp();
+    const time = getTimestamp();
     const ratio = this.interactiveHeartbeats * INTERACTIVE_CHECK_TIMEOUT / time;
     return ratio.toPrecision(3);
   }
@@ -544,7 +548,7 @@ export default class Probe {
       const probeData = samples[name] || (
         samples[name] = {timeSum: 0, count: 0, averageTime: 0}
       );
-      probeData.timeSum += timestamp() - this._deltaTs;
+      probeData.timeSum += getTimestamp() - this._deltaTs;
       probeData.count += 1;
       probeData.averageTime = probeData.timeSum / probeData.count;
 
@@ -565,7 +569,7 @@ export default class Probe {
   _getFpsData(name) {
     let fpsData = this._fpsStore[name];
     if (!fpsData) {
-      fpsData = {totalCount: 0, count: 0, time: timestamp()};
+      fpsData = {totalCount: 0, count: 0, time: getTimestamp()};
       Object.seal(fpsData);
       this._fpsStore[name] = fpsData;
     }
@@ -581,9 +585,9 @@ export default class Probe {
       ++fpsData.count;
       // Only log every "count" probes, skipping others
       if (fpsData.count >= count) {
-        const fps = fpsData.count / (timestamp() - fpsData.time) * 1000;
+        const fps = fpsData.count / (getTimestamp() - fpsData.time) * 1000;
         fpsData.count = 0;
-        fpsData.time = timestamp();
+        fpsData.time = getTimestamp();
         logFunc = this._log(level, name, Object.assign({}, opts, {fps}));
       // But... always log the first "head" probes
       } else if (fpsData.totalCount < head) {
@@ -596,7 +600,7 @@ export default class Probe {
   _externalProbe(level, name, timeStart, timeSpent, meta) {
     let logFunc = noop;
     if (this._shouldLog(level)) {
-      // External probes are expected to provide epoch timestamps
+      // External probes are expected to provide epoch getTimestamps
       const total = timeStart - this._startEpochTs;
       const delta = timeSpent;
       logFunc = this._log(level, name, Object.assign({total, delta}, meta));
@@ -656,10 +660,10 @@ export default class Probe {
   }
 
   _getElapsedTime() {
-    const total = Number((timestamp() - this._startTs).toPrecision(10));
-    const delta = Number((timestamp() - this._deltaTs).toPrecision(10));
+    const total = Number((getTimestamp() - this._startTs).toPrecision(10));
+    const delta = Number((getTimestamp() - this._deltaTs).toPrecision(10));
     // reset delta timer
-    this._deltaTs = timestamp();
+    this._deltaTs = getTimestamp();
     return {total, delta};
   }
 
@@ -698,11 +702,11 @@ export default class Probe {
     // duration handling
     const {name} = opts;
     if (opts.start) {
-      this._startStore[name] = timestamp();
+      this._startStore[name] = getTimestamp();
     } else if (opts.end) {
       // If start isn't found, take the full duration since initialization
       const start = this._startStore[name] || this._startTs;
-      logRow.duration = timestamp() - start;
+      logRow.duration = getTimestamp() - start;
     }
 
     return logRow;

@@ -23,12 +23,12 @@
  */
 /* eslint-disable no-console */
 /* global process */
-import {window, isBrowser} from './utils/global';
+import {window, isBrowser} from './utils/globals';
 import console from 'global/console';
 
 // Extract version from package.json (injected by webpack)
 /* global PROBE_VERSION */
-export const VERSION = PROBE_VERSION;
+export const VERSION = typeof PROBE_VERSION !== 'undefined' ? PROBE_VERSION : 'Node';
 
 function noop() {}
 
@@ -45,14 +45,6 @@ console.groupEnd = console.groupEnd || noop;
 
 console.timeStamp = console.timeStamp || noop;
 console.table = console.table || noop;
-
-// Some instrumentation may override console methods, so preserve them here
-console.native = {
-  debug: console.debug.bind(console),
-  log: console.log.bind(console),
-  warn: console.warn.bind(console),
-  error: console.error.bind(console)
-};
 
 // Set up high resolution timer
 let getTimestamp;
@@ -71,12 +63,4 @@ if (!isBrowser) {
   startTimestamp = getTimestamp();
 }
 
-const refUnixEpoch = Date.now();
-
-// A rough conversion of unix epoch millis to "timestamps"
-export function getTimestampFromUnixEpoch(date) {
-  return (date - refUnixEpoch) + startTimestamp;
-}
-
-export {console as logger};
 export {getTimestamp, startTimestamp};

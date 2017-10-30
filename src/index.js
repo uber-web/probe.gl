@@ -1,7 +1,8 @@
-export {default as Logger} from './logger';
+export {default as Log} from './log';
 export {default as Probe} from './probe';
+export {default as Bench} from './bench';
 
 // Make Probe available as global variable for debugging purposes
 import Probe from './probe';
-import {global} from './utils/global';
+import {global} from './utils/globals';
 global.Probe = Probe;

@@ -20,7 +20,7 @@
 
 /* eslint-disable no-console, no-try-catch */
 import {logger, getTimestamp} from './env';
-import {formatTime, leftPad} from './formatters';
+import {formatTime, leftPad} from './utils/formatters';
 
 export default class Group {
 

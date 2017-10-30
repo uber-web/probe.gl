@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Uber Technologies, Inc.
+// Copyright (c) 2015 - 2017 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,6 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-require('./src/log.spec');
-require('./src/probe.spec');
-require('./src/bench.spec');
+/**
+ * Binds the "this" argument of all functions on a class instance to the instance
+ * @param {Object} obj - class instance (typically a react component)
+ */
+export function autobind(obj, predefined = ['constructor']) {
+  const proto = Object.getPrototypeOf(obj);
+  const propNames = Object.getOwnPropertyNames(proto);
+  for (const key of propNames) {
+    if (typeof obj[key] === 'function') {
+      if (!predefined.find(name => key === name)) {
+        obj[key] = obj[key].bind(obj);
+      }
+    }
+  }
+}
+
+export default autobind;

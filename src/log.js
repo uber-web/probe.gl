@@ -19,11 +19,14 @@
 // THE SOFTWARE.
 
 /* eslint-disable no-console, no-try-catch */
-import {logger, timestamp} from './env';
-import {formatTime, leftPad} from './formatters';
-/* eslint-disable no-console */
 /* global console */
+import {getTimestamp} from './env';
+import {formatTime, formatImage, leftPad} from './utils/formatters';
+import {autobind} from './utils/autobind';
 import assert from 'assert';
+const logger = console;
+
+function noop() {}
 
 /* eslint-disable no-console */
 /* global console, window, Image */
@@ -38,18 +41,6 @@ function formatArgs(id, firstArg, ...args) {
     args.unshift(`${id}`);
   }
   return args;
-}
-
-function log(priority, arg, ...args) {
-  if (priority <= log.priority) {
-    // Node doesn't have console.debug, but using it looks better in browser consoles
-    args = formatArgs(this.id, arg, ...args);
-    if (console.debug) {
-      console.debug(...args);
-    } else {
-      console.info(...args);
-    }
-  }
 }
 
 // Assertions don't generate standard exceptions and don't print nicely
@@ -74,16 +65,20 @@ function checkForAssertionErrors(args) {
 // * Console shows actual log function call site, not wrapper call site
 // * Can log images under Chrome
 
-export default class Logger {
+export default class Log {
 
   constructor(probe, name) {
+    this.priority = null;
     this._probe = probe;
     this.name = name;
     this._logStore = [];
-    this._startTs = timestamp();
-    this._deltaTs = timestamp();
+    this._startTs = getTimestamp();
+    this._deltaTs = getTimestamp();
     this.userData = {};
     logger.timeStamp(`${name} started`);
+
+    autobind(this);
+
     Object.seal(this);
   }
 
@@ -105,7 +100,7 @@ export default class Logger {
 
   externalProbe(level, message, timeStart, timeSpent, meta = {}) {
     if (this._probe._shouldLog(level)) {
-      // External probes are expected to provide epoch timestamps
+      // External probes are expected to provide epoch getTimestamps
       const total = timeStart - this._probe._startEpochTs;
       const delta = timeSpent;
       const logRow = this._probe._createLogRow({
@@ -117,69 +112,47 @@ export default class Logger {
   }
 
   log(priority, arg, ...args) {
-    if (priority <= log.priority) {
-      console.debug(`: ${arg}`, ...args);
+    if (priority <= this.priority) {
+      const method = console.debug || console.info;
+      return this._log(priority, method, ...formatArgs(this.id, arg, ...args));
     }
+    return noop;
   }
 
   // Log a normal message
   info(priority, arg, ...args) {
-    if (priority <= log.priority) {
-      console.log(`${this.id}: ${arg}`, ...args);
+    if (priority <= this.priority) {
+      return this._log(priority, console.info, ...formatArgs(this.id, arg, ...args));
     }
+    return noop;
   }
 
   // Log a normal message, but only once, no console flooding
   once(priority, arg, ...args) {
-    if (!cache[arg] && priority <= log.priority) {
-      args = checkForAssertionErrors(args);
-      console.error(...formatArgs(this.id, arg, ...args));
-      // log.log(priority, arg, ...args);
-      cache[arg] = true;
-    }
-  }
-
-  // Warn, but only once, no console flooding
-  warn(arg, ...args) {
-    if (priority <= log.priority && !cache[arg]) {
-      console.warn(`${this.id}: ${arg}`, ...args);
-    }
-    cache[arg] = true;
-  }
-
-  // Print an error
-  error(arg, ...args) {
-    console.error(`${this.id}: ${arg}`, ...args);
-  }
-
-  deprecated(oldUsage, newUsage) {
-    log.warn(`${this.id}: \`${oldUsage}\` is deprecated and will be removed \
-in a later version. Use \`${newUsage}\` instead`);
-  }
-
-  once(priority, arg, ...args) {
-    if (!cache[arg]) {
-      cache[arg] = true;
+    if (!cache[arg] && priority <= this.priority) {
+      cache[arg] = getTimestamp();
       args = checkForAssertionErrors(args);
       return this._log(priority, console.error, ...formatArgs(this.id, arg, ...args));
     }
     return noop;
   }
 
+  // Warn, but only once, no console flooding
   warn(arg, ...args) {
     if (!cache[arg]) {
-      cache[arg] = true;
+      cache[arg] = getTimestamp();
       return this._log(0, console.warn, `${this.is}: ${arg}`, ...args);
     }
     return noop;
   }
 
+  // Print an error
   error(arg, ...args) {
     return this._log(0, console.error, `${this.id}: ${arg}`, ...args);
   }
 
   deprecated(oldUsage, newUsage) {
-    return log.warn(0, `deck.gl: \`${oldUsage}\` is deprecated and will be removed \
+    return this.warn(0, `deck.gl: \`${oldUsage}\` is deprecated and will be removed \
 in a later version. Use \`${newUsage}\` instead`);
   }
 
@@ -190,7 +163,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // logs an image under Chrome
   image({priority, image, message = '', scale = 1}) {
-    if (priority > log.priority) {
+    if (priority > this.priority) {
       return noop;
     }
     if (typeof window === 'undefined') { // Let's not try this under node
@@ -228,8 +201,8 @@ in a later version. Use \`${newUsage}\` instead`);
 
   group(priority, arg, {collapsed = false} = {}) {
     const message = `${this.id}: ${arg}`;
-    const method = collapsed ? console.groupCollapsed : console.group;
-    this._log(priority, method || console.info, message)
+    const method = (collapsed ? console.groupCollapsed : console.group) || console.info;
+    return this._log(priority, method, message);
   }
 
   groupEnd(priority, arg) {
@@ -267,21 +240,21 @@ in a later version. Use \`${newUsage}\` instead`);
    * @return {Number} milliseconds, with fractions
    */
   getTotal() {
-    return Number((timestamp() - this._startTs).toPrecision(10));
+    return Number((getTimestamp() - this._startTs).toPrecision(10));
   }
 
   /**
    * @return {Number} milliseconds, with fractions
    */
   getDelta() {
-    return Number((timestamp() - this._deltaTs).toPrecision(10));
+    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   _getElapsedTime() {
     const total = this.getTotal();
     const delta = this.getDelta();
     // reset delta timer
-    this._deltaTs = timestamp();
+    this._deltaTs = getTimestamp();
     return {total, delta};
   }
 
