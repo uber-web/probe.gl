@@ -1,6 +1,6 @@
-## Usage
+# Usage
 
-### Configure instrumentation level using URL parameters.
+## Configure instrumentation level using URL parameters.
 
 Probe can be enabled in code or in the Chrome console at runtime. Because Probe
 stores its state in a cookie, enabling or disabling Probe or specific options

@@ -1,6 +1,29 @@
 # Probe
 
 
+## Usage
+
+Provide a formatted table of the previous N log messages. which uses `console.table()` output.
+```js
+Probe.table()
+```
+
+Including `start` and `end` in the metadata object allows probe.gl to calculate duration between calls using the same `name`:
+
+```js
+Probe.probe('long_process', {start: true});
+doLongProcess();
+Probe.probe('long_process', {end: true});
+```
+
+Set additional development flags like `isNewFeatureEnabled`. Usage via the JS console:
+
+```js
+Probe.enable().configure({level: 2, useMyDevFeature: true});
+```
+
+## Methods
+
 ### constructor
 @param {Object} config Optional configuration args; see #configure
 
@@ -20,58 +43,61 @@ const DEFAULT_CONFIG = {
 ### enable()
 
 Turn probe on
-@return {Probe} self, to support chaining
+
+Returns self (`Probe`), to support chaining
 
 ### disable()
 
 Turn probe off
-@return {Probe} self, to support chaining
+
+Returns self (`Probe`), to support chaining
 
 ### setLevel(level)
 
 Convenience function: Set probe level
 @param {Number} level Level to set
-@return {Probe} self, to support chaining
 
-### configure(config = {})
+Returns self (`Probe`), to support chaining
+
+### configure
 
 Configure probe with new values (can include custom key/value pairs).
 Configuration will be persisted across browser sessions
-@param {Object} config - named parameters
-@param {Boolean} config.isEnabled Whether probe is enabled
-@param {Number} config.level Logging level
-@param {Boolean} config.isLogEnabled Whether logging prints to console
-@param {Boolean} config.isRunEnabled Whether #run executes code
-@return {Probe} self, to support chaining
 
-  const newConfig = Object.assign({}, this._config, config);
-  this._config = newConfig;
-  // if (!IS_NODE)
-  //   const serialized = JSON.stringify(newConfig);
-  //   cookie.set(COOKIE_NAME, serialized);
-  // }
-  // Support chaining
-  return this;
+`Probe.configure(config = {})`
 
+* `config` (`Object`) - named parameters
+* `config.isEnabled` (`Boolean`) - Whether probe is enabled
+* `config.level` (`Number`) - Logging level
+* `config.isLogEnabled` (`Boolean`) - Whether logging prints to console
+* `config.isRunEnabled` (`Boolean`) - Whether #run executes code
 
-### getOption(key)
+Returns self (`Probe`), to support chaining
+
+### getOption
 
 Get a single option from preset configuration. Useful when using Probe to
 set developer-only switches.
+
+`getOption(key)`
+
 @param  {String} key Key to get value for
-@return {mixed}     Option value, or undefined
+Returns (mixed)     Option value, or undefined
 
 
 ### getLog()
 
 Get current log, as an array of log row objects
-@return {Object[]} Log
+
+getLog
+
+Returns (Object[]) Log
 
 
 ### isEnabled()
 
 Whether Probe is currently enabled
-@return {Boolean} isEnabled
+Returns (Boolean) isEnabled
 
 ### reset()
 Reset all internal stores, dropping logs
@@ -86,11 +112,11 @@ Reset the time since last probe
 
 ### getTotal()
 
-@return {Number} milliseconds, with fractions
+Returns (Number) milliseconds, with fractions
 
 ### getDelta()
 
-@return {Number} milliseconds, with fractions
+Returns (Number) milliseconds, with fractions
 
 
 ### probe(...args)
@@ -145,15 +171,17 @@ Conditionally run a function only when probe is enabled
 ### startIiterations()
 
 _getConfigFromEnvironment()
-Get config from persistent store, if available
-@return {Object} config
 
-  getIterationsPerSecond(iterations = 10000, func = null, context)
-  /* Count iterations per second. Runs the provided function a
-  specified number of times and normalizes the result to represent
-  iterations per second.
-   *
-  TODO/ib Measure one iteration and auto adjust iteration count.
+Get config from persistent store, if available
+Returns (Object) config
+
+
+getIterationsPerSecond(iterations = 10000, func = null, context)
+/* Count iterations per second. Runs the provided function a
+specified number of times and normalizes the result to represent
+iterations per second.
+ *
+TODO/ib Measure one iteration and auto adjust iteration count.
 
 
 ### logIterationsPerSecond(

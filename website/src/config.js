@@ -23,18 +23,35 @@ export const PROJECT_TYPE = 'github';
 export const PROJECT_NAME = 'probe.gl';
 export const PROJECT_ORG = 'uber-web';
 export const PROJECT_URL = `https://github.com/${PROJECT_ORG}/${PROJECT_NAME}`;
-export const PROJECT_DESC = 'JavaScript Instrumentation for Node and Browser';
+export const PROJECT_DESC =
+  'JavaScript Console Instrumentation and Benchmarking for Browser and Node';
 
 export const PROJECTS = {
   'deck.gl': 'https://uber.github.io/deck.gl',
   'luma.gl': 'https://uber.github.io/luma.gl',
   'react-map-gl': 'https://uber.github.io/react-map-gl',
-  'react-vis': 'https://uber.github.io/react-vis'
+  'vis.gl': 'https://uber-web.github.io/vis.gl'
 };
 
-export const HOME_HEADING =
-  'JavaScript Instrumentation for Node and Browser.';
+export const HOME_HEADING = 'Logging and Benchmarking for JS';
 
-export const HOME_BULLETS = [];
+/* eslint-disable quotes */
+export const HOME_BULLETS = [{
+  text: 'Console-Focused Logging',
+  desc: `probe.gl focuses on debug logs and instrumentation in the console\
+rather than e.g. production logging to servers.`,
+  img: 'images/icon-layers.svg'
+}, {
+  text: 'Benchmarking and Regression Testing Support',
+  desc: `Benchmarking API makes it trivial to build a benchmarking suites, \
+and supports comparison of test across runs.`,
+  img: 'images/icon-layers.svg'
+}, {
+  text: 'Optimized Chrome Debugging Experience',
+  desc: `Enables a clean debug experience, with full control over logs, \
+allowing you to tap into Chrome's advanced console APIs when available. \
+Provides fallbacks on other browsers, including Node.js.`,
+  img: 'images/icon-layers.svg'
+}];
 
 export const ADDITIONAL_LINKS = [];

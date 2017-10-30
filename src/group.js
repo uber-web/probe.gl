@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 /* eslint-disable no-console, no-try-catch */
-import {logger, timestamp} from './env';
+import {logger, getTimestamp} from './env';
 import {formatTime, leftPad} from './formatters';
 
 export default class Group {
@@ -28,8 +28,8 @@ export default class Group {
     this._probe = probe;
     this.name = name;
     this._logStore = [];
-    this._startTs = timestamp();
-    this._deltaTs = timestamp();
+    this._startTs = getTimestamp();
+    this._deltaTs = getTimestamp();
     this.userData = {};
     logger.timeStamp(`${name} started`);
     Object.seal(this);
@@ -51,7 +51,7 @@ export default class Group {
 
   externalProbe(level, message, timeStart, timeSpent, meta = {}) {
     if (this._probe._shouldLog(level)) {
-      // External probes are expected to provide epoch timestamps
+      // External probes are expected to provide epoch getTimestamps
       const total = timeStart - this._probe._startEpochTs;
       const delta = timeSpent;
       const logRow = this._probe._createLogRow({
@@ -76,21 +76,21 @@ export default class Group {
    * @return {Number} milliseconds, with fractions
    */
   getTotal() {
-    return Number((timestamp() - this._startTs).toPrecision(10));
+    return Number((getTimestamp() - this._startTs).toPrecision(10));
   }
 
   /**
    * @return {Number} milliseconds, with fractions
    */
   getDelta() {
-    return Number((timestamp() - this._deltaTs).toPrecision(10));
+    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   _getElapsedTime() {
     const total = this.getTotal();
     const delta = this.getDelta();
     // reset delta timer
-    this._deltaTs = timestamp();
+    this._deltaTs = getTimestamp();
     return {total, delta};
   }
 

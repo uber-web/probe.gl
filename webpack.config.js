@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 const {resolve} = require('path');
-// const webpack = require('webpack');
+const webpack = require('webpack');
 
 const COMMON_CONFIG = {
   stats: {
@@ -30,7 +30,11 @@ const COMMON_CONFIG = {
     rules: []
   },
 
-  plugins: [],
+  plugins: [
+    new webpack.DefinePlugin({
+      PROBE_VERSION: JSON.stringify(require('./package.json').version)
+    })
+  ],
 
   node: {
     fs: 'empty'

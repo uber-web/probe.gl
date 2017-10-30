@@ -19,37 +19,27 @@
 // THE SOFTWARE.
 
 export default class NodeStorage {
-  /**
-   * @classdesc
-   * At the moment, just a mock
-   *
-   */
+  // At the moment, just a mock
   constructor() {
     this.storage = {};
   }
 
-  /**
-   * Sets string value for a key
-   * @param {String} key - key to update
-   * @param {String} value - string to be stored under key
-   */
+  // Sets string value for a key
+  // @param {String} key - key to update
+  // @param {String} value - string to be stored under key
   set(key, value) {
     this.storage[key] = value;
   }
 
-  /**
-   * Gets string value for a key
-   * @param {String} key - key to retrieve
-   * @return {String} value stored under key, or undefined
-   */
+  // Gets string value for a key
+  // @param {String} key - key to retrieve
+  // @return {String} value stored under key, or undefined
   get(key) {
     return this.storage[key];
   }
 
-  /**
-   * Removed a key and its associated value
-   * @param {String} key - key to remove
-   */
+  // Removed a key and its associated value
+  // @param {String} key - key to remove
   remove(key) {
     delete this.storage[key];
   }

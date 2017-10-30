@@ -18,5 +18,5 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-require('babel-polyfill');
-require('./probe-spec');
+require('./src/logger.spec');
+require('./src/probe.spec');

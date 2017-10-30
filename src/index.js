@@ -1,8 +1,7 @@
+export {default as Logger} from './logger';
+export {default as Probe} from './probe';
+
+// Make Probe available as global variable for debugging purposes
 import Probe from './probe';
-export {Probe as Probe};
-export {
-  breakOnConsoleWarnings,
-  throwOnConsoleWarnings,
-  interceptRejectedPromises
-} from './error-utils';
-export default new Probe();
+import {global} from './utils/global';
+global.Probe = Probe;

@@ -54,12 +54,11 @@ const METHODS_TO_DISABLE = [
 const INTERACTIVE_CHECK_TIMEOUT = 50;
 
 export default class Probe {
-
-  /**
-   * @constructor
-   * @param {Object} config Optional configuration args; see #configure
-   */
+  // @param {Object} config Optional configuration args; see #configure
   constructor(config = {}) {
+    assert(typeof config.id === 'string');
+    this.id = config.id;
+
     this.VERSION = VERSION;
 
     this.storage = isBrowser ? new LocalStorage() : new NodeStorage();
@@ -86,9 +85,7 @@ export default class Probe {
     this._startInteractiveHearbeat();
   }
 
-  /**
-   * Reset all internal stores, dropping logs
-   */
+  // Reset all internal stores, dropping logs
   reset() {
     // Data containers
     this._logStore = [];
@@ -109,11 +106,9 @@ export default class Probe {
     return `<Probe: ${enabled} level: ${this.getLevel()}>`;
   }
 
-  /**
-   * Turn probe on
-   * @param {Object} opts={} - map of options to set
-   * @return {Probe} self, to support chaining
-   */
+  // Turn probe on
+  // @param {Object} opts={} - map of options to set
+  // @return {Probe} self, to support chaining
   enable(opts = {}) {
     // Swap in live methods
     for (const method of METHODS_TO_DISABLE) {
@@ -122,10 +117,8 @@ export default class Probe {
     return this.configure(Object.assign({isEnabled: true}, opts));
   }
 
-  /**
-   * Turn probe off
-   * @return {Probe} self, to support chaining
-   */
+  // Turn probe off
+  // @return {Probe} self, to support chaining
   disable() {
     // Swap in noops for live methods
     for (const method of METHODS_TO_DISABLE) {
@@ -134,10 +127,8 @@ export default class Probe {
     return this.configure({isEnabled: false});
   }
 
-  /**
-   * Whether Probe is currently enabled
-   * @return {Boolean} isEnabled
-   */
+  // Whether Probe is currently enabled
+  // @return {Boolean} isEnabled
   isEnabled() {
     // getOption is set to noop when Probe is disabled, check _config directly
     return Boolean(this._getOption('isEnabled'));

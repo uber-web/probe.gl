@@ -10,15 +10,15 @@ function getInstance() {
   });
 }
 
-test('Probe#VERSION', assert => {
+test('Probe#VERSION', t => {
   const probe = getInstance();
 
-  assert.equal(typeof probe.VERSION, 'string', 'VERSION is set');
+  t.equal(typeof probe.VERSION, 'string', 'VERSION is set');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#probe', assert => {
+test('Probe#probe', t => {
   const probe = getInstance();
 
   probe.probe('test');
@@ -26,17 +26,17 @@ test('Probe#probe', assert => {
   const log = probe.getLog();
   const row = log[0];
 
-  assert.equals(log.length, 1,
+  t.equals(log.length, 1,
     'Expected row logged');
-  assert.equal(row.name, 'test',
+  t.equal(row.name, 'test',
     'Name logged');
-  assert.equal(typeof row.total, 'number', 'Start is set');
-  assert.equal(typeof row.delta, 'number', 'Delta is set');
+  t.equal(typeof row.total, 'number', 'Start is set');
+  t.equal(typeof row.delta, 'number', 'Delta is set');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#probe - level methods', assert => {
+test('Probe#probe - level methods', t => {
   const probe = getInstance().setLevel(3);
 
   probe.probe('test0');
@@ -46,26 +46,26 @@ test('Probe#probe - level methods', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 4,
+  t.equals(log.length, 4,
     'Expected rows logged');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.level),
     [1, 1, 2, 3],
     'Levels match expected');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
     'Names match expected');
 
   for (const row of log) {
-    assert.equal(typeof row.total, 'number', 'Start is set');
-    assert.equal(typeof row.delta, 'number', 'Delta is set');
+    t.equal(typeof row.total, 'number', 'Start is set');
+    t.equal(typeof row.delta, 'number', 'Delta is set');
   }
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#probe - level methods, lower level set', assert => {
+test('Probe#probe - level methods, lower level set', t => {
   const probe = getInstance().setLevel(1);
 
   probe.probe('test0');
@@ -75,17 +75,17 @@ test('Probe#probe - level methods, lower level set', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 2,
+  t.equals(log.length, 2,
     'Expected rows logged');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.level),
     [1, 1],
     'Levels match expected');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#probe - level methods, disabled', assert => {
+test('Probe#probe - level methods, disabled', t => {
   const probe = getInstance().disable();
 
   probe.probe('test0');
@@ -95,13 +95,13 @@ test('Probe#probe - level methods, disabled', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 0,
+  t.equals(log.length, 0,
     'No rows logged');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#sample - level methods', assert => {
+test('Probe#sample - level methods', t => {
   const probe = getInstance().setLevel(3);
 
   probe.sample('test0');
@@ -111,27 +111,27 @@ test('Probe#sample - level methods', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 4,
+  t.equals(log.length, 4,
     'Expected rows logged');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.level),
     [1, 1, 2, 3],
     'Levels match expected');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
     'Names match expected');
 
   for (const row of log) {
-    assert.equal(typeof row.total, 'number', 'Start is set');
-    assert.equal(typeof row.delta, 'number', 'Delta is set');
-    assert.equal(typeof row.averageTime, 'number', 'Avg time is set');
+    t.equal(typeof row.total, 'number', 'Start is set');
+    t.equal(typeof row.delta, 'number', 'Delta is set');
+    t.equal(typeof row.averageTime, 'number', 'Avg time is set');
   }
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#fps - level methods', assert => {
+test('Probe#fps - level methods', t => {
   const probe = getInstance().setLevel(3);
   const count = 3;
 
@@ -144,27 +144,27 @@ test('Probe#fps - level methods', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 4,
+  t.equals(log.length, 4,
     'Expected rows logged');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.level),
     [1, 1, 2, 3],
     'Levels match expected');
-  assert.deepEqual(
+  t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
     'Names match expected');
 
   for (const row of log) {
-    assert.equal(typeof row.total, 'number', 'Start is set');
-    assert.equal(typeof row.delta, 'number', 'Delta is set');
-    assert.equal(typeof row.fps, 'number', 'FPS is set');
+    t.equal(typeof row.total, 'number', 'Start is set');
+    t.equal(typeof row.delta, 'number', 'Delta is set');
+    t.equal(typeof row.fps, 'number', 'FPS is set');
   }
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#fps - log once per count', assert => {
+test('Probe#fps - log once per count', t => {
   const probe = getInstance().setLevel(3);
   const count = 3;
   const cycles = 4;
@@ -176,85 +176,85 @@ test('Probe#fps - log once per count', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, cycles,
+  t.equals(log.length, cycles,
     'Expected rows logged');
 
   for (const row of log) {
-    assert.equal(typeof row.total, 'number', 'Start is set');
-    assert.equal(typeof row.delta, 'number', 'Delta is set');
-    assert.equal(typeof row.fps, 'number', 'FPS is set');
+    t.equal(typeof row.total, 'number', 'Start is set');
+    t.equal(typeof row.delta, 'number', 'Delta is set');
+    t.equal(typeof row.fps, 'number', 'FPS is set');
   }
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#disable / Probe#enable', assert => {
+test('Probe#disable / Probe#enable', t => {
   const probe = getInstance();
 
-  assert.strictEqual(probe.isEnabled(), true,
+  t.strictEqual(probe.isEnabled(), true,
     'isEnabled matches expected');
 
   probe.disable();
   probe.probe('test_disabled');
 
-  assert.strictEqual(probe.isEnabled(), false,
+  t.strictEqual(probe.isEnabled(), false,
     'isEnabled matches expected');
-  assert.strictEqual(probe.getLog().length, 0,
+  t.strictEqual(probe.getLog().length, 0,
     'No row logged');
 
   probe.enable();
   probe.probe('test_enabled');
 
-  assert.strictEqual(probe.isEnabled(), true,
+  t.strictEqual(probe.isEnabled(), true,
     'isEnabled matches expected');
-  assert.strictEqual(probe.getLog().length, 1,
+  t.strictEqual(probe.getLog().length, 1,
     'Row logged');
-  assert.strictEqual(probe.getLog()[0].name, 'test_enabled',
+  t.strictEqual(probe.getLog()[0].name, 'test_enabled',
     'Row name matches expected');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#readBrokenEnvironment', assert => {
+test('Probe#readBrokenEnvironment', t => {
   const probe = getInstance();
   probe._getConfigFromEnvironment = () => ({a: true});
   probe._initConfig();
 
-  assert.strictEqual(probe.getOption('a'), null,
+  t.strictEqual(probe.getOption('a'), null,
     'Get broken option');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#configure', assert => {
+test('Probe#configure', t => {
   const probe = getInstance()
     .configure({
       level: 2,
       foo: 'bar'
     });
 
-  assert.strictEqual(probe.getOption('level'), 2,
+  t.strictEqual(probe.getOption('level'), 2,
     'Set known option');
-  assert.strictEqual(probe.getOption('foo'), 'bar',
+  t.strictEqual(probe.getOption('foo'), 'bar',
     'Set unknown option');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#xprobe - invoke', assert => {
+test('Probe#xprobe - invoke', t => {
   const probe = getInstance().setLevel(1);
 
   probe.xprobe(1, 'test xprobe')();
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 1,
+  t.equals(log.length, 1,
     'Expected rows logged');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#group - create, log, end', assert => {
+test('Probe#group - create, log, end', t => {
   const probe = getInstance().setLevel(1);
 
   const group = probe.group('test-group');
@@ -263,16 +263,16 @@ test('Probe#group - create, log, end', assert => {
 
   const log = probe.getLog();
 
-  assert.equals(log.length, 1,
+  t.equals(log.length, 1,
     'Expected rows logged');
 
-  assert.end();
+  t.end();
 });
 
-test('Probe#getInteractiveRatio', assert => {
+test('Probe#getInteractiveRatio', t => {
   const probe = getInstance().setLevel(1);
   const percentage = probe.getInteractiveRatio();
 
-  assert.ok(percentage >= 0 && percentage <= 1, 'Expected 0-1');
-  assert.end();
+  t.ok(percentage >= 0 && percentage <= 1, 'Expected 0-1');
+  t.end();
 });

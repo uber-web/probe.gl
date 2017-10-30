@@ -1,5 +1,7 @@
 # Error Handling
 
+> Experimental API
+
 ## Functions
 
 ### breakOnConsoleWarnings

@@ -23,18 +23,28 @@
  */
 /* eslint-disable no-console */
 /* global process */
+import {window, isBrowser} from './utils/global';
 import console from 'global/console';
-import window from 'global/window';
 
-// Duck-type Node context
-export const IS_NODE = typeof process !== undefined &&
-  process.toString() === '[object process]';
+// Extract version from package.json (injected by webpack)
+/* global PROBE_VERSION */
+export const VERSION = PROBE_VERSION;
 
-// Configure console
+function noop() {}
 
-// Console.debug is useful in chrome as it gives blue styling, but is not
-// available in node
+// Polyfill console
+
+// Console.debug is useful in chrome as it enables filtering and
+// (depending on Chrome version) distinctive styling, but is not available in node
 console.debug = console.debug || console.log;
+
+// Groups, timeStamps, table are not available in node
+console.group = console.group || console.log;
+console.groupCollapsed = console.groupCollapsed || console.log;
+console.groupEnd = console.groupEnd || noop;
+
+console.timeStamp = console.timeStamp || noop;
+console.table = console.table || noop;
 
 // Some instrumentation may override console methods, so preserve them here
 console.native = {
@@ -44,19 +54,29 @@ console.native = {
   error: console.error.bind(console)
 };
 
-export {console as logger};
-
 // Set up high resolution timer
-let timestamp;
-if (IS_NODE) {
-  timestamp = () => {
+let getTimestamp;
+let startTimestamp;
+if (!isBrowser) {
+  getTimestamp = () => {
     const [seconds, nanoseconds] = process.hrtime();
     return seconds + nanoseconds / 1e6;
   };
+  startTimestamp = getTimestamp();
 } else if (window.performance) {
-  timestamp = () => window.performance.now();
+  getTimestamp = () => window.performance.now();
+  startTimestamp = 0;
 } else {
-  timestamp = () => Date.now();
+  getTimestamp = () => Date.now();
+  startTimestamp = getTimestamp();
 }
 
-export {timestamp as timestamp};
+const refUnixEpoch = Date.now();
+
+// A rough conversion of unix epoch millis to "timestamps"
+export function getTimestampFromUnixEpoch(date) {
+  return (date - refUnixEpoch) + startTimestamp;
+}
+
+export {console as logger};
+export {getTimestamp, startTimestamp};

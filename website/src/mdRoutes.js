@@ -21,12 +21,15 @@
 import overview from '../../docs/README.md';
 import whatsNew from '../../docs/whats-new.md';
 
+import install from '../../docs/get-started/README.md';
+import addingProbes from '../../docs/get-started/adding-probes.md';
+
+import aboutLogging from '../../docs/articles/about-logging.md';
+
 import probe from '../../docs/api-reference/probe.md';
 import probeGroup from '../../docs/api-reference/probe-group.md';
 import errorHandling from '../../docs/api-reference/error-handling.md';
-
-import install from '../../docs/get-started/README.md';
-import addingProbes from '../../docs/get-started/adding-probes.md';
+import logger from '../../docs/api-reference/logger.md';
 
 export default [{
   name: 'Documentation',
@@ -47,16 +50,28 @@ export default [{
       markdown: addingProbes
     }]
   }, {
+    name: 'Articles',
+    children: [{
+      name: 'Console Logging',
+      markdown: aboutLogging
+    }]
+  }, {
     name: 'API Reference',
     children: [{
       name: 'Probe',
       markdown: probe
-    }, {
-      name: 'ProbeGroup',
-      markdown: probeGroup
+    // }, {
+    //   name: 'ProbeGroup',
+    //   markdown: probeGroup
     }, {
       name: 'Error Handling',
       markdown: errorHandling
+    }]
+  }, {
+    name: 'Experimental API',
+    children: [{
+      name: 'Logger',
+      markdown: logger
     }]
   }]
 }];

@@ -26,5 +26,7 @@ const path = require('path');
 const moduleAlias = require('module-alias');
 moduleAlias.addAlias('probe.gl', path.resolve('./src'));
 
+require('babel-polyfill');
+
 // Run the tests
 require('./index');
