@@ -152,7 +152,7 @@ export default class Log {
   }
 
   deprecated(oldUsage, newUsage) {
-    return this.warn(0, `deck.gl: \`${oldUsage}\` is deprecated and will be removed \
+    return this.warn(0, `\`${oldUsage}\` is deprecated and will be removed \
 in a later version. Use \`${newUsage}\` instead`);
   }
 

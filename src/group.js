@@ -19,8 +19,10 @@
 // THE SOFTWARE.
 
 /* eslint-disable no-console, no-try-catch */
-import {logger, getTimestamp} from './env';
+/* global console */
+import {getTimestamp} from './env';
 import {formatTime, leftPad} from './utils/formatters';
+const logger = console;
 
 export default class Group {
 

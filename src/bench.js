@@ -2,48 +2,84 @@
 /* global console */
 import {formatSI} from './utils/formatters';
 import {autobind} from './utils/autobind';
+// import LocalStorage from './utils/local-storage';
 import assert from 'assert';
 
-export const ITERATIONS_XLO = 500;
-export const ITERATIONS_LO = 1000;
-export const ITERATIONS = 10000;
-export const ITERATIONS_HI = 100000;
-export const ITERATIONS_UH = 1000000;
-export const ITERATIONS_XUH = 5000000;
-
 export default class Bench {
-  constructor() {
+  constructor({log = console.log.bind(console)} = {}) {
+    this.log = log;
     this.timer = null;
+    this.results = {};
     autobind(this);
     Object.seal(this);
   }
 
-  calibrate() {}
+  calibrate(id, func1, func2, opts) {
+    this.add(id, func1, func2, opts);
+    return this;
+  }
 
-  run() {}
+  run() {
+    return this;
+  }
 
-  add({id, iterations = ITERATIONS, func, context, log = console.log}) {
+  group(id) {
+    this.log('');
+    this.log(`### ${id}`);
+    return this;
+  }
+
+  add(id, func1, func2, opts) {
+    const {context = {}} = {};
     assert(id);
-    if (func) {
-      this.timer = new Date();
-      if (context) {
-        for (let i = 0; i < iterations; i++) {
-          func.call(context);
-        }
-      } else {
-        for (let i = 0; i < iterations; i++) {
-          func();
-        }
-      }
+    assert(typeof func1 === 'function');
+
+    let initFunc = null;
+    let testFunc = func1;
+    if (typeof func2 === 'function') {
+      initFunc = func1;
+      testFunc = func2;
     }
-    const elapsedMillis = new Date() - this.timer;
-    const iterationsPerSecond = formatSI(iterations * 1000 / elapsedMillis);
-    log(`${id}: ${iterationsPerSecond} iterations/s`);
+
+    const testArgs = initFunc && initFunc();
+    const {time, iterationsPerSecond} = runTest({testFunc, testArgs, context});
+    this.log(`${id}: ${formatSI(iterationsPerSecond)} iterations/s (${time.toFixed(2)}s)`);
+
+    this.results[id] = iterationsPerSecond;
+
+    return this;
+  }
+}
+
+// Helper methods
+
+function runTestOnce({testFunc, testArgs, context, iterations}) {
+  if (context && testArgs) {
+    for (let i = 0; i < iterations; i++) {
+      testFunc.call(context, testArgs);
+    }
+  } else {
+    for (let i = 0; i < iterations; i++) {
+      testFunc.call(context);
+    }
+  }
+}
+
+function runTest({testFunc, testArgs, context}) {
+  let iterations = 0.1;
+  let elapsedMillis = 0;
+
+  // Run for at least 100ms
+  while (elapsedMillis < 100) {
+    iterations *= 10;
+    const timer = new Date();
+    runTestOnce({testFunc, testArgs, context, iterations});
+    elapsedMillis = new Date() - timer;
   }
 
-  // Internal?
-
-  startTimer() {
-    this.timer = new Date();
-  }
+  return {
+    time: elapsedMillis / 1000,
+    iterations,
+    iterationsPerSecond: iterations * 1000 / elapsedMillis
+  };
 }
