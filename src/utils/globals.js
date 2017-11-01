@@ -14,13 +14,10 @@ const isBrowser =
   String(process) !== '[object process]' ||
   process.browser;
 
-const isNode = !isBrowser;
-
 export {
   window_ as window,
   document_ as document,
   global_ as global,
   process_ as process,
-  isBrowser,
-  isNode
+  isBrowser
 };

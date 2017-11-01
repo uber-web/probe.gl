@@ -21,21 +21,22 @@
 // This function is needed in initialization stages,
 // make sure it can be imported in isolation
 
-/* global navigator, window, process */
+import {isBrowser, window} from '../globals';
+
+export default isBrowser;
+
+export const isMobile = typeof window.orientation !== 'undefined';
 
 // Simple browser detection
 function detectBrowser() {
-  /* global process */
-  const isNode =
-    typeof process === 'object' &&
-    String(process) === '[object process]' &&
-    !process.browser;
-  if (isNode) {
+  if (!isBrowser) {
     return 'Node';
   }
 
   /* global navigator */
-  const {userAgent} = navigator;
+  const navigator_ = typeof navigator !== 'undefined' ? navigator : {};
+  const userAgent = navigator_.userAgent || '';
+  const appVersion = navigator_.appVersion || '';
   if (userAgent.indexOf('Chrome') > -1) {
     return 'Chrome';
   }
@@ -46,17 +47,9 @@ function detectBrowser() {
     return 'Safari';
   }
   if (userAgent.indexOf('MSIE') > -1) {
-    return navigator.appVersion.indexOf('Trident') > -1 ? 'IE11' : 'Edge';
+    return appVersion.indexOf('Trident') > -1 ? 'IE11' : 'Edge';
   }
   return 'Unknown';
 }
 
 export const BROWSER = detectBrowser();
-
-export const isBrowser = BROWSER !== 'Node';
-
-export const isMobile =
-  typeof window !== 'undefined' &&
-  typeof window.orientation !== 'undefined';
-
-export default isBrowser;

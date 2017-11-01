@@ -1,3 +1,5 @@
+// parseColor util from deck.gl - included as simple benchmark example
+
 // Parse array or string color
 function parseColor(color, target, index = 0) {
   if (Array.isArray(color) || ArrayBuffer.isView(color)) {

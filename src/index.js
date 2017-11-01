@@ -6,3 +6,9 @@ export {default as Bench} from './bench';
 import Probe from './probe';
 import {global} from './utils/globals';
 global.Probe = Probe;
+
+// experimental exports
+import {logToDOM} from './utils/log-to-dom';
+export const experimental = {
+  logToDOM
+};

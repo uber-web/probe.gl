@@ -6,9 +6,13 @@ import {autobind} from './utils/autobind';
 import assert from 'assert';
 
 export default class Bench {
-  constructor({log = console.log.bind(console)} = {}) {
+  constructor({
+    timeouts = true,
+    log = console.log.bind(console)
+  } = {}) {
     this.log = log;
-    this.timer = null;
+    this.timeouts = timeouts;
+    this.tests = {};
     this.results = {};
     autobind(this);
     Object.seal(this);
@@ -20,13 +24,22 @@ export default class Bench {
   }
 
   run() {
-    return this;
+    if (this.timeouts) {
+      return this._runAsyncTests();
+    }
+    for (const bench of this.tests) {
+      bench();
+    }
+    return Promise.resolve(true);
   }
 
   group(id) {
-    this.log('');
-    this.log(`### ${id}`);
-    return this;
+    const bench = () => {
+      this.log('');
+      this.log(`${id}`);
+    };
+
+    return this._addTest(id, bench);
   }
 
   add(id, func1, func2, opts) {
@@ -41,13 +54,42 @@ export default class Bench {
       testFunc = func2;
     }
 
-    const testArgs = initFunc && initFunc();
-    const {time, iterationsPerSecond} = runTest({testFunc, testArgs, context});
-    this.log(`${id}: ${formatSI(iterationsPerSecond)} iterations/s (${time.toFixed(2)}s)`);
+    const bench = () => {
+      const testArgs = initFunc && initFunc();
+      const {time, iterationsPerSecond} = runTest({testFunc, testArgs, context});
+      this.log(`├─ ${id}: ${formatSI(iterationsPerSecond)} iterations/s (${time.toFixed(2)}s)`);
+      this.results[id] = iterationsPerSecond;
+    };
 
-    this.results[id] = iterationsPerSecond;
+    return this._addTest(id, bench);
+  }
 
+  _addTest(id, bench) {
+    assert(!this.tests[id], 'tests need unique id strings');
+    this.tests[id] = bench;
     return this;
+  }
+
+  _runAsyncTests() {
+    let promise = Promise.resolve(true);
+    for (const id in this.tests) {
+      const bench = this.tests[id];
+      promise = promise.then(() => this._runAsyncTest(bench));
+    }
+    return promise;
+  }
+
+  _runAsyncTest(bench) {
+    return new Promise(resolve => {
+      /* global setTimeout */
+      setTimeout(() => {
+        try {
+          bench();
+        } finally {
+          resolve(true);
+        }
+      }, 100); // small timeout to let system cool...
+    });
   }
 }
 
