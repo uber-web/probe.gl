@@ -1,5 +1,8 @@
 CHANGELOG
 
+v0.0.2
+- Async benchmarking, improved DOM logging 
+
 v0.0.1
 - `Bench` and `Log` classes added.
 
