@@ -14,7 +14,7 @@ function getInstance() {
 test('Probe#VERSION', t => {
   const probe = getInstance();
 
-  t.equal(typeof probe.VERSION, 'string', 'VERSION is set');
+  t.equal(typeof probe.VERSION, 'string', `VERSION is set: ${probe.VERSION}`);
 
   t.end();
 });

@@ -20,7 +20,7 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
-import {getTimestamp} from './env';
+import {getTimestamp} from './time-stamp';
 import {formatTime, leftPad} from './utils/formatters';
 const logger = console;
 

@@ -20,13 +20,14 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
-import {isBrowser} from './utils/globals';
-import {formatTime, formatSI, leftPad} from './utils/formatters';
+import {isBrowser, VERSION} from './utils/globals';
+import {formatTime, leftPad} from './utils/formatters';
 import LocalStorage from './utils/local-storage';
 import NodeStorage from './utils/node-storage';
-import {VERSION, getTimestamp, startTimestamp} from './env';
+import {getTimestamp, startTimestamp} from './time-stamp';
 import Group from './group';
 import assert from 'assert';
+/* global setInterval */
 
 const logger = console;
 
@@ -42,7 +43,7 @@ const DEFAULT_CONFIG = {
 
 // In a browser environment, probe will store its configuration in this cookie
 // This allows settings to persist across browser reloads
-const PROBE_STORAGE_KEY_NAME = '__probe__';
+const PROBE_STORAGE_KEY_NAME = '__probe.gl__';
 
 function noop() {
   return noop;
@@ -138,11 +139,9 @@ export default class Probe {
     return Boolean(this._getOption('isEnabled'));
   }
 
-  /**
-   * Convenience function: Set probe level
-   * @param {Number} level Level to set
-   * @return {Probe} self, to support chaining
-   */
+  // Convenience function: Set probe level
+  // @param {Number} level Level to set
+  // @return {Probe} self, to support chaining
   setLevel(level) {
     return this.configure({level});
   }
@@ -153,17 +152,15 @@ export default class Probe {
 
   // OPTIONS INTERFACE
 
-  /**
-   * Registers an option, including description and default value.
-   * Note, differs from setOption in that it does not change the value
-   * of the option if the option is already set. However, the description
-   * will always be updated.
-   *
-   * @param {String} key - The name of the option
-   * @param {*} defaultValue= - Set as value if option does not already exist
-   * @param {String} description= - Optional description for Probe.showOptions()
-   * @return {Probe} - returns itself for chaining.
-   */
+  // Registers an option, including description and default value.
+  // Note, differs from setOption in that it does not change the value
+  // of the option if the option is already set. However, the description
+  // will always be updated.
+  //
+  // @param {String} key - The name of the option
+  // @param {*} defaultValue= - Set as value if option does not already exist
+  // @param {String} description= - Optional description for Probe.showOptions()
+  // @return {Probe} - returns itself for chaining.
   addOption(key, defaultValue = null, description = null) {
     assert(typeof key === 'string', 'Probe.addOption needs key argument');
     // Go through some hoops so that we can call configure in the end
@@ -182,27 +179,23 @@ export default class Probe {
     return this;
   }
 
-  /**
-   * Sets an option.
-   * @param {String} key - The name of the option
-   * @param {*} value - Set as value if option does not already exist
-   * @return {Probe} - returns itself for chaining.
-   */
+  // Sets an option.
+  // @param {String} key - The name of the option
+  // @param {*} value - Set as value if option does not already exist
+  // @return {Probe} - returns itself for chaining.
   setOption(key, value) {
     assert(typeof key === 'string', 'Probe.setOption needs key argument');
     return this.configure({[key]: value});
   }
 
-  /**
-   * Get a single option from probe's persistent configuration.
-   * By supplying default value and description the app can ensure the
-   * option gets documented (for Probe.showOptions())
-   *
-   * @param  {String} key - name of the option
-   * @param  {String} defaultValue - name of the option
-   * @param  {String} description - name of the option
-   * @return {*} - Option value, or defaultValue if no option with tha key
-   */
+  // Get a single option from probe's persistent configuration.
+  // By supplying default value and description the app can ensure the
+  // option gets documented (for Probe.showOptions())
+  //
+  // @param  {String} key - name of the option
+  // @param  {String} defaultValue - name of the option
+  // @param  {String} description - name of the option
+  // @return {*} - Option value, or defaultValue if no option with tha key
   getOption(key, defaultValue = null, description = null) {
     return this._getOption(key, defaultValue, description);
   }
@@ -217,10 +210,8 @@ export default class Probe {
     return this._config[key] ? this._config[key].value : defaultValue;
   }
 
-  /**
-   * Lists all options, with value and descriptions in a table
-   * @return {Probe} - returns itself for chaining.
-   */
+  // Lists all options, with value and descriptions in a table
+  // @return {Probe} - returns itself for chaining.
   showOptions() {
     logger.table(this._config);
     return this;
@@ -231,16 +222,14 @@ export default class Probe {
     return this;
   }
 
-  /**
-   * Configure probe with new values (can include custom key/value pairs).
-   * Configuration will be persisted across browser sessions
-   * @param {Object} config={} - Map of options to configure
-   * @param {Boolean} config.isEnabled Whether probe is enabled
-   * @param {Number} config.level Logging level
-   * @param {Boolean} config.isLogEnabled Whether logging prints to console
-   * @param {Boolean} config.isRunEnabled Whether #run executes code
-   * @return {Probe} self, to support chaining
-   */
+  // Configure probe with new values (can include custom key/value pairs).
+  // Configuration will be persisted across browser sessions
+  // @param {Object} config={} - Map of options to configure
+  // @param {Boolean} config.isEnabled Whether probe is enabled
+  // @param {Number} config.level Logging level
+  // @param {Boolean} config.isLogEnabled Whether logging prints to console
+  // @param {Boolean} config.isRunEnabled Whether #run executes code
+  // @return {Probe} self, to support chaining
   configure(config = {}) {
     for (const key in config) {
       const value = config[key];
@@ -255,47 +244,35 @@ export default class Probe {
     return this._updateEnvironment();
   }
 
-  /**
-   * Get current log, as an array of log row objects
-   * @return {Object[]} Log
-   */
+  // Get current log, as an array of log row objects
+  // @return {Object[]} Log
   getLog() {
     return this._logStore.slice();
   }
 
-  /**
-   * Reset the long timer
-   */
+  // Reset the long timer
   resetStart() {
     this._startTs = this._deltaTs = getTimestamp();
   }
 
-  /**
-   * Reset the time since last probe
-   */
+  // Reset the time since last probe
   resetDelta() {
     this._deltaTs = getTimestamp();
   }
 
-  /**
-   * @return {Number} milliseconds, with fractions
-   */
+  // @return {Number} milliseconds, with fractions
   getTotal() {
     return getTimestamp() - this._startTs;
   }
 
-  /**
-   * @return {Number} milliseconds, with fractions
-   */
+  // @return {Number} milliseconds, with fractions
   getDelta() {
     return getTimestamp() - this._deltaTs;
   }
 
-  /**
-   * Displays a double timing (from "start time" and from last probe).
-    _probe(level, name, meta) {
-   * @returns {Function} - log function (should be called immediately by app)
-   */
+  // Displays a double timing (from "start time" and from last probe).
+  // _probe(level, name, meta) {
+  // @returns {Function} - log function (should be called immediately by app)
   probe(...args) {
     return this._probe(1, ...args);
   }
@@ -312,14 +289,12 @@ export default class Probe {
     return this._probe(3, ...args);
   }
 
-  /**
-   * Display an averaged value of the time since last probe.
-   * Keyed on the first string argument.
-   * @param {Number} level
-   * @param {String} message
-   * @param {Object} meta
-   * @returns {Function} - log function (should be called immediately by app)
-   */
+  // Display an averaged value of the time since last probe.
+  // Keyed on the first string argument.
+  // @param {Number} level
+  // @param {String} message
+  // @param {Object} meta
+  // @returns {Function} - log function (should be called immediately by app)
   sample(...args) {
     return this._sample(1, ...args);
   }
@@ -336,16 +311,14 @@ export default class Probe {
     return this._sample(3, ...args);
   }
 
-  /**
-   * These functions will average the time between calls and log that value
-   * every couple of calls, in effect showing a times per second this
-   * function is called - sometimes representing a "frames per second" count.
-   * param {Number} level
-   * param {String} message='default'
-   * param {Object} meta
-  _fps(level, name = 'default', {count = 10, ...meta} = {}) {
-   * @returns {Function} - log function (should be called immediately by app)
-   */
+  // These functions will average the time between calls and log that value
+  // every couple of calls, in effect showing a times per second this
+  // function is called - sometimes representing a "frames per second" count.
+  // param {Number} level
+  // param {String} message='default'
+  // param {Object} meta
+  // _fps(level, name = 'default', {count = 10, ...meta} = {}) {
+  // @returns {Function} - log function (should be called immediately by app)
   fps(...args) {
     return this._fps(1, ...args);
   }
@@ -362,12 +335,10 @@ export default class Probe {
     return this._fps(3, ...args);
   }
 
-  /**
-   * Display a measurement from an external source, such as a server,
-   * inline with other local measurements in the style of Probe's output.
-  _externalProbe(level, name, timeStart, timeSpent, meta) {
-   * @returns {Function} - log function (should be called immediately by app)
-   */
+  // Display a measurement from an external source, such as a server,
+  // inline with other local measurements in the style of Probe's output.
+  // _externalProbe(level, name, timeStart, timeSpent, meta) {
+  // @returns {Function} - log function (should be called immediately by app)
   externalProbe(...args) {
     return this._externalProbe(1, ...args);
   }
@@ -410,14 +381,12 @@ export default class Probe {
     logger.table(rows);
   }
 
-  /*
-   * Start a group
-   */
+  // Start a group
   group(name) {
     return new Group(this, name);
   }
 
-  /* Run a function only when probe is enabled */
+  // Run a function only when probe is enabled
   run(func, arg) {
     const isEnabled = this._getOption('isEnabled');
     const isRunEnabled = this._getOption('isRunEnabled');
@@ -427,9 +396,8 @@ export default class Probe {
     return this;
   }
 
-  /* Conditionally run a function only when probe is enabled
-   * If condition is a string, it will be looked up as an option
-   */
+  // Conditionally run a function only when probe is enabled
+  // If condition is a string, it will be looked up as an option
   runIf(condition, func, arg) {
     if (typeof condition === 'string') {
       condition = Boolean(this._getOption(condition));
@@ -437,11 +405,9 @@ export default class Probe {
     return condition ? this.run(func, arg) : this;
   }
 
-  /**
-   * Show current log in a table, if supported by console
-   * @param {Number} tail If supplied, show only the last n entries
-   * @returns {Probe} - returns itself for chaining
-   */
+  // Show current log in a table, if supported by console
+  // @param {Number} tail If supplied, show only the last n entries
+  // @returns {Probe} - returns itself for chaining
   table(tail) {
     const isEnabled = this._getOption('isEnabled');
     if (isEnabled && typeof logger.table === 'function') {
@@ -452,49 +418,6 @@ export default class Probe {
   }
 
   // PROFILING
-
-  startIiterations() {
-    this._iterationsTs = getTimestamp();
-    return this;
-  }
-
-  /* Count iterations per second. Runs the provided function a
-   * specified number of times and normalizes the result to represent
-   * iterations per second.
-   *
-   * TODO/ib Measure one iteration and auto adjust iteration count.
-   */
-  getIterationsPerSecond(iterations = 10000, func = null, context) {
-    if (func) {
-      Probe.startIiterations();
-      // Keep call overhead minimal, only use Function.call if context supplied
-      if (context) {
-        for (let i = 0; i < iterations; i++) {
-          func.call(context);
-        }
-      } else {
-        for (let i = 0; i < iterations; i++) {
-          func();
-        }
-      }
-    }
-    const elapsedMillis = getTimestamp() - this._iterationsTs;
-    const iterationsPerSecond = formatSI(iterations * 1000 / elapsedMillis);
-    return iterationsPerSecond;
-  }
-
-  /*
-   * Print the number of iterations per second measured using the provided
-   * function
-   */
-  logIterationsPerSecond(
-    testName, iterations = 10000, func = null, context = null
-  ) {
-    const elapsedMs = this.getIterationsPerSecond(iterations, func, context);
-    const iterationsPerSecond = formatSI(iterations * 1000 / elapsedMs);
-    logger.log(`${testName}: ${iterationsPerSecond} iterations/s`);
-    return this;
-  }
 
   getInteractiveRatio() {
     const time = getTimestamp();
@@ -619,10 +542,10 @@ export default class Probe {
         // This ensures that we don't break when loading environments written
         // by incompatible versions of probe.
         for (const key in config) {
-          assert('value' in config[key]);
-          const value = config[key].value;
+          const {value} = config[key];
+          // assert(value);
           const doc = config[key].doc || 'N/A';
-          assert(typeof doc === 'string');
+          // assert(typeof doc === 'string');
           this._config[key] = {value, doc};
         }
       } catch (error) {
@@ -633,10 +556,7 @@ export default class Probe {
     }
   }
 
-  /**
-   * Get config from persistent store, if available
-   * @return {Object} config
-   */
+  // Get config from persistent store, if available
   _getConfigFromEnvironment() {
     let customConfig = {};
     if (isBrowser) {
@@ -671,7 +591,6 @@ export default class Probe {
     const isEnabled = this._getOption('isEnabled');
     const isLogEnabled = this._getOption('isLogEnabled');
     const level = this.getLevel();
-
     return isEnabled && isLogEnabled && level >= probeLevel;
   }
 
@@ -728,7 +647,6 @@ export default class Probe {
   _startInteractiveHearbeat() {
     this.interactiveHeartbeats = 0;
     if (isBrowser) {
-      /* global setInterval */
       setInterval(() => {
         this.interactiveHeartbeats++;
       }, INTERACTIVE_CHECK_TIMEOUT);

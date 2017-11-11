@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
-/* global console */
+/* global setTimeout, console */
 import {formatSI} from './utils/formatters';
 import {autobind} from './utils/autobind';
 // import LocalStorage from './utils/local-storage';
 import assert from 'assert';
 
+const TIME_THRESHOLD_MS = 100; // Minimum number of milliseconds to iterate each bench test
+
 export default class Bench {
   constructor({
-    timeouts = true,
-    log = console.log.bind(console)
+    log = console.log.bind(console),
+    delay = 50 // milliseconds of "cooldown" between tests
   } = {}) {
-    this.log = log;
-    this.timeouts = timeouts;
+    this.opts = {log, delay};
     this.tests = {};
     this.results = {};
     autobind(this);
@@ -19,31 +20,20 @@ export default class Bench {
   }
 
   calibrate(id, func1, func2, opts) {
-    this.add(id, func1, func2, opts);
     return this;
   }
 
   run() {
-    if (this.timeouts) {
-      return this._runAsyncTests();
-    }
-    for (const bench of this.tests) {
-      bench();
-    }
-    return Promise.resolve(true);
+    return runAsyncTests(this.tests, this.results);
   }
 
   group(id) {
-    const bench = () => {
-      this.log('');
-      this.log(`${id}`);
-    };
-
-    return this._addTest(id, bench);
+    assert(!this.tests[id], 'tests need unique id strings');
+    this.tests[id] = {id, group: true, opts: this.opts};
+    return this;
   }
 
   add(id, func1, func2, opts) {
-    const {context = {}} = {};
     assert(id);
     assert(typeof func1 === 'function');
 
@@ -54,48 +44,68 @@ export default class Bench {
       testFunc = func2;
     }
 
-    const bench = () => {
-      const testArgs = initFunc && initFunc();
-      const {time, iterationsPerSecond} = runTest({testFunc, testArgs, context});
-      this.log(`├─ ${id}: ${formatSI(iterationsPerSecond)} iterations/s (${time.toFixed(2)}s)`);
-      this.results[id] = iterationsPerSecond;
-    };
-
-    return this._addTest(id, bench);
-  }
-
-  _addTest(id, bench) {
     assert(!this.tests[id], 'tests need unique id strings');
-    this.tests[id] = bench;
+    this.tests[id] = {id, initFunc, testFunc, opts: this.opts};
     return this;
-  }
-
-  _runAsyncTests() {
-    let promise = Promise.resolve(true);
-    for (const id in this.tests) {
-      const bench = this.tests[id];
-      promise = promise.then(() => this._runAsyncTest(bench));
-    }
-    return promise;
-  }
-
-  _runAsyncTest(bench) {
-    return new Promise(resolve => {
-      /* global setTimeout */
-      setTimeout(() => {
-        try {
-          bench();
-        } finally {
-          resolve(true);
-        }
-      }, 100); // small timeout to let system cool...
-    });
   }
 }
 
 // Helper methods
 
-function runTestOnce({testFunc, testArgs, context, iterations}) {
+// Run a list of bench test case async
+function runAsyncTests(tests, results) {
+  let promise = Promise.resolve(true);
+  for (const id in tests) {
+    const test = tests[id];
+    promise = promise.then(() => runAsyncTest(test, results));
+  }
+  return promise;
+}
+
+function runAsyncTest(test, results) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      try {
+        if (test.group) {
+          test.opts.log('');
+          test.opts.log(`${test.id}`);
+        } else {
+          runBenchTest(test, results);
+        }
+      } finally {
+        resolve(true);
+      }
+    }, test.opts.delay); // small delay between each test to let system cool...
+  });
+}
+
+// Run a test func for an increasing amount of iterations until time threshold exceeded
+function runBenchTest(test, results) {
+  let iterations = 0.1;
+  let elapsedMillis = 0;
+
+  // Run increasing amount of interations until we reach time threshold, default at least 100ms
+  while (elapsedMillis < TIME_THRESHOLD_MS) {
+    iterations *= 10;
+    const timer = new Date();
+    runBenchTestIterations(test, iterations);
+    elapsedMillis = new Date() - timer;
+  }
+
+  const time = elapsedMillis / 1000;
+  const iterationsPerSecond = iterations / time;
+
+  test.opts.log(
+    `├─ ${test.id}: ${formatSI(iterationsPerSecond)} iterations/s (${time.toFixed(2)}s)`);
+
+  results[test.id] = {time, iterations, iterationsPerSecond};
+}
+
+// Run a test func for a specific amount of iterations
+function runBenchTestIterations(test, iterations) {
+  const testArgs = test.initFunc && test.initFunc();
+
+  const {context, testFunc} = test;
   if (context && testArgs) {
     for (let i = 0; i < iterations; i++) {
       testFunc.call(context, testArgs);
@@ -107,21 +117,3 @@ function runTestOnce({testFunc, testArgs, context, iterations}) {
   }
 }
 
-function runTest({testFunc, testArgs, context}) {
-  let iterations = 0.1;
-  let elapsedMillis = 0;
-
-  // Run for at least 100ms
-  while (elapsedMillis < 100) {
-    iterations *= 10;
-    const timer = new Date();
-    runTestOnce({testFunc, testArgs, context, iterations});
-    elapsedMillis = new Date() - timer;
-  }
-
-  return {
-    time: elapsedMillis / 1000,
-    iterations,
-    iterationsPerSecond: iterations * 1000 / elapsedMillis
-  };
-}

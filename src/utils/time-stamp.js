@@ -18,6 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-require('./src/logger.spec');
-require('./src/bench.spec');
-// require('./src/probe.spec');
+/**
+ * Common environment setup
+ */
+import {window, process, isBrowser} from './globals';
+
+// High resolution timer
+export function getTimestamp() {
+  if (!isBrowser) {
+    const secondsAndNanoseconds = process.hrtime();
+    return secondsAndNanoseconds[0] + secondsAndNanoseconds[1] / 1e6;
+  }
+  if (window.performance) {
+    return window.performance.now();
+  }
+  return Date.now();
+}
+
+export const startTimestamp = getTimestamp();

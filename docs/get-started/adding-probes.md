@@ -81,6 +81,7 @@ Probe uses global data to ensure that you are working
 against the same clocks even if you happen to load multiple instances
 or versions of the probe module in different modules.
 
+
 ### Warning and Error Handlers
 
 Probe contains a number of optional console intercepts that can be

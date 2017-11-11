@@ -20,7 +20,7 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
-import {getTimestamp} from './env';
+import {getTimestamp} from './utils/time-stamp';
 import {formatTime, formatImage, leftPad} from './utils/formatters';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
@@ -75,7 +75,7 @@ export default class Log {
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
     this.userData = {};
-    logger.timeStamp(`${name} started`);
+    this.timeStamp(`${name} started`);
 
     autobind(this);
 
@@ -86,9 +86,7 @@ export default class Log {
     return this.priority;
   }
 
-  /*
-   * Log to a group
-   */
+  // Log to a group
   probe(level, message, meta = {}) {
     const {delta, total} = this._getElapsedTime();
     if (this._probe._shouldLog(level)) {
@@ -199,6 +197,8 @@ in a later version. Use \`${newUsage}\` instead`);
     return this._log(priority, console.timeEnd ? console.timeEnd : console.info, label);
   }
 
+  timeStamp() {}
+
   group(priority, arg, {collapsed = false} = {}) {
     const message = `${this.id}: ${arg}`;
     const method = (collapsed ? console.groupCollapsed : console.group) || console.info;
@@ -210,6 +210,16 @@ in a later version. Use \`${newUsage}\` instead`);
     return console.groupEnd ?
       this._log(priority, console.groupEnd, message) :
       noop;
+  }
+
+  // @return {Number} milliseconds, with fractions
+  getTotal() {
+    return Number((getTimestamp() - this._startTs).toPrecision(10));
+  }
+
+  // @return {Number} milliseconds, with fractions
+  getDelta() {
+    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   // Private Methods
@@ -234,20 +244,6 @@ in a later version. Use \`${newUsage}\` instead`);
       this._lastLogFunction();
       this._lastLogFunction = null;
     }
-  }
-
- /**
-   * @return {Number} milliseconds, with fractions
-   */
-  getTotal() {
-    return Number((getTimestamp() - this._startTs).toPrecision(10));
-  }
-
-  /**
-   * @return {Number} milliseconds, with fractions
-   */
-  getDelta() {
-    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   _getElapsedTime() {

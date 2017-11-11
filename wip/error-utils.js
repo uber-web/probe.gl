@@ -22,8 +22,22 @@
  * Utilities for dev-mode error handling
  */
 /* eslint-disable no-console, no-debugger */
-/* global window */
-import {logger as console} from './env';
+/* global window, console */
+function noop() {}
+
+// Polyfill console
+
+// Console.debug is useful in chrome as it enables filtering and
+// (depending on Chrome version) distinctive styling, but is not available in node
+console.debug = console.debug || console.log;
+
+// Groups, timeStamps, table are not available in node
+console.group = console.group || console.log;
+console.groupCollapsed = console.groupCollapsed || console.log;
+console.groupEnd = console.groupEnd || noop;
+
+console.timeStamp = console.timeStamp || noop;
+console.table = console.table || noop;
 
 /**
  * Ensure that your debugger stops when code issues warnings so that
