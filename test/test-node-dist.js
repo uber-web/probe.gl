@@ -29,4 +29,4 @@ moduleAlias.addAlias('probe.gl', path.resolve('./dist'));
 require('babel-polyfill');
 
 // Run the tests
-require('./index');
+require('./test-index');
