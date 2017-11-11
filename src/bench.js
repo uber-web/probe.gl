@@ -106,7 +106,7 @@ export default class Bench {
 
   updateTable(current, saved) {
     for (const id in this.table) {
-      if (saved[id].max !== undefined) {
+      if (saved[id] && saved[id].max !== undefined) {
         current[id].max = Math.max(current[id].value, saved[id].max);
         const delta = current[id].value / saved[id].max;
         current[id].percent = Math.round(delta * 100);

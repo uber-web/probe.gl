@@ -20,11 +20,12 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
+import {VERSION} from './utils/globals';
 import {getTimestamp} from './utils/time-stamp';
-import {formatTime, formatImage, leftPad} from './utils/formatters';
+import {formatImage} from './utils/formatters';
+// import {formatTime, leftPad} from './utils/formatters';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
-const logger = console;
 
 function noop() {}
 
@@ -59,7 +60,7 @@ function checkForAssertionErrors(args) {
 
 // A simple console wrapper
 // * Papers over missing methods
-// * Supports logging with priority levels
+// * Supports logging with priorities
 // * Caches warnings to ensure only one of each warning is emitted
 // * Reformats assert messages to show actual error string
 // * Console shows actual log function call site, not wrapper call site
@@ -67,86 +68,113 @@ function checkForAssertionErrors(args) {
 
 export default class Log {
 
-  constructor(probe, name) {
-    this.priority = null;
+  constructor({id, probe}) {
+    this.priority = 10;
     this._probe = probe;
-    this.name = name;
-    this._logStore = [];
+    this.id = id;
+    this._getLogFuncStore = [];
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
+    this._lastLogFunction = null;
+
     this.userData = {};
-    this.timeStamp(`${name} started`);
+    this.timeStamp(`${this.id} started`);
 
     autobind(this);
 
     Object.seal(this);
   }
 
+  setLevel(level) {
+    this.priority = level;
+    return this;
+  }
+
+  enable(enabled = true) {
+    this.enabled = enabled;
+  }
+
   getPriority() {
     return this.priority;
   }
 
-  // Log to a group
-  probe(level, message, meta = {}) {
-    const {delta, total} = this._getElapsedTime();
-    if (this._probe._shouldLog(level)) {
-      const logRow = this._probe._createLogRow({level, name: message, delta, total}, meta);
-      this._logStore.push(logRow);
-    }
-    return this;
+  // @return {Number} milliseconds, with fractions
+  getTotal() {
+    return Number((getTimestamp() - this._startTs).toPrecision(10));
   }
 
-  externalProbe(level, message, timeStart, timeSpent, meta = {}) {
-    if (this._probe._shouldLog(level)) {
-      // External probes are expected to provide epoch getTimestamps
-      const total = timeStart - this._probe._startEpochTs;
-      const delta = timeSpent;
-      const logRow = this._probe._createLogRow({
-        level, name: message, total, delta, indent: '  '
-      }, meta);
-      this._logStore.push(logRow);
-    }
-    return this;
+  // @return {Number} milliseconds, with fractions
+  getDelta() {
+    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
   }
 
-  log(priority, arg, ...args) {
-    if (priority <= this.priority) {
-      const method = console.debug || console.info;
-      return this._log(priority, method, ...formatArgs(this.id, arg, ...args));
-    }
-    return noop;
-  }
-
-  // Log a normal message
-  info(priority, arg, ...args) {
-    if (priority <= this.priority) {
-      return this._log(priority, console.info, ...formatArgs(this.id, arg, ...args));
-    }
-    return noop;
-  }
-
-  // Log a normal message, but only once, no console flooding
-  once(priority, arg, ...args) {
-    if (!cache[arg] && priority <= this.priority) {
-      cache[arg] = getTimestamp();
-      args = checkForAssertionErrors(args);
-      return this._log(priority, console.error, ...formatArgs(this.id, arg, ...args));
-    }
-    return noop;
-  }
+  // Unconditional logging
 
   // Warn, but only once, no console flooding
-  warn(arg, ...args) {
-    if (!cache[arg]) {
-      cache[arg] = getTimestamp();
-      return this._log(0, console.warn, `${this.is}: ${arg}`, ...args);
+  warn(message, ...args) {
+    if (!cache[message]) {
+      const opts = this._getOpts({message, args});
+      cache[message] = getTimestamp();
+      return this._getLogFunc(opts, console.warn);
     }
     return noop;
   }
 
   // Print an error
-  error(arg, ...args) {
-    return this._log(0, console.error, `${this.id}: ${arg}`, ...args);
+  error(message, ...args) {
+    const opts = this._getOpts({message, args});
+    return this._getLogFunc(opts, console.error);
+  }
+
+  deprecated(oldUsage, newUsage) {
+    return this.warn(`\`${oldUsage}\` is deprecated and will be removed \
+in a later version. Use \`${newUsage}\` instead`);
+  }
+
+  removed(oldUsage, newUsage) {
+    return this.error(`\`${oldUsage}\` has been removed. Use \`${newUsage}\` instead`);
+  }
+
+  // Conditional logging
+
+  // Log to a group
+  probe(priority, message, opts = {}) {
+    opts = this._getOpts({priority, message, opts});
+    const {delta, total} = this._getElapsedTime();
+
+    if (this._shouldLog(priority)) {
+      const logRow = this._probe._createLogRow({priority, name: message, delta, total}, meta);
+      this._getLogFuncStore.push(logRow);
+    }
+    return this;
+  }
+
+  // externalProbe(priority, message, timeStart, timeSpent, meta = {}) {
+  //   if (this._probe._shouldLog(priority)) {
+  //     // External probes are expected to provide epoch getTimestamps
+  //     const total = timeStart - this._probe._startEpochTs;
+  //     const delta = timeSpent;
+  //     const logRow = this._probe._createLogRow({
+  //       priority, name: message, total, delta, indent: '  '
+  //     }, meta);
+  //     this._getLogFuncStore.push(logRow);
+  //   }
+  //   return this;
+  // }
+  // Log a normal message
+  // info(priority, message, ...args) {
+  //   return this._getLogFuncFromOpts({
+  //     priority, message, args,
+  //     method: console.info
+  //   });
+
+  log(priority, message, ...args) {
+    return this._getLogFuncFromOpts({
+      priority,
+      message,
+      args,
+      method: console.debug || console.info
+    });
   }
 
   deprecated(oldUsage, newUsage) {
@@ -159,10 +187,24 @@ in a later version. Use \`${newUsage}\` instead`);
 in a later version. Use \`${newUsage}\` instead`);
   }
 
-  // Logs an object as a table
-  table(priority, table) {
-    return table ? this._log(priority, console.table, table) : noop;
+  // Log a normal message, but only once, no console flooding
+  once(priority, message, ...args) {
+    if (!cache[message] && priority <= this.priority) {
+      cache[message] = getTimestamp();
+      args = checkForAssertionErrors(args);
+      return this._getLogFunc(priority, console.error);
+    }
+    return noop;
   }
+
+  // Logs an object as a table
+  // table(priority, table) {
+  //   const opts = this._getOpts({priority});
+  //   return table ? this._getLogFuncFromOpts({
+  //     priority,
+  //     method: console.table
+  //   }) : noop;
+  // }
 
   // logs an image under Chrome
   image({priority, image, message = '', scale = 1}) {
@@ -189,57 +231,95 @@ in a later version. Use \`${newUsage}\` instead`);
     return noop;
   }
 
-  // Logs a message with a time
-  time(priority, label) {
-    assert(Number.isFinite(priority), 'log priority must be a number');
-    // In case the platform doesn't have console.time
-    return this._log(priority, console.time ? console.time : console.info, label);
+  time(priority, message) {
+    return this._getLogFuncFromOpts({
+      priority,
+      message,
+      method: console.time ? console.time : console.info
+    });
   }
 
-  timeEnd(priority, label) {
-    assert(Number.isFinite(priority), 'log priority must be a number');
-    // In case the platform doesn't have console.timeEnd
-    return this._log(priority, console.timeEnd ? console.timeEnd : console.info, label);
+  timeEnd(priority, message) {
+    return this._getLogFuncFromOpts({
+      priority,
+      message,
+      method: console.timeEnd ? console.timeEnd : console.info
+    });
   }
 
   timeStamp() {}
 
-  group(priority, arg, {collapsed = false} = {}) {
-    const message = `${this.id}: ${arg}`;
+  // timeStamp(priority, message) {
+  //   return this._getLogFuncFromOpts({
+  //     priority,
+  //     message,
+  //     method: console.timeStamp
+  //   });
+  // }
+
+  group(priority, message, opts = {}) {
+    opts = this._getOpts({priority, message, opts});
+    const {collapsed = false} = opts;
     const method = (collapsed ? console.groupCollapsed : console.group) || console.info;
-    return this._log(priority, method, message);
+    return this._getLogFunc(opts, method);
   }
 
-  groupEnd(priority, arg) {
-    const message = `${this.id}: ${arg}`;
-    return console.groupEnd ?
-      this._log(priority, console.groupEnd, message) :
-      noop;
+  groupEnd(priority, message) {
+    return this._getLogFuncFromOpts({
+      priority,
+      message,
+      method: console.groupEnd
+    });
   }
 
-  // @return {Number} milliseconds, with fractions
-  getTotal() {
-    return Number((getTimestamp() - this._startTs).toPrecision(10));
-  }
-
-  // @return {Number} milliseconds, with fractions
-  getDelta() {
-    return Number((getTimestamp() - this._deltaTs).toPrecision(10));
+  trace() {
+    if (console.trace) {
+      console.trace();
+    }
   }
 
   // Private Methods
 
-  _log(priority, method, ...args) {
+  _getOpts({priority, message, args = [], opts}) {
+    // log(message, args)
+    if (typeof priority === 'string') {
+      if (message) {
+        args.unshift(message);
+      }
+      message = priority;
+      priority = 0;
+    }
+
     assert(Number.isFinite(priority), 'log priority must be a number');
 
+    const newOptions = {
+      priority,
+      message: `${this.id}: ${message}`,
+      args
+    };
+    return Object.assign(newOptions, opts);
+  }
+
+  _getLogFunc(opts, method) {
     // Verify that last log function was actually called
     this._checkLastLogFunction();
 
-    if (priority >= this.getPriority()) {
-      this._lastLogFunction = console[method].bind(console, ...args);
+    if (this._shouldLog(opts.priority) && method) {
+      this._lastLogFunction = method(console, ...opts.args);
     }
 
     return this._lastLogFunction || noop;
+  }
+
+  _getLogFuncFromOpts(opts) {
+    const {method} = opts;
+    opts = this._getOpts(opts);
+    return this._getLogFunc(opts, method);
+  }
+
+  _shouldLog(priority) {
+    assert(Number.isFinite(priority), 'log priority must be a number');
+    return this.priority >= priority;
   }
 
   // Verify that last log function was actually called
@@ -259,26 +339,28 @@ in a later version. Use \`${newUsage}\` instead`);
     return {total, delta};
   }
 
-  _print({collapsed}) {
-    if (this._probe._shouldLog(0)) {
-      const groupTotal = formatTime(this.getTotal());
-      const probeTotal = formatTime(this._probe.getTotal());
-      const header =
-        `${leftPad(probeTotal)} ${leftPad(groupTotal)} ${this.name}`;
+  // _print({collapsed}) {
+  //   if (this._probe._shouldLog(0)) {
+  //     const groupTotal = formatTime(this.getTotal());
+  //     const probeTotal = formatTime(this._probe.getTotal());
+  //     const header =
+  //       `${leftPad(probeTotal)} ${leftPad(groupTotal)} ${this.id}`;
 
-      if (collapsed) {
-        logger.groupCollapsed(header);
-      } else {
-        logger.group(header);
-      }
+  //     if (collapsed) {
+  //       logger.groupCollapsed(header);
+  //     } else {
+  //       logger.group(header);
+  //     }
 
-      for (const logRow of this._logStore) {
-        const line = this._probe._formatLogRowForConsole(logRow);
-        logger.debug(line);
-      }
+  //     for (const logRow of this._getLogFuncStore) {
+  //       const line = this._probe._formatLogRowForConsole(logRow);
+  //       logger.debug(line);
+  //     }
 
-      logger.groupEnd();
-    }
-    return this;
-  }
+  //     logger.groupEnd();
+  //   }
+  //   return this;
+  // }
 }
+
+Log.VERSION = VERSION;
