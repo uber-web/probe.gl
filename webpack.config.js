@@ -75,7 +75,7 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
 
   // Bundle the tests for running in the browser
   entry: {
-    'test-browser': resolve('./test/browser.js')
+    'test-browser': resolve('./test/test-browser.js')
   },
 
   // Generate a bundle in dist folder
@@ -95,7 +95,7 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
 
 const BENCH_CONFIG = Object.assign({}, TEST_CONFIG, {
   entry: {
-    'test-browser': resolve('./test/bench/browser.js')
+    'test-browser': resolve('./test/bench-browser.js')
   }
 });
 

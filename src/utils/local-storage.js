@@ -74,4 +74,19 @@ export default class LocalStorage {
   remove(key) {
     this.storage.removeItem(key);
   }
+
+  getObject(key) {
+    const value = this.storage.getItem(key);
+    try {
+      return typeof value === 'string' ? JSON.parse(value) : {};
+    } catch (error) {
+      this.remove(key);
+      return {};
+    }
+  }
+
+  setObject(key, value) {
+    const string = value ? JSON.stringify(value) : null;
+    this.storage.setItem(key, string);
+  }
 }

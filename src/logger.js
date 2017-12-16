@@ -150,7 +150,12 @@ export default class Log {
   }
 
   deprecated(oldUsage, newUsage) {
-    return this.warn(0, `\`${oldUsage}\` is deprecated and will be removed \
+    return this.warn(`\`${oldUsage}\` is deprecated and will be removed \
+in a later version. Use \`${newUsage}\` instead`);
+  }
+
+  removed(oldUsage, newUsage) {
+    return this.error(`\`${oldUsage}\` is deprecated and will be removed \
 in a later version. Use \`${newUsage}\` instead`);
   }
 

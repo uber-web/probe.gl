@@ -34,10 +34,10 @@
     "test": "npm run lint && npm run build && npm run test-node",
     "test-fast": "npm run test-node | faucet",
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
-    "test-node": "node test/node.js",
-    "test-dist": "node test/node-dist.js",
+    "test-node": "node test/test-node.js",
+    "test-dist": "node test/test-node-dist.js",
     "test-browser": "webpack-dev-server --env.test --progress --hot --open",
-    "bench": "node test/bench/node.js",
+    "bench-node": "node test/bench-node.js",
     "bench-browser": "webpack-dev-server --env.bench --progress --hot --open"
   },
   "dependencies": {
