@@ -27,6 +27,15 @@ import {formatImage} from './utils/formatters';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
 
+// Some instrumentation may override console methods, so preserve them here
+const originalConsole = {
+  debug: console.debug.bind(console),
+  log: console.log.bind(console),
+  info: console.info.bind(console),
+  warn: console.warn.bind(console),
+  error: console.error.bind(console)
+};
+
 function noop() {}
 
 /* eslint-disable no-console */
@@ -117,7 +126,7 @@ export default class Log {
     if (!cache[message]) {
       const opts = this._getOpts({message, args});
       cache[message] = getTimestamp();
-      return this._getLogFunc(opts, console.warn);
+      return this._getLogFunc(opts, originalConsole.warn);
     }
     return noop;
   }
@@ -125,7 +134,7 @@ export default class Log {
   // Print an error
   error(message, ...args) {
     const opts = this._getOpts({message, args});
-    return this._getLogFunc(opts, console.error);
+    return this._getLogFunc(opts, originalConsole.error);
   }
 
   deprecated(oldUsage, newUsage) {
@@ -142,7 +151,7 @@ in a later version. Use \`${newUsage}\` instead`);
   // Log to a group
   probe(priority, message, opts = {}) {
     opts = this._getOpts({priority, message, opts});
-    return this._getLogFunc(opts);
+    return this._getLogFunc(opts, originalConsole.log);
   }
 
   // externalProbe(priority, message, timeStart, timeSpent, meta = {}) {
@@ -169,7 +178,7 @@ in a later version. Use \`${newUsage}\` instead`);
       priority,
       message,
       args,
-      method: console.debug || console.info
+      method: originalConsole.debug || originalConsole.info
     });
   }
 
@@ -178,7 +187,7 @@ in a later version. Use \`${newUsage}\` instead`);
     if (!cache[message] && priority <= this.priority) {
       cache[message] = getTimestamp();
       args = checkForAssertionErrors(args);
-      return this._getLogFunc(priority, console.error);
+      return this._getLogFunc(priority, originalConsole.log);
     }
     return noop;
   }
@@ -294,8 +303,12 @@ in a later version. Use \`${newUsage}\` instead`);
     // Verify that last log function was actually called
     this._checkLastLogFunction();
 
-    if (this._shouldLog(opts.priority) && method) {
-      this._lastLogFunction = method.bind(console, ...opts.args);
+    assert(method);
+
+    if (this._shouldLog(opts.priority)) {
+      // Bind to ensure
+      this._lastLogFunction =
+        method.bind(console, opts.message, ...opts.args);
     }
 
     return this._lastLogFunction || noop;
@@ -315,9 +328,9 @@ in a later version. Use \`${newUsage}\` instead`);
   // Verify that last log function was actually called
   _checkLastLogFunction() {
     if (this._lastLogFunction) {
-      console.warn('last log function not called, calling now');
-      this._lastLogFunction();
-      this._lastLogFunction = null;
+      // console.warn('last log function not called, calling now');
+      // this._lastLogFunction();
+      // this._lastLogFunction = null;
     }
   }
 

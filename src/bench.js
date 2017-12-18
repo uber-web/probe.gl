@@ -80,11 +80,18 @@ export default class Bench {
     return this;
   }
 
-  onBenchmarkComplete({id, time, iterations, iterationsPerSecond, itersPerSecond}) {
-    this.results[id] = {time, iterations, iterationsPerSecond};
+  onBenchmarkComplete({id, time, iterations}) {
+    // calculate iterations per second
+    iterations = iterations / time;
+    // Save as numeric value
+    const current = Math.round(iterations);
+    // Format as human readable string
+    iterations = `${formatSI(iterations)}/s`;
     this.table[id] = {
-      value: Math.round(iterationsPerSecond),
-      itersPerSecond
+      percent: '',
+      iterations,
+      current,
+      max: ''
     };
   }
 
@@ -107,11 +114,11 @@ export default class Bench {
   updateTable(current, saved) {
     for (const id in this.table) {
       if (saved[id] && saved[id].max !== undefined) {
-        current[id].max = Math.max(current[id].value, saved[id].max);
-        const delta = current[id].value / saved[id].max;
-        current[id].percent = Math.round(delta * 100);
+        current[id].max = Math.max(current[id].current, saved[id].max);
+        const delta = current[id].current / saved[id].max;
+        current[id].percent = `${Math.round(delta * 100)}%`;
       } else {
-        current[id].max = current[id].value;
+        current[id].max = current[id].current;
       }
     }
     return current;

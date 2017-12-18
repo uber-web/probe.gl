@@ -1,6 +1,29 @@
 /* eslint-disable max-statements */
 import {Log} from 'probe.gl';
-import test from 'tape-catch';
+// import test from 'tape-catch';
+
+function getInstance() {
+  return new Log({
+    id: 'test',
+    isEnabled: true,
+    isPrintEnabled: false,
+    ignoreEnvironment: true
+  });
+}
+
+// tape tests swallow console messages, do some raw logging to check that things work
+function rawLogging() {
+  const probe = getInstance().setLevel(3);
+
+  probe.probe('test0')();
+  probe.probe(1, 'test1')();
+  probe.probe(2, 'test2')();
+  probe.probe(3, 'test3')();
+}
+
+rawLogging();
+
+/*
 
 test('Log#import', t => {
   t.equals(typeof Log, 'function',
@@ -17,15 +40,6 @@ test('Log#log', t => {
   );
   t.end();
 });
-
-function getInstance() {
-  return new Log({
-    id: 'test',
-    isEnabled: true,
-    isPrintEnabled: false,
-    ignoreEnvironment: true
-  });
-}
 
 test('Log#VERSION', t => {
   t.equal(typeof Log.VERSION, 'string', `VERSION is set: ${Log.VERSION}`);
