@@ -9,6 +9,7 @@ const noop = () => {};
 
 const TIME_THRESHOLD_MS = 30; // Minimum number of milliseconds to iterate each bench test
 const TIME_COOLDOWN_MS = 5; // milliseconds of "cooldown" between tests
+const MIN_ITERATIONS = 1; // Increase if OK to let slow benchmarks take long time
 
 const CALIBRATION_TESTS = [
   {
@@ -24,10 +25,11 @@ export default class Bench {
     id, // Name is needed for regression (storing/loading)
     log = console.log.bind(console),
     time = TIME_THRESHOLD_MS,
-    delay = TIME_COOLDOWN_MS
+    delay = TIME_COOLDOWN_MS,
+    minIterations = MIN_ITERATIONS
   } = {}) {
     this.id = id;
-    this.opts = {log, time, delay};
+    this.opts = {log, time, delay, minIterations};
     this.tests = {};
     this.results = {};
     this.table = {};
@@ -92,7 +94,6 @@ export default class Bench {
       localStorage = new LocalStorage();
     } catch (error) {
       // Local Storage not available
-      console.error(error);
     }
 
     if (localStorage) {
@@ -179,7 +180,7 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
 function runBenchTest(test) {
-  let iterations = 0.1;
+  let iterations = test.opts.minIterations;
   let elapsedMillis = 0;
 
   // Run increasing amount of interations until we reach time threshold, default at least 100ms
