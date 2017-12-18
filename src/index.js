@@ -1,6 +1,6 @@
 export {VERSION} from './utils/globals';
 
-export {default as Log} from './logger';
+export {default as Log} from './log';
 
 export {default as Bench} from './bench';
 

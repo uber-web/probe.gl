@@ -34,15 +34,15 @@ function noop() {}
 
 const cache = {};
 
-function formatArgs(id, firstArg, ...args) {
-  if (typeof firstArg === 'string') {
-    args.unshift(`${id} ${firstArg}`);
-  } else {
-    args.unshift(firstArg);
-    args.unshift(`${id}`);
-  }
-  return args;
-}
+// function formatArgs(id, firstArg, ...args) {
+//   if (typeof firstArg === 'string') {
+//     args.unshift(`${id} ${firstArg}`);
+//   } else {
+//     args.unshift(firstArg);
+//     args.unshift(`${id}`);
+//   }
+//   return args;
+// }
 
 // Assertions don't generate standard exceptions and don't print nicely
 function checkForAssertionErrors(args) {
@@ -69,7 +69,8 @@ function checkForAssertionErrors(args) {
 export default class Log {
 
   constructor({id, probe}) {
-    this.priority = 10;
+    this.enabled = false;
+    this.priority = 0;
     this._probe = probe;
     this.id = id;
     this._getLogFuncStore = [];
@@ -85,13 +86,14 @@ export default class Log {
     Object.seal(this);
   }
 
-  setLevel(level) {
-    this.priority = level;
+  enable(enabled = true) {
+    this.enabled = enabled;
     return this;
   }
 
-  enable(enabled = true) {
-    this.enabled = enabled;
+  setLevel(level) {
+    this.priority = level;
+    return this;
   }
 
   getPriority() {
@@ -140,13 +142,7 @@ in a later version. Use \`${newUsage}\` instead`);
   // Log to a group
   probe(priority, message, opts = {}) {
     opts = this._getOpts({priority, message, opts});
-    const {delta, total} = this._getElapsedTime();
-
-    if (this._shouldLog(priority)) {
-      const logRow = this._probe._createLogRow({priority, name: message, delta, total}, meta);
-      this._getLogFuncStore.push(logRow);
-    }
-    return this;
+    return this._getLogFunc(opts);
   }
 
   // externalProbe(priority, message, timeStart, timeSpent, meta = {}) {
@@ -175,16 +171,6 @@ in a later version. Use \`${newUsage}\` instead`);
       args,
       method: console.debug || console.info
     });
-  }
-
-  deprecated(oldUsage, newUsage) {
-    return this.warn(`\`${oldUsage}\` is deprecated and will be removed \
-in a later version. Use \`${newUsage}\` instead`);
-  }
-
-  removed(oldUsage, newUsage) {
-    return this.error(`\`${oldUsage}\` is deprecated and will be removed \
-in a later version. Use \`${newUsage}\` instead`);
   }
 
   // Log a normal message, but only once, no console flooding
@@ -292,10 +278,14 @@ in a later version. Use \`${newUsage}\` instead`);
 
     assert(Number.isFinite(priority), 'log priority must be a number');
 
+    const {delta, total} = this._getElapsedTime();
+
     const newOptions = {
       priority,
       message: `${this.id}: ${message}`,
-      args
+      args,
+      delta,
+      total
     };
     return Object.assign(newOptions, opts);
   }
@@ -305,7 +295,7 @@ in a later version. Use \`${newUsage}\` instead`);
     this._checkLastLogFunction();
 
     if (this._shouldLog(opts.priority) && method) {
-      this._lastLogFunction = method(console, ...opts.args);
+      this._lastLogFunction = method.bind(console, ...opts.args);
     }
 
     return this._lastLogFunction || noop;
