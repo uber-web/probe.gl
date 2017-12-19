@@ -18,6 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import './src/logger.spec';
+import './src/log.spec';
 import './src/bench.spec';
 // import './src/probe.spec';
