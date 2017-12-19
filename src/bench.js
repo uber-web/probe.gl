@@ -80,16 +80,13 @@ export default class Bench {
     return this;
   }
 
-  onBenchmarkComplete({id, time, iterations}) {
-    // calculate iterations per second
-    iterations = iterations / time;
-    // Save as numeric value
-    const current = Math.round(iterations);
-    // Format as human readable string
-    iterations = `${formatSI(iterations)}/s`;
+  onBenchmarkComplete({id, time, iterations, itersPerSecond}) {
+    // calculate iterations per second, save as numeric value
+    const current = Math.round(iterations / time);
+    // Format as human readable strings
     this.table[id] = {
       percent: '',
-      iterations,
+      iterations: `${itersPerSecond}/s`,
       current,
       max: ''
     };

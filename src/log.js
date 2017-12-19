@@ -29,11 +29,11 @@ import assert from 'assert';
 
 // Some instrumentation may override console methods, so preserve them here
 const originalConsole = {
-  debug: console.debug.bind(console),
-  log: console.log.bind(console),
-  info: console.info.bind(console),
-  warn: console.warn.bind(console),
-  error: console.error.bind(console)
+  debug: console.debug,
+  log: console.log,
+  info: console.info,
+  warn: console.warn,
+  error: console.error
 };
 
 function noop() {}

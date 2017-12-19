@@ -1,5 +1,9 @@
 CHANGELOG
 
+v0.0.3
+- Bench: Initial regression testing, local storage
+- Log: Initial rewrite to return log functions, enabling source links
+
 v0.0.2
 - Async benchmarking, improved DOM logging 
 

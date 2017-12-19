@@ -1,6 +1,8 @@
 const d3Format = require('d3-format');
 
-export const formatSI = d3Format.format('.3s');
+export function formatSI(value) {
+  return d3Format.format('.3s')(value);
+}
 
 // TODO: Currently unused, keeping in case we want it later for log formatting
 export function formatTime(ms) {
