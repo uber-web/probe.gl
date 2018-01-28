@@ -20,10 +20,13 @@ export function formatTime(ms) {
 }
 
 export function leftPad(string, length = 8) {
-  while (string.length < length) {
-    string = ` ${string}`;
-  }
-  return string;
+  const padLength = Math.max(length - string.length, 0);
+  return `${' '.repeat(padLength)}${string}`;
+}
+
+export function rightPad(string, length = 8) {
+  const padLength = Math.max(length - string.length, 0);
+  return `${string}${' '.repeat(padLength)}`;
 }
 
 // Inspired by https://github.com/hughsk/console-image (MIT license)
