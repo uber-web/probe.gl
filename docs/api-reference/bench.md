@@ -24,11 +24,23 @@ bench.run();
 
 ### group(id)
 
+Adds a group header.
+
 `bench.group(id)`
 
-### add(id, func1, func2, opts)
+### add
 
-`bench.add(id, func1, func2, opts)`
+Adds a test case. Supports multiple signatures
+
+`bench.add(priority, id, initFunc, testFunc)`
+`bench.add(priority, id, testFunc)`
+`bench.add(id, initFunc, testFunc)`
+`bench.add(id, testFunc)`
+
+* `priority`=`0` (Number, optional) - allows controlling which bench cases execute.
+* `id` (String)
+* `initFunc` (Function, options) -
+* `testFunc` (Function, options) -
 
 ### run()
 
