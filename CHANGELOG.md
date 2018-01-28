@@ -1,5 +1,10 @@
 CHANGELOG
 
+v0.0.4
+- Markdown report option
+- Bench test case priorities
+- FIX: Cap iteration count for long running test cases (regression)
+
 v0.0.3
 - Bench: Initial regression testing, local storage
 - Log: Initial rewrite to return log functions, enabling source links
