@@ -310,7 +310,8 @@ in a later version. Use \`${newUsage}\` instead`);
       break;
 
     case 'object':
-      newOptions = Object.assign({priority: 0, message, args}, priority);
+      const opts = priority;
+      newOptions = Object.assign({priority: 0, message, args}, opts);
       break;
 
     default:
