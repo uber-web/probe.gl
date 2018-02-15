@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {document, console} from './globals';
+import {document, console, global} from './globals';
 
 let old = null;
 
@@ -23,7 +23,8 @@ let logDiv = null;
 
 export function logLineToDOM(message) {
   if (!logDiv) {
-    logDiv = document.createElement('div');
+    const markdown = global.probe.markdown;
+    logDiv = document.createElement(markdown ? 'pre' : 'div');
   }
   // Ensure the element comes first
   const {childNodes} = document.body;

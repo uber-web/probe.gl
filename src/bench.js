@@ -1,15 +1,22 @@
 /* eslint-disable no-console */
 /* global setTimeout, console */
-import {formatSI} from './utils/formatters';
+import {formatSI, rightPad} from './utils/formatters';
+import {global} from './utils/globals';
 import {autobind} from './utils/autobind';
 import LocalStorage from './utils/local-storage';
 import assert from 'assert';
 
 const noop = () => {};
 
-const TIME_THRESHOLD_MS = 30; // Minimum number of milliseconds to iterate each bench test
+const TIME_THRESHOLD_MS = 80; // Minimum number of milliseconds to iterate each bench test
 const TIME_COOLDOWN_MS = 5; // milliseconds of "cooldown" between tests
 const MIN_ITERATIONS = 1; // Increase if OK to let slow benchmarks take long time
+
+export const LOG_ENTRY = {
+  GROUP: 'group',
+  TEST: 'test',
+  COMPLETE: 'complete'
+};
 
 const CALIBRATION_TESTS = [
   {
@@ -23,11 +30,16 @@ const CALIBRATION_TESTS = [
 export default class Bench {
   constructor({
     id, // Name is needed for regression (storing/loading)
-    log = console.log.bind(console),
+    log,
     time = TIME_THRESHOLD_MS,
     delay = TIME_COOLDOWN_MS,
     minIterations = MIN_ITERATIONS
   } = {}) {
+    if (!log) {
+      const markdown = global.probe && global.probe.markdown;
+      log = markdown ? logResultsAsMarkdownTable : logResultsAsTree;
+    }
+
     this.id = id;
     this.opts = {log, time, delay, minIterations};
     this.tests = {};
@@ -49,9 +61,7 @@ export default class Bench {
 
     promise.then(() => {
       const elapsed = (new Date() - timer) / 1000;
-      this.opts.log('');
-      this.opts.log(`Completed benchmark in ${elapsed}s`);
-
+      logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed});
       this.onSuiteComplete();
     });
 
@@ -64,7 +74,19 @@ export default class Bench {
     return this;
   }
 
-  add(id, func1, func2, opts) {
+  // Signatures:
+  // add(priority, id, initFunc, testFunc)
+  // add(priority, id, testFunc)
+  // add(id, initFunc, testFunc)
+  // add(id, testFunc)
+  add(priority, id, func1, func2) {
+    if (typeof priority === 'string') {
+      func2 = func1;
+      func1 = id;
+      id = priority;
+      priority = 0;
+    }
+
     assert(id);
     assert(typeof func1 === 'function');
 
@@ -76,7 +98,7 @@ export default class Bench {
     }
 
     assert(!this.tests[id], 'tests need unique id strings');
-    this.tests[id] = {id, initFunc, testFunc, opts: this.opts};
+    this.tests[id] = {id, priority, initFunc, testFunc, opts: this.opts};
     return this;
   }
 
@@ -113,7 +135,7 @@ export default class Bench {
       if (saved[id] && saved[id].max !== undefined) {
         current[id].max = Math.max(current[id].current, saved[id].max);
         const delta = current[id].current / saved[id].max;
-        current[id].percent = `${Math.round(delta * 100)}%`;
+        current[id].percent = `${Math.round(delta * 100 - 100)}%`;
       } else {
         current[id].max = current[id].current;
       }
@@ -153,16 +175,16 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
     setTimeout(() => {
       try {
         if (test.group) {
-          test.opts.log('');
-          test.opts.log(`${test.id}`);
+          logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id});
         } else {
           const {time, iterations} = runBenchTest(test);
 
           const iterationsPerSecond = iterations / time;
           const itersPerSecond = formatSI(iterationsPerSecond);
           if (!silent) {
-            test.opts.log(
-              `├─ ${test.id}: ${itersPerSecond} iterations/s (${time.toFixed(2)}s elapsed)`);
+            logEntry(test, {
+              entry: LOG_ENTRY.TEST, id: test.id, priority: test.priority, itersPerSecond, time
+            });
           }
 
           if (onBenchmarkComplete) {
@@ -184,14 +206,14 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
 function runBenchTest(test) {
-  let iterations = test.opts.minIterations;
+  let iterations = test.opts.minIterations / 10;
   let elapsedMillis = 0;
 
   // Run increasing amount of interations until we reach time threshold, default at least 100ms
   while (elapsedMillis < test.opts.time) {
     let multiplier = 10;
-    if (elapsedMillis > 1) {
-      multiplier = (test.opts.time / elapsedMillis) * 1.1;
+    if (elapsedMillis > 10) {
+      multiplier = (test.opts.time / elapsedMillis) * 1.25;
     }
     iterations *= multiplier;
     const timer = new Date();
@@ -217,6 +239,60 @@ function runBenchTestIterations(test, iterations) {
     for (let i = 0; i < iterations; i++) {
       testFunc.call(context);
     }
+  }
+}
+
+function logEntry(test, opts) {
+  const priority = (global.probe && global.probe.priority) | 10;
+  if ((opts.priority | 0) <= priority) {
+    test.opts.log(opts);
+  }
+}
+
+export function logResultsAsMarkdownTable({entry, id, itersPerSecond, time}) {
+  const COL1 = 50;
+  const COL2 = 12;
+  switch (entry) {
+  case LOG_ENTRY.GROUP:
+    console.log('');
+    console.log(`| ${rightPad(id, COL1)} | iterations/s |`);
+    console.log(`| ${rightPad('---', COL1)} | ---          |`);
+    break;
+  case LOG_ENTRY.TEST:
+    console.log(`| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} |`);
+    break;
+  case LOG_ENTRY.COMPLETE:
+    console.log('');
+    console.log(`Completed benchmark in ${time}s`);
+    break;
+  default:
+  }
+}
+
+export function logResultsAsTree({entry, id, itersPerSecond, time}) {
+  switch (entry) {
+  case LOG_ENTRY.GROUP:
+    console.log('');
+    console.log(`${id}`);
+    break;
+  case LOG_ENTRY.TEST:
+    console.log(`├─ ${id}: ${itersPerSecond} iterations/s`);
+    break;
+  case LOG_ENTRY.COMPLETE:
+    console.log('');
+    console.log(`Completed benchmark in ${time}s`);
+    break;
+  default:
+  }
+}
+
+export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, time}) {
+  switch (entry) {
+  case LOG_ENTRY.TEST:
+    console.log(`├─ ${id}: ${itersPerSecond} iterations/s (${time.toFixed(2)}s elapsed)`);
+    break;
+  default:
+    logResultsAsTree({entry, id, itersPerSecond, time});
   }
 }
 

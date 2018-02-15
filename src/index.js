@@ -1,8 +1,15 @@
+import './init';
+
 export {VERSION} from './utils/globals';
 
 export {default as Log} from './log';
 
-export {default as Bench} from './bench';
+export {
+  default as Bench,
+  logResultsAsMarkdownTable,
+  logResultsAsTree,
+  logResultsAsTreeWithElapsed
+} from './bench';
 
 // // Make Probe available as global variable for debugging purposes
 // // TODO - convenient but can be a concern for "purists"
