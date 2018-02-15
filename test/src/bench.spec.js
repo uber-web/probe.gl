@@ -1,7 +1,7 @@
 import {Bench} from 'probe.gl';
 import test from 'tape-catch';
 
-import colorBench from './color.bench';
+import parseColorBench from './parse-color.bench';
 
 test('Bench#import', t => {
   t.equals(typeof Bench, 'function',
@@ -18,10 +18,10 @@ test('Bench#constructor', t => {
 test('Bench#run', t => {
   const suite = new Bench({
     id: 'test',
-    log: t.comment.bind(t)
+    log: ({message}) => t.comment(message)
   });
 
-  colorBench(suite);
+  parseColorBench(suite);
 
   t.ok(suite instanceof Bench, 'suite created successfully');
   suite.run().then(
