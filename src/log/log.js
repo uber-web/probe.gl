@@ -20,12 +20,12 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
-import {VERSION} from './utils/globals';
-import {getTimestamp} from './utils/time-stamp';
-import {formatImage} from './utils/formatters';
-import {addColor} from './utils/color';
-// import {formatTime, leftPad} from './utils/formatters';
-import {autobind} from './utils/autobind';
+import {VERSION} from '../utils/globals';
+import {getTimestamp} from '../utils/time-stamp';
+import {formatImage} from '../utils/formatters';
+import {addColor} from '../utils/color';
+// import {formatTime, leftPad} from '../utils/formatters';
+import {autobind} from '../utils/autobind';
 import assert from 'assert';
 
 // Some instrumentation may override console methods, so preserve them here

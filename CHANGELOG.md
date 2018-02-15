@@ -1,5 +1,8 @@
 CHANGELOG
 
+v0.0.5 (TBD)
+- {color: ...} option for Node.js
+- New `NodeTestDriver` class
 v0.0.4
 - Markdown report option
 - Bench test case priorities

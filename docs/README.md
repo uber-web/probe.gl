@@ -1,6 +1,10 @@
 # probe.gl
 
-A small JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications.
+Small collection of JavaScript front-end debugging tools
+
+* A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications.
+* A benchmark rig to help measure and track regressions of critical functions
+* Test drivers to help do automated browser testing from node
 
 
 ## Comparison with other Logging Solutions
