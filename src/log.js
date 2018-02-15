@@ -23,6 +23,7 @@
 import {VERSION} from './utils/globals';
 import {getTimestamp} from './utils/time-stamp';
 import {formatImage} from './utils/formatters';
+import {addColor} from './utils/color';
 // import {formatTime, leftPad} from './utils/formatters';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
@@ -275,28 +276,51 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Private Methods
 
-  _getOpts({priority, message, args = [], opts}) {
-    // log(message, args)
-    if (typeof priority === 'string') {
-      if (message) {
-        args.unshift(message);
-      }
-      message = priority;
-      priority = 0;
-    }
-
-    assert(Number.isFinite(priority), 'log priority must be a number');
+  _getOpts({priority, message, args = [], opts = {}}) {
+    const newOptions = this._getBaseOpts({priority, message, args});
 
     const {delta, total} = this._getElapsedTime();
 
-    const newOptions = {
-      priority,
-      message: `${this.id}: ${message}`,
-      args,
+    return Object.assign(newOptions, opts, {
+      message: `${this.id}: ${newOptions.message}`,
       delta,
       total
-    };
-    return Object.assign(newOptions, opts);
+    });
+  }
+
+  // "Normalizes" the various argument patterns into an object
+  // - log(priority, message, args) => {priority, message, args}
+  // - log(message, args) => {priority: 0, message, args}
+  // - log({priority, ...}, message, args) => {priority, message, args}
+  // - log({priority, message, args}) => {priority, message, args}
+  _getBaseOpts({priority, message, args = []}) {
+    let newOptions = null;
+
+    switch (typeof priority) {
+    case 'number':
+      assert(priority > 0);
+      newOptions = {priority, message, args};
+      break;
+
+    case 'string':
+      if (message !== undefined) {
+        args.unshift(message);
+      }
+      newOptions = {priority: 0, message: priority, args};
+      break;
+
+    case 'object':
+      newOptions = Object.assign({priority: 0, message, args}, priority);
+      break;
+
+    default:
+      assert(false);
+    }
+
+    assert(Number.isFinite(newOptions.priority)); // 'log priority must be a number'
+    assert(typeof newOptions.message === 'string'); // 'log message must be a string'
+
+    return newOptions;
   }
 
   _getLogFunc(opts, method) {
@@ -306,9 +330,11 @@ in a later version. Use \`${newUsage}\` instead`);
     assert(method);
 
     if (this._shouldLog(opts.priority)) {
+      let {message} = opts;
+      message = addColor(message, opts.color, opts.background);
+
       // Bind to ensure
-      this._lastLogFunction =
-        method.bind(console, opts.message, ...opts.args);
+      this._lastLogFunction = method.bind(console, message, ...opts.args);
     }
 
     return this._lastLogFunction || noop;

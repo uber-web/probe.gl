@@ -61,7 +61,7 @@ export default class Bench {
 
     promise.then(() => {
       const elapsed = (new Date() - timer) / 1000;
-      logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed});
+      logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
       this.onSuiteComplete();
     });
 
@@ -175,7 +175,7 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
     setTimeout(() => {
       try {
         if (test.group) {
-          logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id});
+          logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
         } else {
           const {time, iterations} = runBenchTest(test);
 
@@ -183,7 +183,8 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
           const itersPerSecond = formatSI(iterationsPerSecond);
           if (!silent) {
             logEntry(test, {
-              entry: LOG_ENTRY.TEST, id: test.id, priority: test.priority, itersPerSecond, time
+              entry: LOG_ENTRY.TEST, id: test.id, priority: test.priority, itersPerSecond, time,
+              message: `${test.id} ${itersPerSecond}/s`
             });
           }
 

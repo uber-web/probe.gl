@@ -1,6 +1,31 @@
 /* eslint-disable max-statements */
 import {Log} from 'probe.gl';
-// import test from 'tape-catch';
+import test from 'tape-catch';
+
+const makeOpts = (priority, message, ...args) => ({priority, message, args});
+
+const OPTIONS_TEST_CASES = [
+  {
+    args: makeOpts(1, 'Hi', 0, 1),
+    opts: {priority: 1, message: 'Hi', args: [0, 1]}
+  },
+  {
+    args: makeOpts('Hi', 0, 1),
+    opts: {priority: 0, message: 'Hi', args: [0, 1]}
+  },
+  {
+    args: makeOpts({}, 'Hi', 0, 1),
+    opts: {priority: 0, message: 'Hi', args: [0, 1]}
+  },
+  {
+    args: makeOpts({priority: 3, color: 'green'}, 'Hi', 0, 1),
+    opts: {priority: 3, color: 'green', message: 'Hi', args: [0, 1]}
+  },
+  {
+    args: makeOpts({priority: 3, color: 'green', message: 'Hi', args: [0, 1]}),
+    opts: {priority: 3, color: 'green', message: 'Hi', args: [0, 1]}
+  }
+];
 
 function getInstance() {
   return new Log({
@@ -13,17 +38,16 @@ function getInstance() {
 
 // tape tests swallow console messages, do some raw logging to check that things work
 function rawLogging() {
-  const probe = getInstance().setLevel(3);
+  const log = getInstance().setLevel(3);
 
-  probe.probe('test0')();
-  probe.probe(1, 'test1')();
-  probe.probe(2, 'test2')();
-  probe.probe(3, 'test3')();
+  log.probe('test0')();
+  log.probe(1, 'test1')();
+  log.probe(2, 'test2')();
+  log.probe({priority: 3}, 'test3')();
+  log.probe({color: 'green'}, 'test-green')();
 }
 
 rawLogging();
-
-/*
 
 test('Log#import', t => {
   t.equals(typeof Log, 'function',
@@ -41,15 +65,26 @@ test('Log#log', t => {
   t.end();
 });
 
-test('Log#VERSION', t => {
-  t.equal(typeof Log.VERSION, 'string', `VERSION is set: ${Log.VERSION}`);
+test('Log#_getOpts', t => {
+  const log = new Log({id: 'test'});
+  for (const tc of OPTIONS_TEST_CASES) {
+    const opts = log._getBaseOpts(tc.args);
+    t.deepEqual(opts, tc.opts,
+      `log(${JSON.stringify(tc.args)}) => ${JSON.stringify(opts)} args parsed correctly`);
+  }
   t.end();
 });
 
+// test('Log#VERSION', t => {
+//   t.equal(typeof Log.VERSION, 'string', `VERSION is set: ${Log.VERSION}`);
+//   t.end();
+// });
+
+/*
 test('Log#probe', t => {
   const probe = getInstance();
 
-  probe.probe('test')();
+  log.probe('test')();
 
   // const log = probe.getLog();
   // const row = log[0];
