@@ -1,6 +1,9 @@
 CHANGELOG
 
 v0.0.6
+- Fix naming of test exports
+
+v0.0.6
 - Fix triple exports
 
 v0.0.5

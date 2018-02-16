@@ -5,9 +5,12 @@ A simple spy utility that can help you determine if a function being tested was 
 
 ## Function
 
-### makeSpy
+### spy
 
-`makeSpy(obj, func)`
+Signatures
+* `spy()` - just an empty function
+* `spy(func)` - wraps a function
+* `spy(obj, func)` - wraps a method
 
 Attach a spy to the function. The spy has the following methods and fields
  * `called` - whether spy was called

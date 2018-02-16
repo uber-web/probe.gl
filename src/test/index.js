@@ -1,8 +1,7 @@
 export {
-  default as makeSpy,
-  default as Spy
+  default as spy
 } from './spy';
 
 export {
-  default as NodeTest
+  default as NodeTestDriver
 } from './node-test-driver';
