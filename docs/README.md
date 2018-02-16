@@ -1,6 +1,6 @@
 # probe.gl
 
-Small collection of JavaScript front-end debugging tools
+A collection of JavaScript front-end debugging tools
 
 * A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications.
 * A benchmark rig to help measure and track regressions of critical functions
@@ -14,9 +14,9 @@ proble.gl's focus on debugging and performance instrumentation of front-end appl
 
 ## Features
 
-
 * **Off by default** - probe.gl makes efforts to have a minimal performance footprint when not enable, to let you consider leaving your probes switched off in production code.
 * **Lightweight** - probe.gl is designed to have a small impact on application bundle size and to avoid dependencies on other modules.
+
 
 ### Logging Support
 

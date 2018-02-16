@@ -14,11 +14,13 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "main": "dist/index.js",
-  "module": "dist-es6/index.js",
+  "module-disabled": "dist-es6/index.js - double dists do not work well with multiple entry points",
   "files": [
     "dist",
     "dist-es6",
-    "src"
+    "src",
+    "bench",
+    "test"
   ],
   "scripts": {
     "build-clean": "rm -fr dist dist-es6 && mkdir -p dist dist-es6",

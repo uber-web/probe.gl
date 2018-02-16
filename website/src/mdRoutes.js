@@ -18,60 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import overview from '../../docs/README.md';
-import whatsNew from '../../docs/whats-new.md';
-
-import install from '../../docs/get-started/README.md';
-import addingProbes from '../../docs/get-started/adding-probes.md';
-
-import aboutLogging from '../../docs/articles/about-logging.md';
-
-import probe from '../../docs/api-reference/probe.md';
-import probeGroup from '../../docs/api-reference/probe-group.md';
-import errorHandling from '../../docs/api-reference/error-handling.md';
-import logger from '../../docs/api-reference/logger.md';
-
 export default [{
   name: 'Documentation',
   path: '/documentation',
   data: [{
     name: 'Overview',
-    markdown: overview
+    markdown: require( '../../docs/README.md')
   }, {
     name: 'What\'s New',
-    markdown: whatsNew
+    markdown: require('../../docs/whats-new.md')
   }, {
     name: 'Get started',
     children: [{
       name: 'Installation',
-      markdown: install
+      markdown: require('../../docs/get-started/README.md')
     }, {
       name: 'Adding Probes',
-      markdown: addingProbes
+      markdown: require('../../docs/get-started/adding-probes.md')
     }]
   }, {
     name: 'Articles',
     children: [{
       name: 'Console Logging',
-      markdown: aboutLogging
+      markdown: require('../../docs/articles/about-logging.md')
     }]
   }, {
-    name: 'API Reference',
+    name: 'Logging API Reference',
     children: [{
       name: 'Probe',
-      markdown: probe
+      markdown: require('../../docs/api-reference/probe.md')
     // }, {
     //   name: 'ProbeGroup',
     //   markdown: probeGroup
+    // '../../docs/api-reference/probe-group.md')
     }, {
       name: 'Error Handling',
-      markdown: errorHandling
+      markdown: require('../../docs/api-reference/error-handling.md')
     }]
   }, {
     name: 'Experimental API',
     children: [{
       name: 'Logger',
-      markdown: logger
+      markdown: require('../../docs/api-reference/logger.md')
     }]
   }]
 }];
