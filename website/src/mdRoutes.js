@@ -41,25 +41,42 @@ export default [{
     children: [{
       name: 'Console Logging',
       markdown: require('../../docs/articles/about-logging.md')
+    }, {
+      name: 'Benchmarking',
+      markdown: require('../../docs/articles/about-benchmarking.md')
+    }, {
+      name: 'Testing',
+      markdown: require('../../docs/articles/about-testing.md')
     }]
   }, {
-    name: 'Logging API Reference',
+    name: 'API Reference - Logging ',
     children: [{
-      name: 'Probe',
-      markdown: require('../../docs/api-reference/probe.md')
+      name: 'Logging',
+      markdown: require('../../docs/api-reference/logger.md')
+    }, {
+    //   name: 'Probe',
+    //   markdown: require('../../docs/api-reference/probe.md')
     // }, {
     //   name: 'ProbeGroup',
-    //   markdown: probeGroup
-    // '../../docs/api-reference/probe-group.md')
-    }, {
-      name: 'Error Handling',
+    //   markdown: require('../../docs/api-reference/probe-group.md')
+    // }, {
+      name: 'Error Handling (Experimental)',
       markdown: require('../../docs/api-reference/error-handling.md')
     }]
   }, {
-    name: 'Experimental API',
+    name: 'API Reference - Benchmarking',
     children: [{
-      name: 'Logger',
-      markdown: require('../../docs/api-reference/logger.md')
+      name: 'Bench',
+      markdown: require('../../docs/api-reference/bench/bench.md')
+    }]
+  }, {
+    name: 'API Reference - Testing',
+    children: [{
+      name: 'NodeTestDriver',
+      markdown: require('../../docs/api-reference/test/node-test-driver.md')
+    }, {
+      name: 'makeSpy',
+      markdown: require('../../docs/api-reference/test/spy.md')
     }]
   }]
 }];
