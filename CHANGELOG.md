@@ -1,9 +1,13 @@
 CHANGELOG
 
-v0.0.5 (TBD)
+v0.0.6
+- Fix triple exports
+
+v0.0.5
 - Split into three exports (import 'probe.gl', import 'probe.gl/bench', import 'probe.gl/test')
 - New `NodeTestDriver` class
 - {color: ...} option for Node.js
+
 v0.0.4
 - Markdown report option
 - Bench test case priorities

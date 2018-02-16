@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "keywords": [
     "javascript",
     "profiling",
@@ -19,8 +19,8 @@
     "dist",
     "dist-es6",
     "src",
-    "bench",
-    "test"
+    "bench.js",
+    "test.js"
   ],
   "scripts": {
     "build-clean": "rm -fr dist dist-es6 && mkdir -p dist dist-es6",
@@ -31,8 +31,8 @@
     "cover": "NODE_ENV=test nyc --reporter html --reporter cobertura --reporter=lcov npm run test-cover",
     "lint": "eslint src test examples && npm run lint-yarn",
     "lint-yarn": "!(grep -q unpm.u yarn.lock) || (echo 'Please rebuild yarn file using public npmrc' && false)",
-    "publish-prod": "npm run build && npm run test && npm run test-dist && npm publish",
-    "publish-beta": "npm run build && npm run test && npm run test-dist && npm publish --tag beta",
+    "publish-prod": "npm run test && npm run test-dist && npm publish",
+    "publish-beta": "npm run test && npm run test-dist && npm publish --tag beta",
     "test": "npm run lint && npm run build && npm run test-node",
     "test-fast": "npm run test-node | faucet",
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
