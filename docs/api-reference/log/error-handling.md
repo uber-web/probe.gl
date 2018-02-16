@@ -1,4 +1,4 @@
-# Error Handling
+# Error Handling (Experimental)
 
 > Experimental API
 
