@@ -1,6 +1,12 @@
 CHANGELOG
 
-v0.0.6
+
+v0.1.0
+- Remove `bench` and `test` from main index.js, require separate imports.
+- `Spy` renamed to `makeSpy`, final call.
+- Improved test structure
+
+v0.0.7
 - Fix naming of test exports
 
 v0.0.6
@@ -21,7 +27,7 @@ v0.0.3
 - Log: Initial rewrite to return log functions, enabling source links
 
 v0.0.2
-- Async benchmarking, improved DOM logging 
+- Async benchmarking, improved DOM logging
 
 v0.0.1
 - `Bench` and `Log` classes added.

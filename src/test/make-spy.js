@@ -4,7 +4,7 @@
 //  * reset() - reset call count
 //  * callCount - number of calls
 //  * called - whether spy was called
-export default function makeSpy(obj, func) {
+export function makeSpy(obj, func) {
   let methodName;
 
   if (!obj && !func) {
@@ -20,11 +20,16 @@ export default function makeSpy(obj, func) {
     func = obj[methodName];
   }
 
+  return wrapFunction(obj, func, methodName);
+}
+
+function wrapFunction(obj, func, methodName) {
   // will not wrap more than once
   if (func.func !== undefined) {
     return func;
   }
 
+  // create a local function
   function spy(...args) {
     spy.callCount++;
     spy.called = true;
@@ -32,22 +37,26 @@ export default function makeSpy(obj, func) {
     return func.apply(this, args);
   }
 
-  spy.reset = () => {
-    spy.callCount = 0;
-    spy.called = false;
-  };
+  // Add functions and members
+  Object.assign(spy, {
+    reset() {
+      spy.callCount = 0;
+      spy.called = false;
+    },
 
-  spy.restore = () => {
-    obj[methodName] = func;
-  };
+    restore() {
+      obj[methodName] = func;
+    },
 
-  spy.obj = obj;
-  spy.methodName = methodName;
-  spy.func = func;
-  spy.method = func;
+    obj,
+    methodName,
+    func,
+    method: func
+  });
 
   spy.reset();
 
+  // Overwrite the spy on the object
   obj[methodName] = spy;
   return spy;
 }

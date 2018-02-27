@@ -1,4 +1,4 @@
-import {Bench} from 'probe.gl';
+import {Bench} from 'probe.gl/bench';
 import test from 'tape-catch';
 
 import parseColorBench from './parse-color.bench';

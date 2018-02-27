@@ -1,11 +1,11 @@
-# Spy
+# makeSpy
 
-A simple spy utility that can help you determine if a function being tested was actually called.
+A simple spy utility that can help you determine if a function or method being tested was actually called, as well as how many times it was called.
 
 
 ## Function
 
-### spy
+### makeSpy
 
 Signatures
 * `spy()` - just an empty function
@@ -19,7 +19,7 @@ Attach a spy to the function. The spy has the following methods and fields
  * reset() - reset call count
 
 
-## Methods and fields on Wrapped Function
+## Methods and fields on the Wrapped Function
 
 ### spy.called
 

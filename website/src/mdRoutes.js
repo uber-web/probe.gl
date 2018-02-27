@@ -76,7 +76,7 @@ export default [{
       markdown: require('../../docs/api-reference/test/node-test-driver.md')
     }, {
       name: 'makeSpy',
-      markdown: require('../../docs/api-reference/test/spy.md')
+      markdown: require('../../docs/api-reference/test/make-spy.md')
     }]
   }]
 }];
