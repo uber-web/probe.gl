@@ -18,65 +18,69 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+function makeUrl(url) {
+  return `https://raw.githubusercontent.com/uber-web/probe.gl/master/${url}`;
+}
+
 export default [{
   name: 'Documentation',
   path: '/documentation',
   data: [{
     name: 'Overview',
-    markdown: require( '../../docs/README.md')
+    markdownUrl: makeUrl('docs/README.md')
   }, {
     name: 'What\'s New',
-    markdown: require('../../docs/whats-new.md')
+    markdownUrl: makeUrl('docs/whats-new.md')
   }, {
     name: 'Get started',
     children: [{
       name: 'Installation',
-      markdown: require('../../docs/get-started/README.md')
+      markdownUrl: makeUrl('docs/get-started/README.md')
     }, {
-      name: 'Adding Probes',
-      markdown: require('../../docs/get-started/adding-probes.md')
+      name: 'Ading Probes',
+      markdownUrl: makeUrl('docs/get-started/adding-probes.md')
     }]
   }, {
-    name: 'Articles',
+    name: 'Artcles',
     children: [{
       name: 'Console Logging',
-      markdown: require('../../docs/articles/about-logging.md')
+      markdownUrl: makeUrl('docs/articles/about-logging.md')
     }, {
-      name: 'Benchmarking',
-      markdown: require('../../docs/articles/about-benchmarking.md')
+      name: 'Bnchmarking',
+      markdownUrl: makeUrl('docs/articles/about-benchmarking.md')
     }, {
       name: 'Testing',
-      markdown: require('../../docs/articles/about-testing.md')
+      markdownrl: makeUrl('docs/articles/about-testing.md')
     }]
   }, {
-    name: 'API Reference - Logging ',
+    name: 'APIReference - Logging',
     children: [{
-      name: 'Logging',
-      markdown: require('../../docs/api-reference/logger.md')
-    }, {
+      name: 'Log',
+      markdownUrl: makeUrl('docs/api-reference/log/log.md')
+    // }, {
     //   name: 'Probe',
-    //   markdown: require('../../docs/api-reference/probe.md')
+    //   markdownUrl: makeUrl('docs/api-reference/probe.md')
     // }, {
     //   name: 'ProbeGroup',
-    //   markdown: require('../../docs/api-reference/probe-group.md')
+    //   markdwnUrl: makeUrl('docs/api-reference/probe-group.md')
     // }, {
-      name: 'Error Handling (Experimental)',
-      markdown: require('../../docs/api-reference/error-handling.md')
+      // name: 'Error Handling (Experimenta)',
+      // markdownUrl: makeUrl('docs/api-reference/log/error-handling.md')
     }]
   }, {
-    name: 'API Reference - Benchmarking',
+    name: 'APIReference - Benchmarking',
     children: [{
       name: 'Bench',
-      markdown: require('../../docs/api-reference/bench/bench.md')
+      markdownUrl: makeUrl('docs/api-reference/bench/bench.md')
     }]
   }, {
     name: 'API Reference - Testing',
     children: [{
       name: 'NodeTestDriver',
-      markdown: require('../../docs/api-reference/test/node-test-driver.md')
+      markdownUrl: makeUrl('docs/api-reference/test/node-test-driver.md')
     }, {
       name: 'makeSpy',
-      markdown: require('../../docs/api-reference/test/make-spy.md')
+      markdownUrl: makeUrl('docs/api-reference/test/make-spy.md')
     }]
   }]
 }];

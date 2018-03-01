@@ -1,6 +1,12 @@
 # makeSpy
 
-A simple spy utility that can help you determine if a function or method being tested was actually called, as well as how many times it was called.
+A spy utility that wraps a function. The wrapper is invisible: when called the wrapper calls the original function and returns the return value.
+
+However it also updates certain metadata that can be inspected later, that:
+* lets you determine if the wrapped function or method was actually called during exectution of other code.
+* allows you to inspect how many times it was called.
+
+There are also `restore` and `reset` methods that allows you to reset the test status.
 
 
 ## Function

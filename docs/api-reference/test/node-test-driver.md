@@ -1,23 +1,25 @@
 <p class="badges">
-  <img src="https://img.shields.io/badge/64--bit-support-blue.svg?style=flat-square" alt="Node" />
+  <img src="https://img.shields.io/badge/Node.js-v8.0-blue.svg?style=flat-square" alt="Node" />
 </p>
 
-# NodeTestDriver (Test Automation Class, Node.js only, Experimental)
+# NodeTestDriver
 
-A basic Browser automation test driver built on puppeteer
+> Note: Requires Chrome version 64 or higher
 
-Helper class primarily intended for automating browser tests from Node.js or shell scripts. A `RenderTestDriver` controls a Chrome browser instance using `puppeter`, renders a set of tests (described below), compares the output against golden images, and returns a pass/fail value to the invoking shell.
+A Chrome Browser test automation driver class (based on the Chrome `DevTools` protocol via the `puppeteer` npm module). This class is primarily intended for automating runs of browser based tests from shell scripts.
 
-> Requires Chrome version 64 or higher
+A `NodeTestDriver` is typically configured to do the following:
+* Starts a Chrome browser instance using `puppeter`
+* Start a webpack dev server that builds a bundle of a JavaScriot test suite.
+* Loads the bundle into the browser and runs the tests.
+* Extracts a pass/fail value from the browser back into node
+* Passes the pass/fail value as exit status (0/1) back to the invoking shell.
+
 
 
 ### constructor
 
-### setShellStatus
-
-`driver.setShellStatus(success)`
-
-Set the return value that will be visible to the shell, truthy values will generate 0 which represents success.
+`new NodeTestDriver({...})`
 
 
 ### startBrowser
@@ -39,6 +41,13 @@ Opens a new tab in the browser
 ### stopBrowser
 
 `driver.stopBrowser()`
+
+
+### setShellStatus
+
+`driver.setShellStatus(success)`
+
+Set the return value that will be visible to the shell, truthy values will generate 0 which represents success.
 
 
 ### startServer

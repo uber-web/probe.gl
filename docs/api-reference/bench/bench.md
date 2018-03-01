@@ -1,6 +1,6 @@
 # Bench
 
-Bench is a simple benchmark harness that allows you to register performance tests with ids.
+Bench is a benchmark harness class that allows you to organize a number of benchmarks / performance tests into a Benchmark suite that can be executed with a single comment. Each test is registered with and `id` which allows `Bench` to do compare results across runs and perform limited regression testing.
 
 
 ## Usage

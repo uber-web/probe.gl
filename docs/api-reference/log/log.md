@@ -1,6 +1,4 @@
-# Logger
-
-> Experimental API
+# Log
 
 A simple console wrapper
 * Handles missing methods
