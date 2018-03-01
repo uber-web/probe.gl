@@ -5,6 +5,6 @@
     "build": "ocular build"
   },
   "dependencies": {
-    "ocular": "^0.4.1"
+    "ocular": "^0.4.2"
   }
 }
