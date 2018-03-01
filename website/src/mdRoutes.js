@@ -37,23 +37,23 @@ export default [{
       name: 'Installation',
       markdownUrl: makeUrl('docs/get-started/README.md')
     }, {
-      name: 'Ading Probes',
+      name: 'Adding Probes',
       markdownUrl: makeUrl('docs/get-started/adding-probes.md')
     }]
   }, {
-    name: 'Artcles',
+    name: 'Articles',
     children: [{
       name: 'Console Logging',
       markdownUrl: makeUrl('docs/articles/about-logging.md')
     }, {
-      name: 'Bnchmarking',
+      name: 'Benchmarking',
       markdownUrl: makeUrl('docs/articles/about-benchmarking.md')
     }, {
       name: 'Testing',
-      markdownrl: makeUrl('docs/articles/about-testing.md')
+      markdownUrl: makeUrl('docs/articles/about-testing.md')
     }]
   }, {
-    name: 'APIReference - Logging',
+    name: 'API Reference - Logging',
     children: [{
       name: 'Log',
       markdownUrl: makeUrl('docs/api-reference/log/log.md')
@@ -68,7 +68,7 @@ export default [{
       // markdownUrl: makeUrl('docs/api-reference/log/error-handling.md')
     }]
   }, {
-    name: 'APIReference - Benchmarking',
+    name: 'API Reference - Benchmarking',
     children: [{
       name: 'Bench',
       markdownUrl: makeUrl('docs/api-reference/bench/bench.md')
