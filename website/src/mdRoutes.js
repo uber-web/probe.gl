@@ -23,7 +23,7 @@ export default [{
   path: '/documentation',
   data: [{
     name: 'Overview',
-    markdown: require( '../../docs/README.md')
+    markdown: require('../../docs/README.md')
   }, {
     name: 'What\'s New',
     markdown: require('../../docs/whats-new.md')
@@ -49,10 +49,10 @@ export default [{
       markdown: require('../../docs/articles/about-testing.md')
     }]
   }, {
-    name: 'API Reference - Logging ',
+    name: 'API Reference - Logging',
     children: [{
       name: 'Logging',
-      markdown: require('../../docs/api-reference/logger.md')
+      markdown: require('../../docs/api-reference/log/log.md')
     }, {
     //   name: 'Probe',
     //   markdown: require('../../docs/api-reference/probe.md')
@@ -61,7 +61,7 @@ export default [{
     //   markdown: require('../../docs/api-reference/probe-group.md')
     // }, {
       name: 'Error Handling (Experimental)',
-      markdown: require('../../docs/api-reference/error-handling.md')
+      markdown: require('../../docs/api-reference/log/error-handling.md')
     }]
   }, {
     name: 'API Reference - Benchmarking',

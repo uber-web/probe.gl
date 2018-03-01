@@ -1,4 +1,4 @@
-# Logger
+# Log
 
 > Experimental API
 
