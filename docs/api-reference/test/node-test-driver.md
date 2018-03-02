@@ -6,7 +6,7 @@
 
 > Note: Requires Chrome version 64 or higher
 
-A Chrome Browser test automation driver class (based on the Chrome `DevTools` protocol via the `puppeteer` npm module). This class is primarily intended for automating runs of browser based tests from shell scripts.
+A Chrome Browser test automation driver class (based on the [Chrome `DevTools` protocol](https://chromedevtools.github.io/devtools-protocol/) via the [`puppeteer`](https://github.com/GoogleChrome/puppeteer) module. The `NodeTestDriver` class is primarily intended for automating runs of browser based tests from shell scripts.
 
 A `NodeTestDriver` is typically configured to do the following:
 * Starts a Chrome browser instance using `puppeter`
