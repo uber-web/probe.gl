@@ -1,5 +1,8 @@
 CHANGELOG
 
+v0.2.2
+- Disable babel-preset-env temporarily as it requires upstream deps to follow
+
 v0.2.1
 - Remove dist-es6 completely
 
