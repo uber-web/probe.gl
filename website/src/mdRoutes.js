@@ -76,8 +76,8 @@ export default [{
   }, {
     name: 'API Reference - Testing',
     children: [{
-      name: 'NodeTestDriver',
-      markdownUrl: makeUrl('docs/api-reference/test/node-test-driver.md')
+      name: 'BrowserDriver',
+      markdownUrl: makeUrl('docs/api-reference/test/browser-driver.md')
     }, {
       name: 'makeSpy',
       markdownUrl: makeUrl('docs/api-reference/test/make-spy.md')

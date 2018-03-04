@@ -55,16 +55,6 @@ test('Log#import', t => {
   t.end();
 });
 
-test('Log#log', t => {
-  const log = new Log({id: 'test'});
-  t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(
-    () => log.log('test'),
-    'log.log works'
-  );
-  t.end();
-});
-
 test('Log#_getOpts', t => {
   const log = new Log({id: 'test'});
   for (const tc of OPTIONS_TEST_CASES) {
@@ -75,10 +65,37 @@ test('Log#_getOpts', t => {
   t.end();
 });
 
-// test('Log#VERSION', t => {
-//   t.equal(typeof Log.VERSION, 'string', `VERSION is set: ${Log.VERSION}`);
-//   t.end();
-// });
+test('Log#log', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.log('test'), 'log.log works');
+  t.doesNotThrow(() => log.log(0, 'test'), 'log.log works');
+  t.end();
+});
+
+test('Log#once', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.once('test'), 'log.once works');
+  t.doesNotThrow(() => log.once(0, 'test'), 'log.once works');
+  t.end();
+});
+
+test('Log#warn', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.warn('test'), 'log.warn works');
+  // t.throws(() => log.warn(0, 'test'), 'log.warn works');
+  t.end();
+});
+
+test('Log#error', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.error('test'), 'log.error works');
+  // t.throws(() => log.error(0, 'test'), 'log.error works');
+  t.end();
+});
 
 /*
 test('Log#probe', t => {

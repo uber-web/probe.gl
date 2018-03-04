@@ -18,7 +18,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-require('./node-aliases');
+// require('../aliases');
+
+// Enables ES2015 import/export in Node.js
+require('reify');
+
+const path = require('path');
+const moduleAlias = require('module-alias');
+moduleAlias.addAlias('probe.gl/test', path.resolve('./dist/test'));
+moduleAlias.addAlias('probe.gl/bench', path.resolve('./dist/bench'));
+moduleAlias.addAlias('probe.gl', path.resolve('./dist'));
 
 // Run the tests
 require('./test-index');

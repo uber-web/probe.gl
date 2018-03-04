@@ -1,11 +1,11 @@
 import './init';
 
-export {VERSION} from './utils/globals';
+export {VERSION} from './lib/utils/globals';
 
-export {default as Log} from './log/log';
+export {default as Log} from './lib/log';
 
 // Experimental exports
-import {enableDOMLogging} from './utils/log-to-dom';
+import {enableDOMLogging} from './lib/utils/log-to-dom';
 export const experimental = {
   enableDOMLogging
 };
@@ -14,5 +14,5 @@ export const experimental = {
 // // TODO - convenient but can be a concern for "purists"
 // export {default as Probe} from './probe';
 // import Probe from './probe';
-// import {global} from './utils/globals';
+// import {global} from './lib/utils/globals';
 // global.Probe = Probe;

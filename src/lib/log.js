@@ -20,12 +20,12 @@
 
 /* eslint-disable no-console, no-try-catch */
 /* global console */
-import {VERSION} from '../utils/globals';
-import {getTimestamp} from '../utils/time-stamp';
-import {formatImage} from '../utils/formatters';
-import {addColor} from '../utils/color';
-// import {formatTime, leftPad} from '../utils/formatters';
-import {autobind} from '../utils/autobind';
+import {VERSION} from './utils/globals';
+import {getTimestamp} from './utils/time-stamp';
+import {formatImage} from './utils/formatters';
+import {addColor} from './utils/color';
+// import {formatTime, leftPad} from './utils/formatters';
+import {autobind} from './utils/autobind';
 import assert from 'assert';
 
 // Some instrumentation may override console methods, so preserve them here
@@ -55,6 +55,7 @@ const cache = {};
 // }
 
 // Assertions don't generate standard exceptions and don't print nicely
+/* TODO
 function checkForAssertionErrors(args) {
   const isAssertion =
     args && args.length > 0 &&
@@ -67,6 +68,7 @@ function checkForAssertionErrors(args) {
   }
   return args;
 }
+*/
 
 // A simple console wrapper
 // * Papers over missing methods
@@ -78,7 +80,7 @@ function checkForAssertionErrors(args) {
 
 export default class Log {
 
-  constructor({id, probe}) {
+  constructor({id, probe} = {}) {
     this.enabled = false;
     this.priority = 0;
     this._probe = probe;
@@ -124,18 +126,17 @@ export default class Log {
 
   // Warn, but only once, no console flooding
   warn(message, ...args) {
-    if (!cache[message]) {
-      const opts = this._getOpts({message, args});
-      cache[message] = getTimestamp();
-      return this._getLogFunc(opts, originalConsole.warn);
-    }
-    return noop;
+    return this._getLogFunction({
+      message,
+      args,
+      method: originalConsole.warn,
+      once: true
+    });
   }
 
   // Print an error
   error(message, ...args) {
-    const opts = this._getOpts({message, args});
-    return this._getLogFunc(opts, originalConsole.error);
+    return this._getLogFunction({message, args, method: originalConsole.error});
   }
 
   deprecated(oldUsage, newUsage) {
@@ -151,8 +152,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log to a group
   probe(priority, message, opts = {}) {
-    opts = this._getOpts({priority, message, opts});
-    return this._getLogFunc(opts, originalConsole.log);
+    return this._getLogFunction({priority, message, opts, method: originalConsole.log});
   }
 
   // externalProbe(priority, message, timeStart, timeSpent, meta = {}) {
@@ -169,13 +169,13 @@ in a later version. Use \`${newUsage}\` instead`);
   // }
   // Log a normal message
   // info(priority, message, ...args) {
-  //   return this._getLogFuncFromOpts({
+  //   return this._getLogFunction({
   //     priority, message, args,
   //     method: console.info
   //   });
 
   log(priority, message, ...args) {
-    return this._getLogFuncFromOpts({
+    return this._getLogFunction({
       priority,
       message,
       args,
@@ -185,18 +185,19 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log a normal message, but only once, no console flooding
   once(priority, message, ...args) {
-    if (!cache[message] && priority <= this.priority) {
-      cache[message] = getTimestamp();
-      args = checkForAssertionErrors(args);
-      return this._getLogFunc(priority, originalConsole.log);
-    }
-    return noop;
+    return this._getLogFunction({
+      priority,
+      message,
+      args,
+      method: originalConsole.debug || originalConsole.info,
+      once: true
+    });
   }
 
   // Logs an object as a table
   // table(priority, table) {
   //   const opts = this._getOpts({priority});
-  //   return table ? this._getLogFuncFromOpts({
+  //   return table ? this._getLogFunction({
   //     priority,
   //     method: console.table
   //   }) : noop;
@@ -228,7 +229,7 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   time(priority, message) {
-    return this._getLogFuncFromOpts({
+    return this._getLogFunction({
       priority,
       message,
       method: console.time ? console.time : console.info
@@ -236,7 +237,7 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   timeEnd(priority, message) {
-    return this._getLogFuncFromOpts({
+    return this._getLogFunction({
       priority,
       message,
       method: console.timeEnd ? console.timeEnd : console.info
@@ -246,7 +247,7 @@ in a later version. Use \`${newUsage}\` instead`);
   timeStamp() {}
 
   // timeStamp(priority, message) {
-  //   return this._getLogFuncFromOpts({
+  //   return this._getLogFunction({
   //     priority,
   //     message,
   //     method: console.timeStamp
@@ -254,14 +255,17 @@ in a later version. Use \`${newUsage}\` instead`);
   // }
 
   group(priority, message, opts = {}) {
-    opts = this._getOpts({priority, message, opts});
     const {collapsed = false} = opts;
-    const method = (collapsed ? console.groupCollapsed : console.group) || console.info;
-    return this._getLogFunc(opts, method);
+    return this._getLogFunction({
+      priority,
+      message,
+      opts,
+      method: (collapsed ? console.groupCollapsed : console.group) || console.info
+    });
   }
 
   groupEnd(priority, message) {
-    return this._getLogFuncFromOpts({
+    return this._getLogFunction({
       priority,
       message,
       method: console.groupEnd
@@ -275,6 +279,36 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // Private Methods
+
+  _getLogFunction(opts) {
+    const {method} = opts;
+
+    opts = this._getOpts(opts);
+
+    // Verify that last log function was actually called
+    this._checkLastLogFunction();
+
+    assert(method);
+
+    if (this._shouldLog(opts.priority)) {
+      let {message} = opts;
+
+      if (opts.once) {
+        if (!cache[message]) {
+          cache[message] = getTimestamp();
+        } else {
+          return noop;
+        }
+      }
+
+      message = addColor(message, opts.color, opts.background);
+
+      // Bind to ensure
+      this._lastLogFunction = method.bind(console, message, ...opts.args);
+    }
+
+    return this._lastLogFunction || noop;
+  }
 
   _getOpts({priority, message, args = [], opts = {}}) {
     const newOptions = this._getBaseOpts({priority, message, args});
@@ -298,7 +332,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
     switch (typeof priority) {
     case 'number':
-      assert(priority > 0);
+      assert(priority >= 0);
       newOptions = {priority, message, args};
       break;
 
@@ -315,36 +349,14 @@ in a later version. Use \`${newUsage}\` instead`);
       break;
 
     default:
-      assert(false);
+      newOptions = {priority: 0, message, args};
+      break;
     }
 
     assert(Number.isFinite(newOptions.priority)); // 'log priority must be a number'
     assert(typeof newOptions.message === 'string'); // 'log message must be a string'
 
     return newOptions;
-  }
-
-  _getLogFunc(opts, method) {
-    // Verify that last log function was actually called
-    this._checkLastLogFunction();
-
-    assert(method);
-
-    if (this._shouldLog(opts.priority)) {
-      let {message} = opts;
-      message = addColor(message, opts.color, opts.background);
-
-      // Bind to ensure
-      this._lastLogFunction = method.bind(console, message, ...opts.args);
-    }
-
-    return this._lastLogFunction || noop;
-  }
-
-  _getLogFuncFromOpts(opts) {
-    const {method} = opts;
-    opts = this._getOpts(opts);
-    return this._getLogFunc(opts, method);
   }
 
   _shouldLog(priority) {

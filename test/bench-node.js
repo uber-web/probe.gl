@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 // Enables ES2015 import/export in Node.js
-require('./node-aliases');
+require('../aliases');
 
 // Run the tests
 require('./bench-index');

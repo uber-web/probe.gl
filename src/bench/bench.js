@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 /* global setTimeout, console */
-import {formatSI, rightPad} from '../utils/formatters';
-import {global} from '../utils/globals';
-import {autobind} from '../utils/autobind';
-import LocalStorage from '../utils/local-storage';
+import {formatSI, rightPad} from '../lib/utils/formatters';
+import {global} from '../lib/utils/globals';
+import {autobind} from '../lib/utils/autobind';
+import LocalStorage from '../lib/utils/local-storage';
 import assert from 'assert';
 
 const noop = () => {};

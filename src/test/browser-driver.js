@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {addColor, COLOR} from '../utils/color';
+import {addColor, COLOR} from '../lib/utils/color';
 
 const ERR_AUTOMATION = 'Browser automation error, Chrome 64 or higher is required';
 
@@ -33,7 +33,8 @@ const DEFAULT_PUPPETEER_OPTIONS = {
   executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 };
 
-export default class NodeTestDriver {
+export default class BrowserDriver {
+
   constructor() {
     this.execFile = module.require('child_process').execFile;
     this.puppeteer = module.require('puppeteer');
@@ -64,16 +65,6 @@ export default class NodeTestDriver {
         console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
         throw error;
       });
-
-    // TODO - Support ES7 syntax
-    // const browser = await this.puppeteer.launch({
-    //   headless: false,
-    //   executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-    // });
-    // const page = await browser.newPage();
-    // await page.waitFor(1000);
-    // await page.goto('http://localhost:8080');
-    // await page.setViewport({width: 1550, height: 850});
   }
 
   newPage({url = 'http://localhost:8080', width = 1550, height = 850} = {}) {
@@ -91,6 +82,12 @@ export default class NodeTestDriver {
       });
   }
 
+  waitForBrowserMessage(name = 'sendMessage') {
+    return new Promise(resolve => {
+      this.page.exposeFunction(name, resolve);
+    });
+  }
+
   stopBrowser() {
     return Promise.resolve()
       .then(_ => this.page.waitFor(1000))
@@ -99,10 +96,6 @@ export default class NodeTestDriver {
         console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
         throw error;
       });
-
-    // TODO - Support ES7 syntax
-    // await page.waitFor(1000);
-    // await browser.close();
   }
 
   startServer(config = {}) {

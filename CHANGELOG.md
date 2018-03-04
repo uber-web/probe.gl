@@ -1,5 +1,9 @@
 CHANGELOG
 
+v0.2.0
+- `NodeTestDriver` renamed to `BrowserDriver`
+- Fixes to Log class
+- Fixes to build scripts
 
 v0.1.0
 - Remove `bench` and `test` from main index.js, require separate imports.

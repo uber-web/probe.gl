@@ -1,2 +1,2 @@
-import {global} from './utils/globals';
+import {global} from './lib/utils/globals';
 global.probe = {};

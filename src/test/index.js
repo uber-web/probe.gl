@@ -1,7 +1,2 @@
-export {
-  makeSpy
-} from './make-spy';
-
-export {
-  default as NodeTestDriver
-} from './node-test-driver';
+export {makeSpy} from './make-spy';
+export {default as BrowserDriver} from './browser-driver';
