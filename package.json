@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "keywords": [
     "javascript",
     "profiling",
@@ -14,10 +14,8 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "main": "dist/index.js",
-  "module-disabled": "dist-es6/index.js - double dists do not work well with multiple entry points",
   "files": [
     "dist",
-    "dist-es6",
     "src",
     "bench.js",
     "test.js"

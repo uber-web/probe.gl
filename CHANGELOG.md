@@ -1,5 +1,8 @@
 CHANGELOG
 
+v0.2.1
+- Remove dist-es6 completely
+
 v0.2.0
 - `NodeTestDriver` renamed to `BrowserDriver`
 - Fixes to Log class
