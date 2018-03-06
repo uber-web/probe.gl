@@ -20,7 +20,8 @@
 
 import {addColor, COLOR} from '../lib/utils/color';
 
-const ERR_AUTOMATION = 'Browser automation error, Chrome 64 or higher is required';
+const ERR_AUTOMATION = `Browser automation error. Check stack trace.
+ Also note that Chrome 64 or higher is required.`;
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
@@ -82,10 +83,15 @@ export default class BrowserDriver {
       });
   }
 
-  waitForBrowserMessage(name = 'sendMessage') {
+  exposeFunction(name = 'sendMessage') {
     return new Promise(resolve => {
       this.page.exposeFunction(name, resolve);
     });
+  }
+
+  waitForBrowserMessage(name = 'sendMessage') {
+    // deprecated
+    return this.exposeFunction(name);
   }
 
   stopBrowser() {
