@@ -41,11 +41,11 @@ Opens a new tab in the browser
 Returns a `Promise` that resolves when the page is open.
 
 
-### waitForBrowserMessage
+### exposeFunction
 
 Exposes a function on the `window` object in the controlled browser and waits until the controlled script has called that function. In addition, a string parameter to the function will be returned (as the value of the resolved `Promise`).
 
-`driver.waitForBrowserMessage(functionToExpose)`
+`driver.exposeFunction(functionToExpose)`
 
 * `functionToExpose`=`sendMessage` (`String`)
 Returns: a `Promise` that resolves when the browser code calls the function to the string the browser script passed to the exposed function.
