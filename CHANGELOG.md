@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.0-alpha.1
+- Move to 1 series releases, to support use in luma.gl and deck.gl
+
 v0.2.2
 - Disable babel-preset-env temporarily as it requires upstream deps to follow
 
