@@ -107,7 +107,9 @@ export default class Log {
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
     this._lastLogFunction = null;
-    this.LOG_THROTTLE_TIMEOUT = 1000; // Time before throttled messages are logged again
+
+    // TODO - fix support from throttling groups
+    this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
 
     this.userData = {};
     this.timeStamp(`${this.id} started`);
@@ -337,7 +339,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
       message = addColor(message, opts.color, opts.background);
 
-      // Bind to ensure
+      // Bind console function so that it can be called after being returned
       this._lastLogFunction = method.bind(console, message, ...opts.args);
     }
 

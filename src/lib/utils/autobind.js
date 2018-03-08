@@ -33,5 +33,3 @@ export function autobind(obj, predefined = ['constructor']) {
     }
   }
 }
-
-export default autobind;
