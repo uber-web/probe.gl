@@ -1,6 +1,9 @@
 CHANGELOG
 
 v1.0.0-alpha.2
+- Fix groupEnd issue under Node.js
+
+v1.0.0-alpha.2
 - Support functions that generate messages: log.log(() => `message ${message}`)
 - Support `log.table`
 
