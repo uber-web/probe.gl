@@ -107,6 +107,7 @@ export default class Log {
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
     this._lastLogFunction = null;
+    this.LOG_THROTTLE_TIMEOUT = 1000; // Time before throttled messages are logged again
 
     this.userData = {};
     this.timeStamp(`${this.id} started`);
@@ -215,14 +216,13 @@ in a later version. Use \`${newUsage}\` instead`);
   table(priority, table, columns) {
     if (priority <= this.priority && table) {
       const tag = getTableHeader(table);
-      if (throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
-        return this._getLogFunction({
-          priority,
-          message: table,
-          args: columns && [columns],
-          method: console.table
-        });
-      }
+      return this._getLogFunction({
+        priority,
+        message: table,
+        args: columns && [columns],
+        tag,
+        method: console.table
+      });
     }
     return noop;
   }
@@ -321,13 +321,18 @@ in a later version. Use \`${newUsage}\` instead`);
 
     if (this._shouldLog(opts.priority)) {
       let {message} = opts;
+      const tag = opts.tag || opts.message;
 
       if (opts.once) {
-        if (!cache[message]) {
-          cache[message] = getTimestamp();
+        if (!cache[tag]) {
+          cache[tag] = getTimestamp();
         } else {
           return noop;
         }
+      }
+
+      if (opts.nothrottle || !throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
+        return noop;
       }
 
       message = addColor(message, opts.color, opts.background);
@@ -336,7 +341,10 @@ in a later version. Use \`${newUsage}\` instead`);
       this._lastLogFunction = method.bind(console, message, ...opts.args);
     }
 
-    return this._lastLogFunction || noop;
+    // Catch missing `()()`
+    const logFunction = this._lastLogFunction || noop;
+    this._lastLogFunction = null;
+    return logFunction;
   }
 
   _getOpts({priority, message, args = [], opts = {}}) {
@@ -345,7 +353,9 @@ in a later version. Use \`${newUsage}\` instead`);
     const {delta, total} = this._getElapsedTime();
 
     return Object.assign(newOptions, opts, {
-      message: `${this.id}: ${newOptions.message}`,
+      message: typeof newOptions === 'string' ?
+        `${this.id}: ${newOptions.message}` :
+        newOptions.message,
       delta,
       total
     });
