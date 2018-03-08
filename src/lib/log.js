@@ -285,6 +285,7 @@ in a later version. Use \`${newUsage}\` instead`);
   //   });
   // }
 
+  // TODO - groups need some support under Node.js
   group(priority, message, opts = {}) {
     const {collapsed = false} = opts;
     return this._getLogFunction({
@@ -299,7 +300,7 @@ in a later version. Use \`${newUsage}\` instead`);
     return this._getLogFunction({
       priority,
       message,
-      method: console.groupEnd
+      method: console.groupEnd || noop
     });
   }
 

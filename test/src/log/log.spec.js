@@ -114,6 +114,17 @@ test('Log#table', t => {
   t.end();
 });
 
+test('Log#group - create, log, end', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+
+  t.doesNotThrow(() => log.group('test-group'), '.group() - initiation works');
+  t.doesNotThrow(() => log.log(1, 'test0'), 'logging to group works');
+  t.doesNotThrow(() => log.groupEnd('test-group'), '.groupEnd() - ending group works');
+
+  t.end();
+});
+
 /*
 test('Log#probe', t => {
   const probe = getInstance();
