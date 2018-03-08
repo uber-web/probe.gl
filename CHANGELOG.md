@@ -1,5 +1,9 @@
 CHANGELOG
 
+v1.0.0-alpha.2
+- Support functions that generate messages: log.log(() => `message ${message}`)
+- Support `log.table`
+
 v1.0.0-alpha.1
 - Move to 1 series releases, to support use in luma.gl and deck.gl
 

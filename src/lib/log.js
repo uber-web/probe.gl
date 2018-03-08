@@ -28,7 +28,10 @@ import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
 
-// Some instrumentation may override console methods, so preserve them here
+/* eslint-disable no-console */
+/* global console, window, Image */
+
+// Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
   debug: console.debug,
   log: console.log,
@@ -39,27 +42,48 @@ const originalConsole = {
 
 function noop() {}
 
-/* eslint-disable no-console */
-/* global console, window, Image */
-
 const cache = {};
 
-// function formatArgs(id, firstArg, ...args) {
-//   if (typeof firstArg === 'string') {
-//     args.unshift(`${id} ${firstArg}`);
-//   } else {
-//     args.unshift(firstArg);
-//     args.unshift(`${id}`);
-//   }
-//   return args;
-// }
+function throttle(tag, timeout) {
+  const prevTime = cache[tag];
+  const time = Date.now();
+  if (!prevTime || (time - prevTime > timeout)) {
+    cache[tag] = time;
+    return true;
+  }
+  return false;
+}
+
+function getTableHeader(table) {
+  for (const key in table) {
+    for (const title in table[key]) {
+      return title || 'untitled';
+    }
+  }
+  return 'empty';
+}
+
+/* CODE from deck.gl logger, delete when replicated
+function formatArgs(firstArg, ...args) {
+  if (typeof firstArg === 'function') {
+    firstArg = firstArg();
+  }
+  if (typeof firstArg === 'string') {
+    args.unshift(`deck.gl ${firstArg}`);
+  } else {
+    args.unshift(firstArg);
+    args.unshift('deck.gl');
+  }
+  return args;
+}
 
 // Assertions don't generate standard exceptions and don't print nicely
-/* TODO
 function checkForAssertionErrors(args) {
   const isAssertion =
-    args && args.length > 0 &&
-    typeof args[0] === 'object' && args[0] !== null &&
+    args &&
+    args.length > 0 &&
+    typeof args[0] === 'object' &&
+    args[0] !== null &&
     args[0].name === 'AssertionError';
 
   if (isAssertion) {
@@ -71,12 +95,6 @@ function checkForAssertionErrors(args) {
 */
 
 // A simple console wrapper
-// * Papers over missing methods
-// * Supports logging with priorities
-// * Caches warnings to ensure only one of each warning is emitted
-// * Reformats assert messages to show actual error string
-// * Console shows actual log function call site, not wrapper call site
-// * Can log images under Chrome
 
 export default class Log {
 
@@ -194,13 +212,24 @@ in a later version. Use \`${newUsage}\` instead`);
     });
   }
 
+  table(priority, table, columns) {
+    if (priority <= this.priority && table) {
+      const tag = getTableHeader(table);
+      if (throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
+        return this._getLogFunction({
+          priority,
+          message: table,
+          args: columns && [columns],
+          method: console.table
+        });
+      }
+    }
+    return noop;
+  }
+
   // Logs an object as a table
   // table(priority, table) {
   //   const opts = this._getOpts({priority});
-  //   return table ? this._getLogFunction({
-  //     priority,
-  //     method: console.table
-  //   }) : noop;
   // }
 
   // logs an image under Chrome
@@ -337,6 +366,7 @@ in a later version. Use \`${newUsage}\` instead`);
       break;
 
     case 'string':
+    case 'function':
       if (message !== undefined) {
         args.unshift(message);
       }
@@ -354,7 +384,16 @@ in a later version. Use \`${newUsage}\` instead`);
     }
 
     assert(Number.isFinite(newOptions.priority)); // 'log priority must be a number'
-    assert(typeof newOptions.message === 'string'); // 'log message must be a string'
+
+    // Resolve strings
+    if (typeof newOptions.message === 'function') {
+      newOptions.message = this._shouldLog(newOptions.priority) ?
+        newOptions.message() :
+        'low priority log';
+    }
+
+    // 'log message must be a string' or object
+    assert(typeof newOptions.message === 'string' || typeof newOptions.message === 'object');
 
     return newOptions;
   }

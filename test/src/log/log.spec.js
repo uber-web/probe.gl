@@ -73,6 +73,14 @@ test('Log#log', t => {
   t.end();
 });
 
+test('Log#log(functions)', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.log(() => 'test'), 'log.log works');
+  t.doesNotThrow(() => log.log(0, '() => test'), 'log.log works');
+  t.end();
+});
+
 test('Log#once', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
@@ -93,6 +101,15 @@ test('Log#error', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.error('test'), 'log.error works');
+  // t.throws(() => log.error(0, 'test'), 'log.error works');
+  t.end();
+});
+
+test('Log#table', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}}), 'log.table works');
+  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}}), 'log.table(columns) works');
   // t.throws(() => log.error(0, 'test'), 'log.error works');
   t.end();
 });
