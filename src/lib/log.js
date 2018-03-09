@@ -21,11 +21,12 @@
 /* eslint-disable no-console, no-try-catch */
 /* global console */
 import {VERSION} from './utils/globals';
+import LocalStorage from './utils/local-storage';
 import {getTimestamp} from './utils/timestamp';
 import {formatImage} from './utils/formatters';
 import {addColor} from './utils/color';
-import LocalStorage from './utils/local-storage';
 import {autobind} from './utils/autobind';
+import {isBrowser} from './utils/globals';
 import assert from 'assert';
 
 /* eslint-disable no-console */
@@ -33,7 +34,7 @@ import assert from 'assert';
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
-  debug: console.debug,
+  debug: isBrowser ? console.debug || console.log : console.log,
   log: console.log,
   info: console.info,
   warn: console.warn,
@@ -185,35 +186,30 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   // Log to a group
-  probe(priority, message, opts = {}) {
-    return this._getLogFunction({priority, message, opts, method: originalConsole.log});
+  probe(priority, message, ...args) {
+    return this._getLogFunction({
+      priority,
+      message,
+      args,
+      method: originalConsole.log
+    });
   }
 
-  // externalProbe(priority, message, timeStart, timeSpent, meta = {}) {
-  //   if (this._probe._shouldLog(priority)) {
-  //     // External probes are expected to provide epoch getTimestamps
-  //     const total = timeStart - this._probe._startEpochTs;
-  //     const delta = timeSpent;
-  //     const logRow = this._probe._createLogRow({
-  //       priority, name: message, total, delta, indent: '  '
-  //     }, meta);
-  //     this._getLogFuncStore.push(logRow);
-  //   }
-  //   return this;
-  // }
-  // Log a normal message
-  // info(priority, message, ...args) {
-  //   return this._getLogFunction({
-  //     priority, message, args,
-  //     method: console.info
-  //   });
-
+  // Log a debug message
   log(priority, message, ...args) {
     return this._getLogFunction({
       priority,
       message,
       args,
-      method: originalConsole.debug || originalConsole.info
+      method: originalConsole.debug
+    });
+  }
+
+  // Log a normal message
+  info(priority, message, ...args) {
+    return this._getLogFunction({
+      priority, message, args,
+      method: console.info
     });
   }
 

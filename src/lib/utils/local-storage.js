@@ -38,11 +38,16 @@ export default class LocalStorage {
     this.id = id;
     this.config = {};
     Object.assign(this.config, defaultSettings);
-    this.loadConfiguration();
+    this._loadConfiguration();
   }
 
   getConfiguration() {
     return this.config;
+  }
+
+  setConfiguration(configuration) {
+    this.config = {};
+    return this.updateConfiguration(configuration);
   }
 
   updateConfiguration(configuration) {
@@ -55,7 +60,7 @@ export default class LocalStorage {
   }
 
   // Get config from persistent store, if available
-  loadConfiguration() {
+  _loadConfiguration() {
     let configuration = {};
     if (this.storage) {
       const serializedConfiguration = this.storage.getItem(this.id);

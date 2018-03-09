@@ -76,41 +76,41 @@ test('Log#log', t => {
 test('Log#log(functions)', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.log(() => 'test'), 'log.log works');
-  t.doesNotThrow(() => log.log(0, '() => test'), 'log.log works');
+  t.doesNotThrow(() => log.log(() => 'test')(), 'log.log works');
+  t.doesNotThrow(() => log.log(0, '() => test')(), 'log.log works');
   t.end();
 });
 
 test('Log#once', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.once('test'), 'log.once works');
-  t.doesNotThrow(() => log.once(0, 'test'), 'log.once works');
+  t.doesNotThrow(() => log.once('test')(), 'log.once works');
+  t.doesNotThrow(() => log.once(0, 'test')(), 'log.once works');
   t.end();
 });
 
 test('Log#warn', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.warn('test'), 'log.warn works');
-  // t.throws(() => log.warn(0, 'test'), 'log.warn works');
+  t.doesNotThrow(() => log.warn('test')(), 'log.warn works');
+  // t.throws(() => log.warn(0, 'test')(), 'log.warn works');
   t.end();
 });
 
 test('Log#error', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.error('test'), 'log.error works');
-  // t.throws(() => log.error(0, 'test'), 'log.error works');
+  t.doesNotThrow(() => log.error('test')(), 'log.error works');
+  // t.throws(() => log.error(0, 'test')(), 'log.error works');
   t.end();
 });
 
 test('Log#table', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}}), 'log.table works');
-  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}}), 'log.table(columns) works');
-  // t.throws(() => log.error(0, 'test'), 'log.error works');
+  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table works');
+  t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table(columns) works');
+  // t.throws(() => log.error(0, 'test')(), 'log.error works');
   t.end();
 });
 
@@ -118,9 +118,9 @@ test('Log#group - create, log, end', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
 
-  t.doesNotThrow(() => log.group('test-group'), '.group() - initiation works');
-  t.doesNotThrow(() => log.log(1, 'test0'), 'logging to group works');
-  t.doesNotThrow(() => log.groupEnd('test-group'), '.groupEnd() - ending group works');
+  t.doesNotThrow(() => log.group('test-group')(), '.group() - initiation works');
+  t.doesNotThrow(() => log.log(1, 'test0')(), 'logging to group works');
+  t.doesNotThrow(() => log.groupEnd('test-group')(), '.groupEnd() - ending group works');
 
   t.end();
 });
