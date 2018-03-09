@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 /* global window */
-function storageAvailable(type) {
+function getStorage(type) {
   try {
     const storage = window[type];
     const x = '__storage_test__';
@@ -31,62 +31,37 @@ function storageAvailable(type) {
   }
 }
 
+// Store keys in local storage via simple interface
 export default class LocalStorage {
-  /**
-   * @classdesc
-   * Store keys in local storage via simple interface
-   *
-   * @class
-   * @param {Object} opts - options
-   * @param {String} type='sessionStorage' -
-   *    'sessionStorage' persists between reloads
-   *    'localStorage' persists after browser is closed
-   */
-  constructor({type = 'sessionStorage'} = {}) {
-    this.storage = storageAvailable(type);
-    if (!this.storage) {
-      throw new Error(`${type} not available`);
+  constructor(id, defaultSettings, type = 'sessionStorage') {
+    this.storage = getStorage(type);
+    this.id = id;
+    this.config = {};
+    Object.assign(this.config, defaultSettings);
+    this.loadConfiguration();
+  }
+
+  getConfiguration() {
+    return this.config;
+  }
+
+  updateConfiguration(configuration) {
+    Object.assign(this.config, configuration);
+    if (this.storage) {
+      const serialized = JSON.stringify(this.config);
+      this.storage.setItem(this.id, serialized);
     }
+    return this;
   }
 
-  /**
-   * Sets string value for a key
-   * @param {String} key - key to update
-   * @param {String} value - string to be stored under key
-   */
-  set(key, value) {
-    this.storage.setItem(key, value);
-  }
-
-  /**
-   * Gets string value for a key
-   * @param {String} key - key to retrieve
-   * @return {String} value stored under key, or undefined
-   */
-  get(key) {
-    return this.storage.getItem(key);
-  }
-
-  /**
-   * Removed a key and its associated value
-   * @param {String} key - key to remove
-   */
-  remove(key) {
-    this.storage.removeItem(key);
-  }
-
-  getObject(key) {
-    const value = this.storage.getItem(key);
-    try {
-      return typeof value === 'string' ? JSON.parse(value) : {};
-    } catch (error) {
-      this.remove(key);
-      return {};
+  // Get config from persistent store, if available
+  loadConfiguration() {
+    let configuration = {};
+    if (this.storage) {
+      const serializedConfiguration = this.storage.getItem(this.id);
+      configuration = serializedConfiguration ? JSON.parse(serializedConfiguration) : {};
     }
-  }
-
-  setObject(key, value) {
-    const string = value ? JSON.stringify(value) : null;
-    this.storage.setItem(key, string);
+    Object.assign(this.config, configuration);
+    return this;
   }
 }

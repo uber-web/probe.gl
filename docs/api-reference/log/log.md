@@ -1,46 +1,105 @@
 # Log
 
-A simple console wrapper
-* Handles missing methods
-* Supports log levels (priorities)
-* Defeat cascades - Caches warnings to ensure only one of each warning is emitted
+A simple console wrapper with a host of features
+* Safely exposes advanced features of Chrome and Firefox console APIs, as well as Node.js color logging, by providing fallbacks for missing methods in other environments.
+* Conditional logging - includes a log levels system (aka priorities) that can be controller in the browser console, and settings persist through browser reloads.
+* Defeats log cascades - Caches warnings to ensure only one instance of each warning is emitted
+* Links to log calls in browser console - Clicking on a log message shows the code that called the log function.
+* Image logging - In Chrome console, it is possible log images
 * Improved `assert` messages - Reformats errors from `assert` to show actual error string
-* Shows actual log call site - Console does not link to wrapper call site
-* Images logging - In Chrome console
 
 
-## About Priority and Options
+## Usage
 
-Log functions can be called in a couple of ways
-- `log.___(message, ...args)` - priority defaults to 0
-- `log.___(priority, message, ...args)` - sets priority
-- `log.___({...options}, message, ...args)` - additional options can be set, priority is zero
-- `log.___({priority, ...options}, message, ...args)` - additional options can be set
-- `log.___({priority, ...options, message, args})` - additional options can be set
+Create a new Log
+```js
+import {Log} from 'probe.gl';
+const log = new Log({id: 'my-app'});
+log.log('Hello world')();  // <<< Note: double function call, is necessary
+```
 
-Supported options include:
-* `priority` (`Number`), this probe will only "fire" if the log's current priority is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level.
-* `color` (String) - basic colors like `green`, `blue` and `red` are supported, currently only for console logging.
+Add color (only affects output in Node.js)
+```js
+import {Log, COLOR} from 'probe.gl';
+...
+log.log({message: 'Hello world', color: COLOR.GREEN});
+```
+
+Log using a message generating function, rather than string (avoid creating message when not needed)
+```js
+log.log(2, () => `${expensiveFunction()}`)();
+```
+
+## Types and Parameters
+
+### Log Function Parameters
+
+Log functions can be called with different parameter combinations
+- `log.log(message, ...args)` - priority defaults to 0
+- `log.log(priority, message, ...args)` - sets priority
+- `log.log({message, ...options})` - additional options can be set, priority is zero
+- `log.log({priority, message, args, ...options})` - additional options can be set
 
 
-* The `message` argument can be a string or a function.
+### Log Function Options
+
+When using named parameters (passing an object as first parameter), the following options can be used:
+
+| Option     | Type     | Description |
+| ---        | ---      | ---         |
+| `priority` | `Number` | This probe will only "fire" if the log's current priority is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level. |
+| `color`    | `enum`   | Basic colors like `green`, `blue` and `red` are supported, currently only for console logging. `import {COLOR} from 'probe.gl'` |
+
+
+### Log Messages
+
+The `message` argument can be a string or a function returning a string.
+
+
+### Colors
+
+To get access to color definitions:
+`import {COLOR} from 'probe.gl'`
+
+Available colors:
+* `COLOR.BLACK`, `COLOR.RED`, `COLOR.GREEN`, `COLOR.YELLOW`, `COLOR.BLUE`, `COLOR.MAGENTA`, `COLOR.CYAN`, `COLOR.WHITE`
+* `COLOR.BRIGHT_BLACK`, `COLOR.BRIGHT_RED`, `COLOR.BRIGHT_GREEN`, `COLOR.BRIGHT_YELLOW`, `COLOR.BRIGHT_BLUE`, `COLOR.BRIGHT_MAGENTA`, `COLOR.BRIGHT_CYAN`, `COLOR.BRIGHT_WHITE`
+
 
 ## Methods
 
-getPriority()
+### constructor
 
-`log(priority|opts, arg, ...args)`
+Creates a new `Log` instance.
 
-Returns: a function closure that needs to be called immediately.
+`new Log({id})`
+
+
+### getPriority
+
+`log.getPriority()`
+
+
+### log
+
+Log a debug level message (uses `console.debug` if available)
+
+`log.log(message, ...args)`
+`log.log(priority, message, ...args)`
+`log.log({priority, message, args, ....options})`
+
+Returns: a function closure that should be called immediately.
 
 
 ### info
 
-Log a normal message
+Log a normal message (uses `console.info` if available)
 
-`log.info(priority|opts, arg, ...args)()`
+`log.info(message, ...args)`
+`log.info(priority, message, ...args)`
+`log.info({priority, message, args, ....options})`
 
-Returns: a function closure that needs to be called immediately.
+Returns: a function closure that should be called immediately.
 
 
 ### once
@@ -49,58 +108,72 @@ Log a normal message, but only once, no console flooding
 
 `once(priority|opts, arg, ...args)`
 
-Returns: a function closure that needs to be called immediately.
+Returns: a function closure that should be called immediately.
 
 
 ### warn
 
-Warns, but only once to avoid console flooding. Uses the `console.warn` method, to enable filtering 
+Logs a warning (uses the `console.warn` method if available). Logs each warning only once to avoid console flooding.
 
-`log.warn(arg, ...args)`
+`log.warn(message, ...args)`
+`log.warn({message, args, ....options})`
 
-Returns: a function closure that needs to be called immediately.
+Returns: a function closure that should be called immediately.
 
 
 ### error
 
 Print an error, using the console's error method
 
-`error(arg, ...args)`
+`log.error(message, ...args)`
+`log.error({message, args, ....options})`
 
-Returns: a function closure that needs to be called immediately.
+Returns: a function closure that should be called immediately.
 
 
 ### deprecated
 
-Generates a deprecation warning:
+Generates a deprecation warning (using `log.warn`):
 "`oldUsage` is deprecated and will be removed in a later version. Use `newUsage` instead."
 
-`deprecated(oldUsage, newUsage)`
+`log.deprecated(oldUsage, newUsage)`
+* `oldUsage` - name of deprecated function or parameter
+* `newUsage` - name of new function or parameter
 
-The warning will be generated using c
-
-
-### once
-
-`once(priority, arg, ...args)`
+Returns: a function closure that should be called immediately.
 
 
 ### table
 
-`table(priority|opts, table)`
+Logs a table (using `console.table` if available).
+
+`log.table(priority|opts, table)`
+
+Returns: a function closure that should be called immediately.
 
 
 ### image
 
 Logs an image (under Chrome)
 
-`image({priority, image, message = '', scale = 1})`
+`log.image({priority, image, message = '', scale = 1})`
 
-// Logs a message with a time
-time(priority, label)
 
-timeEnd(priority, label)
+### time
 
-group(priority, arg, {collapsed = false} = {})
+`log.time(priority, label)`
 
-groupEnd(priority, arg)
+
+### timeEnd
+
+`log.timeEnd(priority, label)`
+
+
+### group
+
+`log.group(priority, arg, {collapsed = false} = {})`
+
+
+### groupEnd
+
+`log.groupEnd(priority, arg)`

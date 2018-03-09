@@ -170,7 +170,7 @@ Conditionally run a function only when probe is enabled
 
 ### startIiterations()
 
-_getConfigFromEnvironment()
+getConfigFromEnvironment()
 
 Get config from persistent store, if available
 Returns (Object) config

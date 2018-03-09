@@ -35,9 +35,9 @@ Opens a new tab in the browser
 
 `driver.newPage({url, width, height})`
 
-* `url` = `http://localhost:8080`
-* `width` = `1550`
-* `height` = `850`
+* `url` = `http://localhost:8080` - The url to load in the page.
+* `width` = `1550` - The width of the page
+* `height` = `850` - The height of the page
 Returns a `Promise` that resolves when the page is open.
 
 
@@ -71,11 +71,20 @@ Set the return value that will be visible to the shell, truthy values will gener
 
 Runs a server in a new child process, that the browser can connect to.
 
-`driver.startServer(config = {})`
+`driver.startServer({process, parameters, options})`
 
-* `process` './node_modules/.bin/webpack-dev-server',
-* `parameters` ['--config', 'test/render/webpack.config.js', '--progress'],
-* `options` {maxBuffer: 5000 * 1024}
+* `process`=`'./node_modules/.bin/webpack-dev-server'` - The process to fork
+* `parameters`=`['--config', 'test/render/webpack.config.js']` - The parameters to the process
+* `options`=`{maxBuffer: 5000 * 1024}`
+
+Example:
+```js
+driver.startServer({
+  process: './node_modules/.bin/webpack-dev-server',
+  parameters: ['--config', 'test/render/webpack.config.js'],
+  options: {maxBuffer: 5000 * 1024}
+})
+```
 
 Returns: nothing
 

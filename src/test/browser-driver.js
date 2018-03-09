@@ -25,7 +25,7 @@ const ERR_AUTOMATION = `Browser automation error. Check stack trace.
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
-  parameters: ['--config', 'webpack.config.js', '--progress'],
+  parameters: ['--config', 'webpack.config.js'],
   options: {maxBuffer: 5000 * 1024}
 };
 
