@@ -42,51 +42,45 @@ export default class LocalStorage {
    *    'sessionStorage' persists between reloads
    *    'localStorage' persists after browser is closed
    */
-  constructor({type = 'sessionStorage'} = {}) {
+  constructor(id, defaultSettings, type = 'sessionStorage') {
     this.storage = storageAvailable(type);
     if (!this.storage) {
-      throw new Error(`${type} not available`);
+      // console.warn(`Storage ${type} not available`);
     }
+    this.id = id;
+    this.config = {};
+    Object.assign(this.config, defaultSettings);
+    this.loadConfiguration();
   }
 
-  /**
-   * Sets string value for a key
-   * @param {String} key - key to update
-   * @param {String} value - string to be stored under key
-   */
-  set(key, value) {
-    this.storage.setItem(key, value);
+  getConfiguration() {
+    return this.config;
   }
 
-  /**
-   * Gets string value for a key
-   * @param {String} key - key to retrieve
-   * @return {String} value stored under key, or undefined
-   */
-  get(key) {
-    return this.storage.getItem(key);
-  }
-
-  /**
-   * Removed a key and its associated value
-   * @param {String} key - key to remove
-   */
-  remove(key) {
-    this.storage.removeItem(key);
-  }
-
-  getObject(key) {
-    const value = this.storage.getItem(key);
-    try {
-      return typeof value === 'string' ? JSON.parse(value) : {};
-    } catch (error) {
-      this.remove(key);
-      return {};
+  updateConfiguration(configuration) {
+    Object.assign(this.config, configuration);
+    if (this.storage) {
+      const serialized = JSON.stringify(this.config);
+      this.storage.setItem(this.id, serialized);
     }
+    // Support chaining
+    return this;
   }
 
-  setObject(key, value) {
-    const string = value ? JSON.stringify(value) : null;
-    this.storage.setItem(key, string);
+  /**
+   * Get config from persistent store, if available
+   * @return {Object} config
+   */
+  loadConfiguration() {
+    let configuration;
+    if (this.storage) {
+      const serializedConfiguration = this.storage.getItem(this.id);
+      configuration = serializedConfiguration ? JSON.parse(serializedConfiguration) : {};
+    } else {
+      // TODO - get config from Node's command line arguments
+      configuration = {};
+    }
+    Object.assign(this.config, configuration);
+    return this;
   }
 }

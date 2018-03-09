@@ -24,7 +24,7 @@ import {VERSION} from './utils/globals';
 import {getTimestamp} from './utils/time-stamp';
 import {formatImage} from './utils/formatters';
 import {addColor} from './utils/color';
-// import {formatTime, leftPad} from './utils/formatters';
+import LocalStorage from './utils/local-storage';
 import {autobind} from './utils/autobind';
 import assert from 'assert';
 
@@ -38,6 +38,11 @@ const originalConsole = {
   info: console.info,
   warn: console.warn,
   error: console.error
+};
+
+const DEFAULT_SETTINGS = {
+  enabled: false,
+  priority: 0
 };
 
 function noop() {}
@@ -99,10 +104,8 @@ function checkForAssertionErrors(args) {
 export default class Log {
 
   constructor({id, probe} = {}) {
-    this.enabled = false;
-    this.priority = 0;
-    this._probe = probe;
     this.id = id;
+    this._probe = probe;
     this._getLogFuncStore = [];
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
@@ -114,23 +117,33 @@ export default class Log {
     this.userData = {};
     this.timeStamp(`${this.id} started`);
 
-    autobind(this);
+    this._storage = new LocalStorage(`probe-${this.id}`, DEFAULT_SETTINGS);
 
+    autobind(this);
     Object.seal(this);
   }
 
   enable(enabled = true) {
-    this.enabled = enabled;
+    this._storage.updateConfiguration({enabled});
     return this;
   }
 
   setLevel(level) {
-    this.priority = level;
+    this._storage.updateConfiguration({priority: level});
     return this;
   }
 
-  getPriority() {
-    return this.priority;
+  set priority(newPriority) {
+    this._storage.updateConfiguration({priority: newPriority});
+    return this;
+  }
+
+  get enabled() {
+    return this._storage.config.enabled;
+  }
+
+  get priority() {
+    return this._storage.config.priority;
   }
 
   // @return {Number} milliseconds, with fractions

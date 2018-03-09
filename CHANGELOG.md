@@ -1,6 +1,9 @@
 CHANGELOG
 
-v1.0.0-alpha.2
+v1.0.0-alpha.4
+- Support local storage
+
+v1.0.0-alpha.3
 - Fix groupEnd issue under Node.js
 
 v1.0.0-alpha.2
