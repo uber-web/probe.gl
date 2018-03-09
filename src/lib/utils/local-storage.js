@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 /* global window */
-function storageAvailable(type) {
+function getStorage(type) {
   try {
     const storage = window[type];
     const x = '__storage_test__';
@@ -31,22 +31,10 @@ function storageAvailable(type) {
   }
 }
 
+// Store keys in local storage via simple interface
 export default class LocalStorage {
-  /**
-   * @classdesc
-   * Store keys in local storage via simple interface
-   *
-   * @class
-   * @param {Object} opts - options
-   * @param {String} type='sessionStorage' -
-   *    'sessionStorage' persists between reloads
-   *    'localStorage' persists after browser is closed
-   */
   constructor(id, defaultSettings, type = 'sessionStorage') {
-    this.storage = storageAvailable(type);
-    if (!this.storage) {
-      // console.warn(`Storage ${type} not available`);
-    }
+    this.storage = getStorage(type);
     this.id = id;
     this.config = {};
     Object.assign(this.config, defaultSettings);
@@ -63,22 +51,15 @@ export default class LocalStorage {
       const serialized = JSON.stringify(this.config);
       this.storage.setItem(this.id, serialized);
     }
-    // Support chaining
     return this;
   }
 
-  /**
-   * Get config from persistent store, if available
-   * @return {Object} config
-   */
+  // Get config from persistent store, if available
   loadConfiguration() {
-    let configuration;
+    let configuration = {};
     if (this.storage) {
       const serializedConfiguration = this.storage.getItem(this.id);
       configuration = serializedConfiguration ? JSON.parse(serializedConfiguration) : {};
-    } else {
-      // TODO - get config from Node's command line arguments
-      configuration = {};
     }
     Object.assign(this.config, configuration);
     return this;

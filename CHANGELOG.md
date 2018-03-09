@@ -1,7 +1,8 @@
 CHANGELOG
 
 v1.0.0-alpha.4
-- Support local storage
+- Support saving probe config in local storage
+- Doc improvements
 
 v1.0.0-alpha.3
 - Fix groupEnd issue under Node.js

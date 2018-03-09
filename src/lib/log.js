@@ -21,7 +21,7 @@
 /* eslint-disable no-console, no-try-catch */
 /* global console */
 import {VERSION} from './utils/globals';
-import {getTimestamp} from './utils/time-stamp';
+import {getTimestamp} from './utils/timestamp';
 import {formatImage} from './utils/formatters';
 import {addColor} from './utils/color';
 import LocalStorage from './utils/local-storage';

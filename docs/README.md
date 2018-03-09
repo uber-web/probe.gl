@@ -63,7 +63,7 @@ debug related facilities, such as console log interception, global context in de
 In addition to in-app profiling, probe also supports a simple benchmarking rig
 
 * **Benchmark Suite** - function to run a suite of functions and collect data
-* **Persist and Compare Benchmarks** - 
+* **Persist and Compare Benchmarks** -
 
 
 ## History

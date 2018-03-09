@@ -10,7 +10,7 @@ function app() {
 }
 ```
 
-Let's saywe want a function that logs conditionally (only if a `priority` has been set), and only issues a warning once to avoid flooding the console. A first attempt could look like this
+Let's say we want a function that logs conditionally (only if a `priority` has been set), and only issues a warning once to avoid flooding the console. A first attempt could look like this
 
 ```js
 function log(priority, message) {
