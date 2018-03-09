@@ -1,5 +1,5 @@
 /* eslint-disable max-statements */
-import {Log} from 'probe.gl';
+import {Stats, Log} from 'probe.gl';
 import test from 'tape-catch';
 
 const makeOpts = (priority, message, ...args) => ({priority, message, args});
@@ -27,38 +27,14 @@ const OPTIONS_TEST_CASES = [
   }
 ];
 
-function getInstance() {
-  return new Log({
-    id: 'test',
-    isEnabled: true,
-    isPrintEnabled: false,
-    ignoreEnvironment: true
-  });
-}
-
-// tape tests swallow console messages, do some raw logging to check that things work
-function rawLogging() {
-  const log = getInstance().setLevel(3);
-
-  log.probe('test0')();
-  log.probe(1, 'test1')();
-  log.probe(2, 'test2')();
-  log.probe({priority: 3}, 'test3')();
-  log.probe({color: 'green'}, 'test-green')();
-}
-
-rawLogging();
-
 test('Log#import', t => {
-  t.equals(typeof Log, 'function',
-    'Expected row logged');
+  t.equals(typeof Log, 'function', 'Log imported OK');
   t.end();
 });
-
-test('Log#_getOpts', t => {
+test('Log#_normalizeArguments', t => {
   const log = new Log({id: 'test'});
   for (const tc of OPTIONS_TEST_CASES) {
-    const opts = log._getBaseOpts(tc.args);
+    const opts = log._normalizeArguments(tc.args);
     t.deepEqual(opts, tc.opts,
       `log(${JSON.stringify(tc.args)}) => ${JSON.stringify(opts)} args parsed correctly`);
   }
@@ -74,6 +50,24 @@ test('Log#log', t => {
 });
 
 test('Log#log(functions)', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.log(() => 'test')(), 'log.log works');
+  t.doesNotThrow(() => log.log(0, '() => test')(), 'log.log works');
+  t.end();
+});
+
+test('Log#group - create, log, end', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+
+  t.doesNotThrow(() => log.group('test-group')(), '.group() - initiation works');
+  t.doesNotThrow(() => log.log(1, 'test0')(), 'logging to group works');
+  t.doesNotThrow(() => log.groupEnd('test-group')(), '.groupEnd() - ending group works');
+  t.end();
+});
+
+test('Log#log(functions2)', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.log(() => 'test')(), 'log.log works');
@@ -111,17 +105,6 @@ test('Log#table', t => {
   t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table works');
   t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table(columns) works');
   // t.throws(() => log.error(0, 'test')(), 'log.error works');
-  t.end();
-});
-
-test('Log#group - create, log, end', t => {
-  const log = new Log({id: 'test'});
-  t.ok(log instanceof Log, 'log created successfully');
-
-  t.doesNotThrow(() => log.group('test-group')(), '.group() - initiation works');
-  t.doesNotThrow(() => log.log(1, 'test0')(), 'logging to group works');
-  t.doesNotThrow(() => log.groupEnd('test-group')(), '.groupEnd() - ending group works');
-
   t.end();
 });
 

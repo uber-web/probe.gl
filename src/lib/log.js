@@ -38,7 +38,8 @@ const originalConsole = {
   log: console.log,
   info: console.info,
   warn: console.warn,
-  error: console.error
+  error: console.error,
+  groupEnd: console.groupEnd.bind(console)
 };
 
 const DEFAULT_SETTINGS = {
@@ -225,7 +226,7 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   table(priority, table, columns) {
-    if (priority <= this.priority && table) {
+    if (table) {
       const tag = getTableHeader(table);
       return this._getLogFunction({
         priority,
@@ -240,7 +241,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Logs an object as a table
   // table(priority, table) {
-  //   const opts = this._getOpts({priority});
+  //   const opts = this._parseArguments({priority});
   // }
 
   // logs an image under Chrome
@@ -294,9 +295,9 @@ in a later version. Use \`${newUsage}\` instead`);
   //   });
   // }
 
-  // TODO - groups need some support under Node.js
-  group(priority, message, opts = {}) {
-    const {collapsed = false} = opts;
+  group(priority, message, opts = {collapsed: false}) {
+    opts = this._parseArguments({priority, message, opts});
+    const {collapsed} = opts;
     return this._getLogFunction({
       priority,
       message,
@@ -305,12 +306,33 @@ in a later version. Use \`${newUsage}\` instead`);
     });
   }
 
-  groupEnd(priority, message) {
+  groupCollapsed(priority, message, opts = {}) {
+    return this.group(priority, message, Object.assign({}, opts, {collapsed: true}));
+  }
+
+  groupEnd(priority) {
     return this._getLogFunction({
       priority,
-      message,
+      message: '',
       method: console.groupEnd || noop
     });
+  }
+
+  // EXPERIMENTAL
+
+  withGroup(priority, message, func) {
+    const opts = this._parseArguments({
+      priority,
+      message
+    });
+
+    this.group(opts);
+
+    try {
+      func();
+    } finally {
+      this.groupEnd(opts.message);
+    }
   }
 
   trace() {
@@ -319,12 +341,12 @@ in a later version. Use \`${newUsage}\` instead`);
     }
   }
 
-  // Private Methods
+  // PRIVATE METHODS
 
   _getLogFunction(opts) {
     const {method} = opts;
 
-    opts = this._getOpts(opts);
+    opts = this._parseArguments(opts);
 
     // Verify that last log function was actually called
     this._checkLastLogFunction();
@@ -343,9 +365,9 @@ in a later version. Use \`${newUsage}\` instead`);
         }
       }
 
-      if (opts.nothrottle || !throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
-        return noop;
-      }
+      // if (opts.nothrottle || !throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
+      //   return noop;
+      // }
 
       message = addColor(message, opts.color, opts.background);
 
@@ -359,32 +381,31 @@ in a later version. Use \`${newUsage}\` instead`);
     return logFunction;
   }
 
-  _getOpts({priority, message, args = [], opts = {}}) {
-    const newOptions = this._getBaseOpts({priority, message, args});
+  // "Normalizes" the various argument patterns into an object with known types
+  // - log(priority, message, args) => {priority, message, args}
+  // - log(message, args) => {priority: 0, message, args}
+  // - log({priority, ...}, message, args) => {priority, message, args}
+  // - log({priority, message, args}) => {priority, message, args}
+  _parseArguments({priority, message, args = [], opts = {}}) {
+    const newOpts = this._normalizeArguments({priority, message, args});
 
     const {delta, total} = this._getElapsedTime();
 
-    return Object.assign(newOptions, opts, {
-      message: typeof newOptions === 'string' ?
-        `${this.id}: ${newOptions.message}` :
-        newOptions.message,
+    return Object.assign(newOpts, opts, {
+      message: typeof newOpts === 'string' ? `${this.id}: ${newOpts.message}` : newOpts.message,
       delta,
       total
     });
   }
 
-  // "Normalizes" the various argument patterns into an object
-  // - log(priority, message, args) => {priority, message, args}
-  // - log(message, args) => {priority: 0, message, args}
-  // - log({priority, ...}, message, args) => {priority, message, args}
-  // - log({priority, message, args}) => {priority, message, args}
-  _getBaseOpts({priority, message, args = []}) {
-    let newOptions = null;
+  // helper for _parseArguments
+  _normalizeArguments({priority, message, args = []}) {
+    let newOpts = null;
 
     switch (typeof priority) {
     case 'number':
       assert(priority >= 0);
-      newOptions = {priority, message, args};
+      newOpts = {priority, message, args};
       break;
 
     case 'string':
@@ -392,32 +413,30 @@ in a later version. Use \`${newUsage}\` instead`);
       if (message !== undefined) {
         args.unshift(message);
       }
-      newOptions = {priority: 0, message: priority, args};
+      newOpts = {priority: 0, message: priority, args};
       break;
 
     case 'object':
       const opts = priority;
-      newOptions = Object.assign({priority: 0, message, args}, opts);
+      newOpts = Object.assign({priority: 0, message, args}, opts);
       break;
 
     default:
-      newOptions = {priority: 0, message, args};
+      newOpts = {priority: 0, message, args};
       break;
     }
 
-    assert(Number.isFinite(newOptions.priority)); // 'log priority must be a number'
+    assert(Number.isFinite(newOpts.priority)); // 'log priority must be a number'
 
-    // Resolve strings
-    if (typeof newOptions.message === 'function') {
-      newOptions.message = this._shouldLog(newOptions.priority) ?
-        newOptions.message() :
-        'low priority log';
+    // Resolve functions into strings by calling them
+    if (typeof newOpts.message === 'function') {
+      newOpts.message = this._shouldLog(newOpts.priority) ? newOpts.message() : '';
     }
 
     // 'log message must be a string' or object
-    assert(typeof newOptions.message === 'string' || typeof newOptions.message === 'object');
+    assert(typeof newOpts.message === 'string' || typeof newOpts.message === 'object');
 
-    return newOptions;
+    return newOpts;
   }
 
   _shouldLog(priority) {
