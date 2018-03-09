@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.0-alpha.5
+- fix console logging
+
 v1.0.0-alpha.4
 - Support saving probe config in local storage
 - Doc improvements
