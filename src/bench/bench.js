@@ -115,19 +115,11 @@ export default class Bench {
   }
 
   onSuiteComplete() {
-    let localStorage;
-    try {
-      localStorage = new LocalStorage();
-    } catch (error) {
-      // Local Storage not available
-    }
-
-    if (localStorage) {
-      const saved = localStorage.getObject(this.id);
-      const current = this.updateTable(this.table, saved);
-      localStorage.setObject(this.id, current);
-      console.table(current);
-    }
+    const localStorage = new LocalStorage({id: this.id});
+    const saved = localStorage.getConfiguration();
+    const current = this.updateTable(this.table, saved);
+    localStorage.updateConfiguration(current);
+    console.table(current);
   }
 
   updateTable(current, saved) {
