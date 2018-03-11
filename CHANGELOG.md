@@ -1,6 +1,6 @@
 CHANGELOG
 
-v1.0.0-alpha...
+v1.0.0-alpha.6
 - Experimental image utils
 
 v1.0.0-alpha.5
