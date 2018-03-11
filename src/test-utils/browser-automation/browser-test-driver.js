@@ -20,8 +20,8 @@
 
 /* global process */
 import BrowserDriver from './browser-driver';
-import {COLOR} from '../lib/utils/color';
-import Log from '../lib/log';
+import {COLOR} from '../../lib/utils/color';
+import Log from '../../lib/log';
 
 const log = new Log('render-test');
 

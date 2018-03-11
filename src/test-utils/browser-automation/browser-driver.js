@@ -18,7 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {addColor, COLOR} from '../lib/utils/color';
+// TODO - use a Log
+import {addColor, COLOR} from '../../lib/utils/color';
 
 const ERR_AUTOMATION = `Browser automation error. Check stack trace.
  Also note that Chrome 64 or higher is required.`;

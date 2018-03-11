@@ -9,7 +9,7 @@ export {callExposedFunction} from './browser-automation/call-exposed-function';
 // Image tools
 import {loadImage} from './image-utils/load-image';
 import {createImage, getImageFromContext, getImagePixelData} from './image-utils/image-tools';
-import {diffImagePixels} from './image-utils/diff-image-pixels';
+import {diffImagePixels} from './image-utils/diff-images';
 
 export const experimental = {
   loadImage,
