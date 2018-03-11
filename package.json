@@ -18,7 +18,8 @@
     "dist",
     "src",
     "bench.js",
-    "test.js"
+    "test.js",
+    "test-utils.js"
   ],
   "scripts": {
     "build-clean": "rm -fr dist dist-es6 && mkdir -p dist dist-es6",
