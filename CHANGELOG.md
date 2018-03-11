@@ -1,7 +1,13 @@
 CHANGELOG
 
+v1.0.0-alpha.7
+- probe timings
+
 v1.0.0-alpha.6
 - Experimental image utils
+- new Stats class
+- Browser automation BrowserTestDriver
+- experimental image utils
 
 v1.0.0-alpha.5
 - fix console logging
