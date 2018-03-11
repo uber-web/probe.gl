@@ -228,7 +228,7 @@ in a later version. Use \`${newUsage}\` instead`);
         message: table,
         args: columns && [columns],
         tag,
-        method: console.table
+        method: console.table || noop
       });
     }
     return noop;
