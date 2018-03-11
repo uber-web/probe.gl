@@ -1,19 +1,6 @@
 # Console Logging
 
-## About Probes
-
-In probe.gl documentation, each log statement is referred to as a "probe" that "fires" udner certain circumstances. The wording is chosen to emphasize that each probe API call represents a point of instrumentation that you have added to your application, and each probe can be activated conditionally depending on various settings you choose.
-
-
-Available probes:
-
-* **Samples** - measuring repeated calls, average times, log throttling.
-* **FPS** - Can trace FPS.
-* **Tabulation** - Can generate tables of samples.
-* **JSON log format** - Simplifies copy/paste of log probe output into other apps.
-* **High Resolution Timer** - traces at submillisecond level.
-
-
+> This doc is a WIP
 
 ### Probe API Signature
 
@@ -22,12 +9,12 @@ A probe.gl function invocation typically looks like this:
 log.probe(priority, message, ...args)();
 ```
 
-This seemingly "harmless" looking signature actually encapsulates a lot of conventions and built-in capabilities. The following sections contains observations about this signature and provide more background about what is going on.
+There are a lot of conventions and built-in capabilities. The following sections contains observations about this signature and provide more background about what is going on.
 
 
-### The Double Function Call
+### Why Double Function Calls?
 
-First, an initially surprising aspect of the probe API are the double function calls, i.e. the extra parenthesis at the end of `log.probe``(...)()`. These are necessary to make sure that the Chrome browser console's clickable links from your log messages are generated correctly. Thanks to these double parentheses you can click on a probe in the Chrome console and "go" directly to the probe call in your application source code (rather than to the console.log call inside probe.gl's dist folder).
+A distinctive aspect of the probe API is the requirement for double function calls, i.e. the extra parenthesis at the end of `log.probe``(...)()`. The double function calls ensure that the Chrome browser console's clickable links are generated correctly. Thanks to these double parentheses you can click on a probe in the Chrome console and "go" directly to the probe call in your application source code.
 
 The double parenthesis is a rather unusual JavaScript programming idiom and if you forget it nothing will be logged. Therefore probe.gl will keep track of whether a returned log function was called and warn you next time you call probe if it wasn't.
 
@@ -81,7 +68,6 @@ Most probe method accept a variable number of additional arguments at the end of
 
 
 ## Probe Timings
-
 
 
 ## Types of Probes

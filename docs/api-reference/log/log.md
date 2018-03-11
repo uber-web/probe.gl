@@ -45,10 +45,14 @@ Log functions can be called with different parameter combinations
 
 When using named parameters (passing an object as first parameter), the following options can be used:
 
-| Option     | Type     | Description |
-| ---        | ---      | ---         |
-| `priority` | `Number` | This probe will only "fire" if the log's current priority is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level. |
-| `color`    | `enum`   | Basic colors like `green`, `blue` and `red` are supported, currently only for console logging. `import {COLOR} from 'probe.gl'` |
+| Option       | Type          | Description |
+| ---          | ---           | ---         |
+| `priority`   | `Number`      | This probe will only "fire" if the log's current priority is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level. |
+| `time`       | `Boolean`     | Add a timer since page load (default for `Log.probe`) |
+| `once`       | `Boolean`     | Logs this message only once (default for `Log.warn`, `Log.once` |
+| `tag`        | `String`      | Optional tag |
+| `color`      | `enum|String` | Node.js only: Basic colors like `green`, `blue` and `red` are supported, currently only for console logging. For safe to use constants, use the COLOR enumeration, see below. |
+| `background` | `enum|String` | Node.js only: Colors the background of the character. |
 
 
 ### Log Messages
@@ -107,6 +111,17 @@ Returns: a function closure that should be called immediately.
 Log a normal message, but only once, no console flooding
 
 `once(priority|opts, arg, ...args)`
+
+Returns: a function closure that should be called immediately.
+
+
+### probe
+
+Log a message with time since page load
+
+`log.probe(message, ...args)`
+`log.probe(priority, message, ...args)`
+`log.probe({priority, message, args, ....options})`
 
 Returns: a function closure that should be called immediately.
 
