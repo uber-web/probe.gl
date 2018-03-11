@@ -53,15 +53,6 @@ export default [{
     children: [{
       name: 'Log',
       markdown: require('../../docs/api-reference/log/log.md')
-    // }, {
-    //   name: 'Probe',
-    //   markdown: require('../../docs/api-reference/probe.md')
-    // }, {
-    //   name: 'ProbeGroup',
-    //   markdwnUrl: makeUrl('docs/api-reference/probe-group.md')
-    // }, {
-      // name: 'Error Handling (Experimenta)',
-      // markdown: require('../../docs/api-reference/log/error-handling.md')
     }]
   }, {
     name: 'API Reference - Benchmarking',

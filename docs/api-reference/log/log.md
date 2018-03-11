@@ -171,9 +171,30 @@ Logs an image (under Chrome)
 
 ### group
 
-`log.group(priority, arg, {collapsed = false} = {})`
+`log.group(priority, label)`
+
+
+### groupCollapsed
+
+`log.group(priority, label)`
 
 
 ### groupEnd
 
-`log.groupEnd(priority, arg)`
+`log.groupEnd(priority)`
+
+
+## Experimental APIs
+
+
+### withGroup
+
+Provides an exception safe way to run some code within a group
+
+`log.withGroup(priority, label, func)`
+
+
+### trace
+
+Prints a stack trace
+
