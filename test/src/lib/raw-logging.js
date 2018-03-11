@@ -8,12 +8,14 @@ log.priority = 5;
 
 log.log(1, 'log outside group')();
 
-console.group('aaa');
-console.group('aaa');
-console.log('123');
-console.groupEnd();
-console.groupEnd();
-console.log('123');
+if (console.group) {
+  console.group('aaa');
+  console.group('aaa');
+  console.log('123');
+  console.groupEnd();
+  console.groupEnd();
+  console.log('123');
+}
 
 log.probe('test0')();
 log.probe(1, 'test1')();
