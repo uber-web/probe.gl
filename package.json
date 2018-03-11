@@ -32,7 +32,7 @@
     "lint-yarn": "!(grep -q unpm.u yarn.lock) || (echo 'Please rebuild yarn file using public npmrc' && false)",
     "publish-prod": "npm run test && npm run test-dist && npm publish",
     "publish-beta": "npm run test && npm run test-dist && npm publish --tag beta",
-    "test": "node test/start.js test && node test/start.js log",
+    "test": "node test/start.js test && node test/start.js log && npm run build",
     "test-fast": "node test/start.js test | tap-diff",
     "test-dist": "node test/start.js test-dist",
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
