@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.0-alpha...
+- Experimental image utils
+
 v1.0.0-alpha.5
 - fix console logging
 
