@@ -38,8 +38,7 @@ const originalConsole = {
   log: console.log,
   info: console.info,
   warn: console.warn,
-  error: console.error,
-  groupEnd: console.groupEnd.bind(console)
+  error: console.error
 };
 
 const DEFAULT_SETTINGS = {
@@ -105,21 +104,16 @@ function checkForAssertionErrors(args) {
 
 export default class Log {
 
-  constructor({id, probe} = {}) {
+  constructor({id} = {}) {
     this.id = id;
-    this._probe = probe;
-    this._getLogFuncStore = [];
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
-    this._lastLogFunction = null;
-
     // TODO - fix support from throttling groups
     this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
-
-    this.userData = {};
-    this.timeStamp(`${this.id} started`);
-
     this._storage = new LocalStorage(`probe-${this.id}`, DEFAULT_SETTINGS);
+    this.userData = {};
+
+    this.timeStamp(`${this.id} started`);
 
     autobind(this);
     Object.seal(this);
@@ -225,6 +219,7 @@ in a later version. Use \`${newUsage}\` instead`);
     });
   }
 
+  // Logs an object as a table
   table(priority, table, columns) {
     if (table) {
       const tag = getTableHeader(table);
@@ -238,11 +233,6 @@ in a later version. Use \`${newUsage}\` instead`);
     }
     return noop;
   }
-
-  // Logs an object as a table
-  // table(priority, table) {
-  //   const opts = this._parseArguments({priority});
-  // }
 
   // logs an image under Chrome
   image({priority, image, message = '', scale = 1}) {
@@ -285,15 +275,13 @@ in a later version. Use \`${newUsage}\` instead`);
     });
   }
 
-  timeStamp() {}
-
-  // timeStamp(priority, message) {
-  //   return this._getLogFunction({
-  //     priority,
-  //     message,
-  //     method: console.timeStamp
-  //   });
-  // }
+  timeStamp(priority, message) {
+    return this._getLogFunction({
+      priority,
+      message,
+      method: console.timeStamp || noop
+    });
+  }
 
   group(priority, message, opts = {collapsed: false}) {
     opts = this._parseArguments({priority, message, opts});
@@ -343,13 +331,23 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // PRIVATE METHODS
 
+  _shouldLog(priority) {
+    assert(Number.isFinite(priority), 'log priority must be a number');
+    return this.priority >= priority;
+  }
+
+  _getElapsedTime() {
+    const total = this.getTotal();
+    const delta = this.getDelta();
+    // reset delta timer
+    this._deltaTs = getTimestamp();
+    return {total, delta};
+  }
+
   _getLogFunction(opts) {
     const {method} = opts;
 
     opts = this._parseArguments(opts);
-
-    // Verify that last log function was actually called
-    this._checkLastLogFunction();
 
     assert(method);
 
@@ -365,6 +363,7 @@ in a later version. Use \`${newUsage}\` instead`);
         }
       }
 
+      // TODO - Make throttling work with groups
       // if (opts.nothrottle || !throttle(tag, this.LOG_THROTTLE_TIMEOUT)) {
       //   return noop;
       // }
@@ -372,13 +371,10 @@ in a later version. Use \`${newUsage}\` instead`);
       message = addColor(message, opts.color, opts.background);
 
       // Bind console function so that it can be called after being returned
-      this._lastLogFunction = method.bind(console, message, ...opts.args);
+      return method.bind(console, message, ...opts.args);
     }
 
-    // Catch missing `()()`
-    const logFunction = this._lastLogFunction || noop;
-    this._lastLogFunction = null;
-    return logFunction;
+    return noop;
   }
 
   // "Normalizes" the various argument patterns into an object with known types
@@ -438,51 +434,6 @@ in a later version. Use \`${newUsage}\` instead`);
 
     return newOpts;
   }
-
-  _shouldLog(priority) {
-    assert(Number.isFinite(priority), 'log priority must be a number');
-    return this.priority >= priority;
-  }
-
-  // Verify that last log function was actually called
-  _checkLastLogFunction() {
-    if (this._lastLogFunction) {
-      // console.warn('last log function not called, calling now');
-      // this._lastLogFunction();
-      // this._lastLogFunction = null;
-    }
-  }
-
-  _getElapsedTime() {
-    const total = this.getTotal();
-    const delta = this.getDelta();
-    // reset delta timer
-    this._deltaTs = getTimestamp();
-    return {total, delta};
-  }
-
-  // _print({collapsed}) {
-  //   if (this._probe._shouldLog(0)) {
-  //     const groupTotal = formatTime(this.getTotal());
-  //     const probeTotal = formatTime(this._probe.getTotal());
-  //     const header =
-  //       `${leftPad(probeTotal)} ${leftPad(groupTotal)} ${this.id}`;
-
-  //     if (collapsed) {
-  //       logger.groupCollapsed(header);
-  //     } else {
-  //       logger.group(header);
-  //     }
-
-  //     for (const logRow of this._getLogFuncStore) {
-  //       const line = this._probe._formatLogRowForConsole(logRow);
-  //       logger.debug(line);
-  //     }
-
-  //     logger.groupEnd();
-  //   }
-  //   return this;
-  // }
 }
 
 Log.VERSION = VERSION;
