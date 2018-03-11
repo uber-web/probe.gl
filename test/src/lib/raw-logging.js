@@ -1,6 +1,7 @@
 // tape tests swallow console messages,
 // so this scripts does some "raw" logging to check that things work.
-
+/* global console */
+/* eslint-disable no-console */
 const {Log, COLOR} = require('probe.gl');
 
 const log = new Log({id: 'test'});
@@ -17,12 +18,12 @@ if (console.group) {
   console.log('123');
 }
 
-log.probe('test0')();
-log.probe(1, 'test1')();
-log.probe(2, 'test2')();
-log.probe({priority: 3}, 'test3')();
-log.probe({color: 'green'}, 'test-green')();
-log.probe({color: COLOR.RED, message: 'test-red'})();
+log.probe('probe0')();
+log.probe(1, 'probe1')();
+log.probe(2, 'probe2')();
+log.probe({priority: 3}, 'probe3')();
+log.probe({color: 'green'}, 'probe-green')();
+log.probe({color: COLOR.RED, message: 'probe-red'})();
 
 log.log('log test')();
 log.log(0, 'log prio test')();
