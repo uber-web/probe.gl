@@ -23,7 +23,7 @@
 import {VERSION} from './utils/globals';
 import LocalStorage from './utils/local-storage';
 import {getTimestamp} from './utils/timestamp';
-import {formatImage} from './utils/formatters';
+import {formatImage, formatTime, leftPad} from './utils/formatters';
 import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import {isBrowser} from './utils/globals';
@@ -186,7 +186,8 @@ in a later version. Use \`${newUsage}\` instead`);
       priority,
       message,
       args,
-      method: originalConsole.log
+      method: originalConsole.log,
+      time: true
     });
   }
 
@@ -368,7 +369,7 @@ in a later version. Use \`${newUsage}\` instead`);
       //   return noop;
       // }
 
-      message = addColor(message, opts.color, opts.background);
+      message = this._decorateMessage(message, opts);
 
       // Bind console function so that it can be called after being returned
       return method.bind(console, message, ...opts.args);
@@ -382,13 +383,14 @@ in a later version. Use \`${newUsage}\` instead`);
   // - log(message, args) => {priority: 0, message, args}
   // - log({priority, ...}, message, args) => {priority, message, args}
   // - log({priority, message, args}) => {priority, message, args}
-  _parseArguments({priority, message, args = [], opts = {}}) {
-    const newOpts = this._normalizeArguments({priority, message, args});
+  _parseArguments(options) {
+    const {priority, message, args = [], opts = {}} = options;
+    const normOpts = this._normalizeArguments({priority, message, args});
 
     const {delta, total} = this._getElapsedTime();
 
-    return Object.assign(newOpts, opts, {
-      message: typeof newOpts === 'string' ? `${this.id}: ${newOpts.message}` : newOpts.message,
+    // original opts + normalized opts + opts arg + fixed up message + timings
+    return Object.assign(options, normOpts, opts, {
       delta,
       total
     });
@@ -433,6 +435,19 @@ in a later version. Use \`${newUsage}\` instead`);
     assert(typeof newOpts.message === 'string' || typeof newOpts.message === 'object');
 
     return newOpts;
+  }
+
+  _decorateMessage(message, opts) {
+    if (typeof message === 'string') {
+      let time = '';
+      if (opts.time) {
+        const {total} = this._getElapsedTime();
+        time = leftPad(formatTime(total));
+      }
+      message = opts.time ? `${this.id}: ${time}  ${message}` : `${this.id}: ${time} ${message}`;
+      message = addColor(message, opts.color, opts.background);
+    }
+    return message;
   }
 }
 

@@ -18,5 +18,5 @@ A micro benchmark is simply a function you supply, that will be run for a number
 
 ## Structure of a Benchmark Suite
 
-Instantiate the `Bench` class to create a benchmark suite. use `bench.group` to group bench cases and add headers. Use `bench.add` to register indivual benchmarks.
+Instantiate the `Bench` class to create a benchmark suite. use `bench.group` to group bench cases and add headers. Use `bench.add` to register individual benchmarks.
 
