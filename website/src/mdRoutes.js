@@ -73,10 +73,16 @@ export default [{
     name: 'API Reference - Testing',
     children: [{
       name: 'BrowserDriver',
-      markdown: require('../../docs/api-reference/test/browser-driver.md')
+      markdown: require('../../docs/api-reference/test-utils/browser-driver.md')
+    }, {
+      name: 'BrowserTestDriver',
+      markdown: require('../../docs/api-reference/test-utils/browser-test-driver.md')
+    }, {
+      name: 'callExposedFunction',
+      markdown: require('../../docs/api-reference/test-utils/call-exposed-function.md')
     }, {
       name: 'makeSpy',
-      markdown: require('../../docs/api-reference/test/make-spy.md')
+      markdown: require('../../docs/api-reference/test-utils/make-spy.md')
     }]
   }]
 }];

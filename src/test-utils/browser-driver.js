@@ -83,15 +83,10 @@ export default class BrowserDriver {
       });
   }
 
-  exposeFunction(name = 'sendMessage') {
+  exposeFunction(name = 'testDriverDone') {
     return new Promise(resolve => {
       this.page.exposeFunction(name, resolve);
     });
-  }
-
-  waitForBrowserMessage(name = 'sendMessage') {
-    // deprecated
-    return this.exposeFunction(name);
   }
 
   stopBrowser() {

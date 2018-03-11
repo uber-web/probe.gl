@@ -21,8 +21,8 @@ Signatures
 Attach a spy to the function. The spy has the following methods and fields
  * `called` - whether spy was called
  * `callCount` - number of calls
- * restore() - remove spy completely
- * reset() - reset call count
+ * `restore()` - remove spy completely
+ * `reset()` - reset call count
 
 
 ## Methods and fields on the Wrapped Function
