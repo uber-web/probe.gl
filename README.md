@@ -13,7 +13,7 @@
   </a>
 </p>
 
-<h1 align="center">probe.gl | <a href="https://uber-web.github.io/probe.gl">Docs</a></h1>
+<h1 align="center">probe.gl | <a href="https://uber-web.github.io/probe.gl/#/documentation/overview">Docs</a></h1>
 
 probe.gl lets you instrument your JavaScript applications to get timings in browser console or in node, and much more.
 
