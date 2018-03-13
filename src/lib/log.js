@@ -50,6 +50,7 @@ function noop() {}
 
 const cache = {};
 
+/*
 function throttle(tag, timeout) {
   const prevTime = cache[tag];
   const time = Date.now();
@@ -58,29 +59,6 @@ function throttle(tag, timeout) {
     return true;
   }
   return false;
-}
-
-function getTableHeader(table) {
-  for (const key in table) {
-    for (const title in table[key]) {
-      return title || 'untitled';
-    }
-  }
-  return 'empty';
-}
-
-/* CODE from deck.gl logger, delete when replicated
-function formatArgs(firstArg, ...args) {
-  if (typeof firstArg === 'function') {
-    firstArg = firstArg();
-  }
-  if (typeof firstArg === 'string') {
-    args.unshift(`deck.gl ${firstArg}`);
-  } else {
-    args.unshift(firstArg);
-    args.unshift('deck.gl');
-  }
-  return args;
 }
 
 // Assertions don't generate standard exceptions and don't print nicely
@@ -100,12 +78,22 @@ function checkForAssertionErrors(args) {
 }
 */
 
-// A simple console wrapper
+function getTableHeader(table) {
+  for (const key in table) {
+    for (const title in table[key]) {
+      return title || 'untitled';
+    }
+  }
+  return 'empty';
+}
+
+// A console wrapper
 
 export default class Log {
 
   constructor({id} = {}) {
     this.id = id;
+    this.VERSION = VERSION;
     this._startTs = getTimestamp();
     this._deltaTs = getTimestamp();
     // TODO - fix support from throttling groups
