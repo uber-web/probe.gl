@@ -1,5 +1,10 @@
 CHANGELOG
 
+v1.0.0-alpha.8
+- default log export
+- `Log.probe` 
+- `Stats` class improvements
+
 v1.0.0-alpha.7
 - probe timings
 
