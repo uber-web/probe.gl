@@ -98,7 +98,7 @@ export default class Log {
     this._deltaTs = getTimestamp();
     // TODO - fix support from throttling groups
     this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
-    this._storage = new LocalStorage(`probe-${this.id}`, DEFAULT_SETTINGS);
+    this._storage = new LocalStorage(`__probe-${this.id}__`, DEFAULT_SETTINGS);
     this.userData = {};
 
     this.timeStamp(`${this.id} started`);
@@ -107,26 +107,24 @@ export default class Log {
     Object.seal(this);
   }
 
-  enable(enabled = true) {
-    this._storage.updateConfiguration({enabled});
-    return this;
-  }
-
-  setLevel(level) {
-    this._storage.updateConfiguration({priority: level});
-    return this;
-  }
-
   set priority(newPriority) {
     this._storage.updateConfiguration({priority: newPriority});
     return this;
   }
 
-  get enabled() {
+  get priority() {
+    return this._storage.config.priority;
+  }
+
+  isEnabled() {
     return this._storage.config.enabled;
   }
 
-  get priority() {
+  getPriority() {
+    return this._storage.config.priority;
+  }
+
+  getLevel() {
     return this._storage.config.priority;
   }
 
@@ -138,6 +136,18 @@ export default class Log {
   // @return {Number} milliseconds, with fractions
   getDelta() {
     return Number((getTimestamp() - this._deltaTs).toPrecision(10));
+  }
+
+  // Configure
+
+  enable(enabled = true) {
+    this._storage.updateConfiguration({enabled});
+    return this;
+  }
+
+  setLevel(level) {
+    this._storage.updateConfiguration({priority: level});
+    return this;
   }
 
   // Unconditional logging
@@ -225,7 +235,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // logs an image under Chrome
   image({priority, image, message = '', scale = 1}) {
-    if (priority > this.priority) {
+    if (priority > this.getPriority()) {
       return noop;
     }
     if (typeof window === 'undefined') { // Let's not try this under node
@@ -322,7 +332,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   _shouldLog(priority) {
     assert(Number.isFinite(priority), 'log priority must be a number');
-    return this.priority >= priority;
+    return priority === 0 || (this.isEnabled() && this.getPriority() >= priority);
   }
 
   _getElapsedTime() {

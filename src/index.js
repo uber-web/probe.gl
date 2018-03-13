@@ -16,4 +16,4 @@ export const experimental = {
 
 // Default export is a log
 import {default as Log} from './lib/log';
-export default new Log({id: 'probe'});
+export default new Log({id: 'probe.gl'});
