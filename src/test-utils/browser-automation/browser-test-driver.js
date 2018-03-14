@@ -90,11 +90,5 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
     // Don't call exit(). Leave browser running so user can inspect image that failed to render
     this.setShellStatus(false);
-    return Promise.all([
-      // this.stopBrowser(), // Don't stop the browser
-      this.stopServer()
-    ]).then(_ => {
-      // this.exitProcess()); - Don't exit the process
-    });
   }
 }
