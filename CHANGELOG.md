@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.0-alpha.9
+- not stop server when failed
+
 v1.0.0-alpha.8
 - default log export
 - `Log.probe` 
