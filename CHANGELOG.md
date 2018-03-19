@@ -1,5 +1,9 @@
 CHANGELOG
 
+v1.0.0-alpha.10
+- bundle size tests
+- no longer use external assert
+
 v1.0.0-alpha.9
 - not stop server when failed
 

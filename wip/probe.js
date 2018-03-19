@@ -26,7 +26,7 @@ import LocalStorage from './utils/local-storage';
 import NodeStorage from './utils/node-storage';
 import {getTimestamp, startTimestamp} from './time-stamp';
 import Group from './group';
-import assert from 'assert';
+import assert from './utils/assert';
 /* global setInterval */
 
 const logger = console;
