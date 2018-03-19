@@ -27,7 +27,7 @@ import {formatImage, formatTime, leftPad} from './utils/formatters';
 import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import {isBrowser} from './utils/globals';
-import assert from 'assert';
+import assert from '../lib/utils/assert';
 
 /* eslint-disable no-console */
 /* global console, window, Image */
