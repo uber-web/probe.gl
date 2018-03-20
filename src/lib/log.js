@@ -431,16 +431,16 @@ in a later version. Use \`${newUsage}\` instead`);
       break;
     }
 
+    newOpts.priority = this._normalizePriority(priority);
+
     // Resolve functions into strings by calling them
     if (typeof newOpts.message === 'function') {
-      newOpts.message = newOpts.message();
+      newOpts.message = this._shouldLog(newOpts.priority) ? newOpts.message() : '';
     }
     // 'log message must be a string' or object
     assert(typeof newOpts.message === 'string' || typeof newOpts.message === 'object');
 
-    return Object.assign(newOpts, {
-      priority: this._normalizePriority(priority)
-    }, opts);
+    return Object.assign(newOpts, opts);
   }
 
   _decorateMessage(message, opts) {
