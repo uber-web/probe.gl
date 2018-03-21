@@ -19,10 +19,6 @@
 // THE SOFTWARE.
 
 // TODO - use a Log
-import {addColor, COLOR} from '../../lib/utils/color';
-
-const ERR_AUTOMATION = `Browser automation error. Check stack trace.
- Also note that Chrome 64 or higher is required.`;
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
@@ -31,8 +27,7 @@ const DEFAULT_CONFIG = {
 };
 
 const DEFAULT_PUPPETEER_OPTIONS = {
-  headless: false,
-  executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  headless: false
 };
 
 export default class BrowserDriver {
@@ -62,10 +57,6 @@ export default class BrowserDriver {
       .launch(options)
       .then(browser => {
         this.browser = browser;
-      })
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
       });
   }
 
@@ -77,11 +68,7 @@ export default class BrowserDriver {
       })
       .then(_ => this.page.waitFor(1000))
       .then(_ => this.page.goto(url))
-      .then(_ => this.page.setViewport({width: 1550, height: 850}))
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
-      });
+      .then(_ => this.page.setViewport({width: 1550, height: 850}));
   }
 
   exposeFunction(name = 'testDriverDone') {
@@ -93,11 +80,7 @@ export default class BrowserDriver {
   stopBrowser() {
     return Promise.resolve()
       .then(_ => this.page.waitFor(1000))
-      .then(_ => this.browser.close())
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
-      });
+      .then(_ => this.browser.close());
   }
 
   startServer(config = {}) {
@@ -105,10 +88,9 @@ export default class BrowserDriver {
       config.process || DEFAULT_CONFIG.process,
       config.parameters || DEFAULT_CONFIG.parameters,
       config.options || DEFAULT_CONFIG.options,
-      (err, stdout) => {
-        if (err) {
-          this.console.error(err);
-          return;
+      (error, stdout) => {
+        if (error) {
+          throw error;
         }
         this.console.log(stdout);
       }
@@ -128,6 +110,11 @@ export default class BrowserDriver {
   }
 
   exit() {
-    return Promise.all([this.stopBrowser(), this.stopServer()]).then(_ => this.exitProcess());
+    return Promise.resolve()
+      .then(() => this.stopBrowser())
+      .then(() => {
+        this.stopServer();
+        this.exitProcess();
+      });
   }
 }
