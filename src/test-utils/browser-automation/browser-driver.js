@@ -18,11 +18,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// TODO - use a Log
+import {COLOR} from '../../lib/utils/color';
+import Log from '../../lib/log';
+const log = new Log('render-test');
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
   parameters: ['--config', 'webpack.config.js'],
+  port: 5000,
   options: {maxBuffer: 5000 * 1024}
 };
 
@@ -31,7 +34,6 @@ const DEFAULT_PUPPETEER_OPTIONS = {
 };
 
 export default class BrowserDriver {
-
   constructor() {
     this.execFile = module.require('child_process').execFile;
     this.puppeteer = module.require('puppeteer');
@@ -41,6 +43,7 @@ export default class BrowserDriver {
     this.child = null;
     this.browser = null;
     this.page = null;
+    this.port = null;
     this.shellStatus = 0;
   }
 
@@ -53,21 +56,23 @@ export default class BrowserDriver {
     if (this.browser) {
       return Promise.resolve(this.browser);
     }
-    return this.puppeteer
-      .launch(options)
-      .then(browser => {
-        this.browser = browser;
-      });
+    return this.puppeteer.launch(options).then(browser => {
+      this.browser = browser;
+    });
   }
 
-  newPage({url = 'http://localhost:8080', width = 1550, height = 850} = {}) {
+  newPage({url = 'http://localhost', width = 1550, height = 850} = {}) {
+    log.log({
+      message: `Connecting to port: ${this.port}`,
+      color: COLOR.YELLOW
+    })();
     return this.startBrowser()
       .then(_ => this.browser.newPage())
       .then(page => {
         this.page = page;
       })
       .then(_ => this.page.waitFor(1000))
-      .then(_ => this.page.goto(url))
+      .then(_ => this.page.goto(`${url}:${this.port}`))
       .then(_ => this.page.setViewport({width: 1550, height: 850}));
   }
 
@@ -83,18 +88,47 @@ export default class BrowserDriver {
       .then(_ => this.browser.close());
   }
 
-  startServer(config = {}) {
-    this.child = this.execFile(
-      config.process || DEFAULT_CONFIG.process,
-      config.parameters || DEFAULT_CONFIG.parameters,
-      config.options || DEFAULT_CONFIG.options,
-      (error, stdout) => {
-        if (error) {
+  startServer(config = {}, maxRetryTimes = 30) {
+    const newConfig = Object.assign({}, DEFAULT_CONFIG, config);
+    return new Promise((resolve, reject) => {
+      log.log({
+        message: `Binding to port: ${newConfig.port}`,
+        color: COLOR.YELLOW
+      })();
+      const timeout = setTimeout(() => { // eslint-disable-line
+        resolve();
+      }, 2000);
+      this.child = this.execFile(
+        newConfig.process,
+        [...newConfig.parameters, '--port', `${newConfig.port}`],
+        newConfig.options,
+        error => {
+          if (error) {
+            clearTimeout(timeout); // eslint-disable-line
+            log.log({
+              message: `Failed to bind port: ${newConfig.port}`,
+              color: COLOR.YELLOW
+            })();
+            reject(error);
+          }
+        }
+      );
+    })
+      .then(() => {
+        this.port = newConfig.port;
+      })
+      .catch(error => {
+        if (maxRetryTimes > 0) {
+          newConfig.port++;
+          return this.startServer(newConfig, maxRetryTimes - 1);
+        } else { // eslint-disable-line
+          log.log({
+            message: 'Failed to start server, use \'killall node\' to stop existing services',
+            color: COLOR.RED
+          })();
           throw error;
         }
-        this.console.log(stdout);
-      }
-    );
+      });
   }
 
   stopServer() {

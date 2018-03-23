@@ -442,7 +442,7 @@ in a later version. Use \`${newUsage}\` instead`);
         const {total} = this._getElapsedTime();
         time = leftPad(formatTime(total));
       }
-      message = opts.time ? `${this.id}: ${time}  ${message}` : `${this.id}: ${time} ${message}`;
+      message = opts.time ? `${this.id}: ${time}  ${message}` : `${message}`;
       message = addColor(message, opts.color, opts.background);
     }
     return message;
