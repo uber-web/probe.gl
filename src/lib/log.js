@@ -332,9 +332,6 @@ in a later version. Use \`${newUsage}\` instead`);
 
   _shouldLog(priority) {
     priority = this._normalizePriority(priority);
-
-    assert(Number.isFinite(priority) && priority >= 0); // 'log priority must be a number'
-
     return priority === 0 || (this.isEnabled() && this.getPriority() >= priority);
   }
 
@@ -379,38 +376,55 @@ in a later version. Use \`${newUsage}\` instead`);
     return noop;
   }
 
-  // "Normalizes" the various argument patterns into an object with known types
-  // - log(priority, message, args) => {priority, message, args}
-  // - log(message, args) => {priority: 0, message, args}
-  // - log({priority, ...}, message, args) => {priority, message, args}
-  // - log({priority, message, args}) => {priority, message, args}
   _parseArguments(options) {
     const normOpts = this._normalizeArguments(options);
 
     const {delta, total} = this._getElapsedTime();
 
-    // original opts + normalized opts + opts arg + fixed up message + timings
+    // normalized opts + timings
     return Object.assign(options, normOpts, {
       delta,
       total
     });
   }
 
+  // Get priority from first argument:
+  // - log(priority, message, args) => priority
+  // - log(message, args) => 0
+  // - log({priority, ...}, message, args) => priority
+  // - log({priority, message, args}) => priority
   _normalizePriority(priority) {
+    let resolvedPriority;
+
     switch (typeof priority) {
     case 'number':
-      return priority;
+      resolvedPriority = priority;
+      break;
 
     case 'object':
-      return priority.priority || 0;
+      resolvedPriority = priority.priority || 0;
+      break;
 
     default:
-      return 0;
+      resolvedPriority = 0;
     }
+    // 'log priority must be a number'
+    assert(Number.isFinite(resolvedPriority) && resolvedPriority >= 0);
+
+    return resolvedPriority;
   }
 
+  // "Normalizes" the various argument patterns into an object with known types
+  // - log(priority, message, args) => {priority, message, args}
+  // - log(message, args) => {priority: 0, message, args}
+  // - log({priority, ...}, message, args) => {priority, message, args}
+  // - log({priority, message, args}) => {priority, message, args}
   _normalizeArguments({priority, message, args = [], opts}) {
-    let newOpts = null;
+    const newOpts = {
+      priority: this._normalizePriority(priority),
+      message,
+      args
+    };
 
     switch (typeof priority) {
     case 'string':
@@ -418,20 +432,15 @@ in a later version. Use \`${newUsage}\` instead`);
       if (message !== undefined) {
         args.unshift(message);
       }
-      newOpts = {message: priority, args};
+      Object.assign(newOpts, {message: priority});
       break;
 
     case 'object':
-      const opts = priority;
-      newOpts = Object.assign({message, args}, opts);
+      Object.assign(newOpts, priority);
       break;
 
     default:
-      newOpts = {message, args};
-      break;
     }
-
-    newOpts.priority = this._normalizePriority(priority);
 
     // Resolve functions into strings by calling them
     if (typeof newOpts.message === 'function') {
@@ -440,6 +449,7 @@ in a later version. Use \`${newUsage}\` instead`);
     // 'log message must be a string' or object
     assert(typeof newOpts.message === 'string' || typeof newOpts.message === 'object');
 
+    // original opts + normalized opts + opts arg + fixed up message
     return Object.assign(newOpts, opts);
   }
 
