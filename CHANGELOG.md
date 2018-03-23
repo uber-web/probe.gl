@@ -2,6 +2,7 @@ CHANGELOG
 
 v1.0.0-alpha.11
 - `spy.returns` method added
+- Server start retry logic to handle port in use case.
 
 v1.0.0-alpha.10
 - bundle size tests
