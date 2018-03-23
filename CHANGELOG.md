@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.0-alpha.11
+- `spy.returns` method added
+
 v1.0.0-alpha.10
 - bundle size tests
 - no longer use external assert

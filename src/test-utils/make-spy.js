@@ -34,7 +34,7 @@ function wrapFunction(obj, func, methodName) {
     spy.callCount++;
     spy.called = true;
     /* eslint-disable no-invalid-this */
-    return func.apply(this, args);
+    return 'returnValue' in spy ? spy.returnValue : func.apply(this, args);
   }
 
   // Add functions and members
@@ -46,6 +46,10 @@ function wrapFunction(obj, func, methodName) {
 
     restore() {
       obj[methodName] = func;
+    },
+
+    returns(returnValue) {
+      spy.returnValue = returnValue;
     },
 
     obj,
