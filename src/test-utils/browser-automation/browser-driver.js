@@ -56,9 +56,11 @@ export default class BrowserDriver {
     if (this.browser) {
       return Promise.resolve(this.browser);
     }
-    return this.puppeteer.launch(options).then(browser => {
-      this.browser = browser;
-    });
+    return this.puppeteer
+      .launch(options)
+      .then(browser => {
+        this.browser = browser;
+      });
   }
 
   newPage({url = 'http://localhost', width = 1550, height = 850} = {}) {
@@ -105,9 +107,9 @@ export default class BrowserDriver {
         error => {
           if (error) {
             clearTimeout(timeout); // eslint-disable-line
-            log.log({
+            log.error({
               message: `Failed to bind port: ${newConfig.port}`,
-              color: COLOR.YELLOW
+              color: COLOR.BRIGHT_RED
             })();
             reject(error);
           }
