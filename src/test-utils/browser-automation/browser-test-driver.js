@@ -23,7 +23,7 @@ import BrowserDriver from './browser-driver';
 import {COLOR} from '../../lib/utils/color';
 import Log from '../../lib/log';
 
-const log = new Log('render-test');
+const log = new Log({id: 'render-test'});
 
 // DEFAULT config, intended to be overridden in the node script that calls us
 

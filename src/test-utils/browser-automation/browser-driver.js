@@ -20,7 +20,7 @@
 
 import {COLOR} from '../../lib/utils/color';
 import Log from '../../lib/log';
-const log = new Log('render-test');
+const log = new Log({id: 'render-test'});
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
@@ -107,9 +107,9 @@ export default class BrowserDriver {
         error => {
           if (error) {
             clearTimeout(timeout); // eslint-disable-line
-            log.error({
+            log.log({
               message: `Failed to bind port: ${newConfig.port}`,
-              color: COLOR.BRIGHT_RED
+              color: COLOR.YELLOW
             })();
             reject(error);
           }
