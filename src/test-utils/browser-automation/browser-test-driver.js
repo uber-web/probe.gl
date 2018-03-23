@@ -23,7 +23,7 @@ import BrowserDriver from './browser-driver';
 import {COLOR} from '../../lib/utils/color';
 import Log from '../../lib/log';
 
-const log = new Log('render-test');
+const log = new Log({id: 'render-test'});
 
 // DEFAULT config, intended to be overridden in the node script that calls us
 
@@ -34,7 +34,7 @@ if (process.argv.length >= 3) {
 }
 
 const DEFAULT_CONFIG = {
-  title: 'BrowserTestDriver: tests',
+  title: 'BrowserTest',
   exposeFunction: 'taskComplete',
   parameters: [`--env.${webpackEnv}`]
 };
@@ -45,7 +45,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     const {title, exposeFunction} = config;
     this.title = title;
     log.log({
-      message: `${title} starting. Starting Chrome instance, waiting for ${exposeFunction}...`,
+      message: `${title} started. Launching Chromium instance, waiting for ${exposeFunction}...`,
       color: COLOR.YELLOW
     })();
     this.time = Date.now();
@@ -58,7 +58,8 @@ export default class BrowserTestDriver extends BrowserDriver {
       })
       .then(resultString => {
         const result = JSON.parse(resultString);
-        const ok = result.success === Boolean(result.success) &&
+        const ok =
+          result.success === Boolean(result.success) &&
           (!result.failedTest || typeof result.failedTest === 'string');
         if (!ok) {
           throw new Error(`Illegal response "${resultString}" returned from Chrome test script`);

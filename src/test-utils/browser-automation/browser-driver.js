@@ -18,25 +18,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// TODO - use a Log
-import {addColor, COLOR} from '../../lib/utils/color';
-
-const ERR_AUTOMATION = `Browser automation error. Check stack trace.
- Also note that Chrome 64 or higher is required.`;
+import {COLOR} from '../../lib/utils/color';
+import Log from '../../lib/log';
+const log = new Log({id: 'render-test'});
 
 const DEFAULT_CONFIG = {
   process: './node_modules/.bin/webpack-dev-server',
   parameters: ['--config', 'webpack.config.js'],
+  port: 5000,
   options: {maxBuffer: 5000 * 1024}
 };
 
 const DEFAULT_PUPPETEER_OPTIONS = {
-  headless: false,
-  executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  headless: false
 };
 
 export default class BrowserDriver {
-
   constructor() {
     this.execFile = module.require('child_process').execFile;
     this.puppeteer = module.require('puppeteer');
@@ -46,6 +43,7 @@ export default class BrowserDriver {
     this.child = null;
     this.browser = null;
     this.page = null;
+    this.port = null;
     this.shellStatus = 0;
   }
 
@@ -62,26 +60,22 @@ export default class BrowserDriver {
       .launch(options)
       .then(browser => {
         this.browser = browser;
-      })
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
       });
   }
 
-  newPage({url = 'http://localhost:8080', width = 1550, height = 850} = {}) {
+  newPage({url = 'http://localhost', width = 1550, height = 850} = {}) {
+    log.log({
+      message: `Connecting to port: ${this.port}`,
+      color: COLOR.YELLOW
+    })();
     return this.startBrowser()
       .then(_ => this.browser.newPage())
       .then(page => {
         this.page = page;
       })
       .then(_ => this.page.waitFor(1000))
-      .then(_ => this.page.goto(url))
-      .then(_ => this.page.setViewport({width: 1550, height: 850}))
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
-      });
+      .then(_ => this.page.goto(`${url}:${this.port}`))
+      .then(_ => this.page.setViewport({width: 1550, height: 850}));
   }
 
   exposeFunction(name = 'testDriverDone') {
@@ -93,26 +87,50 @@ export default class BrowserDriver {
   stopBrowser() {
     return Promise.resolve()
       .then(_ => this.page.waitFor(1000))
-      .then(_ => this.browser.close())
-      .catch(error => {
-        console.error(addColor(ERR_AUTOMATION, COLOR.BRIGHT_RED)); // eslint-disable-line
-        throw error;
-      });
+      .then(_ => this.browser.close());
   }
 
-  startServer(config = {}) {
-    this.child = this.execFile(
-      config.process || DEFAULT_CONFIG.process,
-      config.parameters || DEFAULT_CONFIG.parameters,
-      config.options || DEFAULT_CONFIG.options,
-      (err, stdout) => {
-        if (err) {
-          this.console.error(err);
-          return;
+  startServer(config = {}, maxRetryTimes = 30) {
+    const newConfig = Object.assign({}, DEFAULT_CONFIG, config);
+    return new Promise((resolve, reject) => {
+      log.log({
+        message: `Binding to port: ${newConfig.port}`,
+        color: COLOR.YELLOW
+      })();
+      const timeout = setTimeout(() => { // eslint-disable-line
+        resolve();
+      }, 2000);
+      this.child = this.execFile(
+        newConfig.process,
+        [...newConfig.parameters, '--port', `${newConfig.port}`],
+        newConfig.options,
+        error => {
+          if (error) {
+            clearTimeout(timeout); // eslint-disable-line
+            log.log({
+              message: `Failed to bind port: ${newConfig.port}`,
+              color: COLOR.YELLOW
+            })();
+            reject(error);
+          }
         }
-        this.console.log(stdout);
-      }
-    );
+      );
+    })
+      .then(() => {
+        this.port = newConfig.port;
+      })
+      .catch(error => {
+        if (maxRetryTimes > 0) {
+          newConfig.port++;
+          return this.startServer(newConfig, maxRetryTimes - 1);
+        } else { // eslint-disable-line
+          log.log({
+            message: 'Failed to start server, use \'killall node\' to stop existing services',
+            color: COLOR.RED
+          })();
+          throw error;
+        }
+      });
   }
 
   stopServer() {
@@ -128,6 +146,11 @@ export default class BrowserDriver {
   }
 
   exit() {
-    return Promise.all([this.stopBrowser(), this.stopServer()]).then(_ => this.exitProcess());
+    return Promise.resolve()
+      .then(() => this.stopBrowser())
+      .then(() => {
+        this.stopServer();
+        this.exitProcess();
+      });
   }
 }
