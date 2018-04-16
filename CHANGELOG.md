@@ -6,8 +6,31 @@ v1.0.0 - Apr 16, 2018
 ## Old Prereleases
 
 v1.0.0-alpha.11
+- Add babel-minify
+- test-utils: `spy.returns` method added
+- test-utils: Server start retry logic to handle port in use case.
+- test-utils: browser automation
+
+v1.0.0-alpha.10
+- bundle size tests
+- no longer use external assert
+
+v1.0.0-alpha.9
+- not stop server when failed
+
+v1.0.0-alpha.8
+- default log export
+- `Log.probe` 
+- `Stats` class improvements
+
+v1.0.0-alpha.7
+- probe timings
+
+v1.0.0-alpha.6
+v1.0.0-alpha.11
 - `spy.returns` method added
 - Server start retry logic to handle port in use case.
+- test-utils, browser automation
 
 v1.0.0-alpha.10
 - bundle size tests

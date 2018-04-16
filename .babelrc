@@ -8,6 +8,9 @@
   "plugins": [
     "version-inline"
   ],
+  "presets": [
+    "minify"
+  ],
   "env": {
     "reduce-dist": {
       "presets": [
@@ -27,8 +30,7 @@
               "transform-es2015-for-of"
             ]
           }
-        ],
-        "babili"
+        ]
       ],
     },
     "test": {
