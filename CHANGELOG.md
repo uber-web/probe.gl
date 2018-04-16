@@ -1,5 +1,10 @@
 CHANGELOG
 
+v1.0.0 - Apr 16, 2018
+- Initial official release
+
+## Old Prereleases
+
 v1.0.0-alpha.11
 - `spy.returns` method added
 - Server start retry logic to handle port in use case.
