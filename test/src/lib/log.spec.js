@@ -57,7 +57,7 @@ test('Probe#getTotal()', t => {
   const time2 = Probe.getTotal();
   t.ok(Number.isFinite(time1), 'Probe.getTotal() returned number');
   t.ok(Number.isFinite(time2), 'Probe.getTotal() returned number');
-  t.ok(time2 - time1 > 0, 'Probe.getTotal() is monotonic');
+  t.ok(time2 - time1 >= 0, 'Probe.getTotal() is monotonic');
   t.end();
 });
 

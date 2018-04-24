@@ -38,10 +38,11 @@
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
     "test-size": "npm run build && webpack --config test/webpack.config.js --env.import-nothing",
     "bench": "node test/start.js bench",
-    "test-browser": "webpack-dev-server --env.test --progress --hot --open",
-    "bench-browser": "webpack-dev-server --env.bench --progress --hot --open"
+    "test-browser": "webpack-dev-server --config test/webpack.config.js --env.test --progress --hot --open",
+    "bench-browser": "webpack-dev-server --config test/webpack.config.js --env.bench --progress --hot --open"
   },
   "dependencies": {
+    "asciify-image": "^0.1.1",
     "babel-runtime": "^6.11.6"
   },
   "devDependencies": {
@@ -70,6 +71,7 @@
     "tape": "^4.5.1",
     "tape-catch": "^1.0.4",
     "uglifyjs-webpack-plugin": "^1.2.4",
+    "url-loader": "^1.0.1",
     "webpack": "^2.4.0",
     "webpack-bundle-analyzer": "^2.11.1",
     "webpack-dev-server": "^2.4.0"

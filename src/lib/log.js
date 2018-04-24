@@ -238,22 +238,43 @@ in a later version. Use \`${newUsage}\` instead`);
     if (priority > this.getPriority()) {
       return noop;
     }
-    if (typeof window === 'undefined') { // Let's not try this under node
-      return noop;
+    return isBrowser ?
+      this._logImageInBrowser({image, message, scale}) :
+      this._logImageInNode({image, message, scale});
+  }
+
+  // Use the asciify module to log an image under node.js
+  _logImageInNode({image, message = '', scale = 1}) {
+    // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
+    const asciify = module.require('asciify-image');
+    if (asciify) {
+      return () =>
+        asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`})
+        .then(data => console.log(data));
     }
+    return noop;
+  }
+
+  _logImageInBrowser({image, message = '', scale = 1}) {
     if (typeof image === 'string') {
       const img = new Image();
-      img.onload = () => console.log(formatImage.bind(null, img, message, scale));
+      img.onload = () => {
+        const args = formatImage(img, message, scale);
+        console.log(...args);
+      };
       img.src = image;
+      return noop;
     }
     const element = image.nodeName || '';
     if (element.toLowerCase() === 'img') {
-      console.log(formatImage(image, message, scale));
+      console.log(...formatImage(image, message, scale));
+      return noop;
     }
     if (element.toLowerCase() === 'canvas') {
       const img = new Image();
-      img.onload = () => console.log(formatImage.bind(null, img, message, scale));
+      img.onload = () => console.log(...formatImage(img, message, scale));
       img.src = image.toDataURL();
+      return noop;
     }
     return noop;
   }
