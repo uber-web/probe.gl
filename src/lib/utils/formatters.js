@@ -93,10 +93,15 @@ function formatArrayValue(v, opts) {
 }
 
 // Inspired by https://github.com/hughsk/console-image (MIT license)
-export function formatImage(image, message, scale) {
+export function formatImage(image, message, scale, maxWidth = 600) {
+  const imageUrl = image.src.replace(/\(/g, '%28').replace(/\)/g, '%29');
+
+  if (image.width > maxWidth) {
+    scale = Math.min(scale, maxWidth / image.width);
+  }
+
   const width = image.width * scale;
   const height = image.height * scale;
-  const imageUrl = image.src.replace(/\(/g, '%28').replace(/\)/g, '%29');
 
   const style = [
     'font-size:1px;',

@@ -43,6 +43,8 @@ const COMMON_CONFIG = {
 };
 
 const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
+  devtool: '#source-maps',
+
   devServer: {
     stats: {
       warnings: false
@@ -52,7 +54,7 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
 
   // Bundle the tests for running in the browser
   entry: {
-    'test-browser': resolve('./test/browser.js')
+    'test-browser': resolve('./test/test-browser.js')
   },
 
   // Generate a bundle in dist folder
@@ -61,8 +63,6 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
     filename: '[name]-bundle.js'
   },
 
-  devtool: '#source-maps',
-
   module: {
     rules: [
       {
@@ -70,6 +70,11 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
         test: /\.js$/,
         use: ['source-map-loader'],
         enforce: 'pre'
+      },
+
+      {
+        test: /\.(jpg|png)$/,
+        use: ['url-loader']
       }
     ]
   },

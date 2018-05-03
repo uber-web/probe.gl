@@ -20,6 +20,5 @@
 
 require('probe.gl'); // ensure probe gets access to pure console first
 require('tap-browser-color')();
-require('babel-polyfill');
-
 require('./test-index');
+require('./src/lib/raw-logging');
