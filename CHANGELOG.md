@@ -1,5 +1,8 @@
 CHANGELOG
 
+v1.0.1 - May 3, 2018
+- Image logging improvements
+
 v1.0.0 - Apr 16, 2018
 - Initial official release
 
