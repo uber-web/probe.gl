@@ -246,7 +246,12 @@ in a later version. Use \`${newUsage}\` instead`);
   // Use the asciify module to log an image under node.js
   _logImageInNode({image, message = '', scale = 1}) {
     // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
-    const asciify = module.require('asciify-image');
+    let asciify = null;
+    try {
+      asciify = module.require('asciify-image');
+    } catch (error) {
+      // asciify not installed, silently ignore
+    }
     if (asciify) {
       return () =>
         asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`})
