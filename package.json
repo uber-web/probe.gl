@@ -42,7 +42,6 @@
     "bench-browser": "webpack-dev-server --config test/webpack.config.js --env.bench --progress --hot --open"
   },
   "dependencies": {
-    "asciify-image": "^0.1.1",
     "babel-runtime": "^6.11.6"
   },
   "devDependencies": {
