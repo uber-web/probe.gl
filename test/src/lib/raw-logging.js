@@ -26,6 +26,8 @@ log.probe('probe0')();
 log.probe(1, 'probe1')();
 log.probe(2, 'probe2')();
 log.probe({priority: 3}, 'probe3')();
+log.probe({priority: 3}, 'probe3')();
+log.probe({priority: 3}, 'probe3')();
 log.probe({color: 'green'}, 'probe-green')();
 log.probe({color: COLOR.RED, message: 'probe-red'})();
 

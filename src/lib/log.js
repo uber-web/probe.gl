@@ -185,7 +185,8 @@ in a later version. Use \`${newUsage}\` instead`);
       message,
       args,
       method: originalConsole.log,
-      time: true
+      time: true,
+      once: true
     });
   }
 
