@@ -1,5 +1,9 @@
 CHANGELOG
 
+v1.0.2
+- Log.probe now only logs same string once, as intended
+- Remove asciify-image dependency (to avoid recursive npm dep)
+
 v1.0.1 - May 3, 2018
 - Image logging improvements
 
