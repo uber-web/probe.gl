@@ -30,7 +30,7 @@ import {isBrowser} from './utils/globals';
 import assert from '../lib/utils/assert';
 
 /* eslint-disable no-console */
-/* global console, window, Image */
+/* global console, Image */
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {

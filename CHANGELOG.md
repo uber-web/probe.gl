@@ -1,5 +1,10 @@
 CHANGELOG
 
+v1.1.0-alpha.1 - Aug 1, 2018
+- `sideEffects` flag added to `package.json` to improve tree-shaking performance
+- `asciify-image` again a dependency (since it has cleaned up their dependencies).
+- "browser" field in package.json used to ensure latest webpack doesn't bundle `asciify-image`.
+
 v1.0.2
 - Log.probe now only logs same string once, as intended
 - Remove asciify-image dependency (to avoid recursive npm dep)
