@@ -22,7 +22,12 @@
     "test-utils.js"
   ],
   "browser": {
-    "asciify-image": false
+    "asciify-image": false,
+    "child_process": false,
+    "console": false,
+    "net": false,
+    "readline": false,
+    "tls": false
   },
   "scripts": {
     "build-clean": "rm -fr dist dist-es6 && mkdir -p dist dist-es6",
