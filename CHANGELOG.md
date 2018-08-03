@@ -5,6 +5,9 @@ v1.1.0-alpha.1 - Aug 1, 2018
 - `asciify-image` again a dependency (since it has cleaned up their dependencies).
 - "browser" field in package.json used to ensure latest webpack doesn't bundle `asciify-image`.
 
+v1.0.4 - Aug 3, 2018
+- Add various node.js modules to package.json 'browser' field.
+
 v1.0.3 - Aug 3, 2018
 - Add `asciify-image: false` in package.json browser field`
 
