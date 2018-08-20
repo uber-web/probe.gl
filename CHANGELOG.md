@@ -1,5 +1,10 @@
 CHANGELOG
 
+v2.0.0-alpha.1 - Aug 19, 2018
+- Export utils for global symbols and environment detection
+- Add basic browser/mobile detection
+- Adopt new experimental exports scheme
+
 v1.1.0-alpha.1 - Aug 1, 2018
 - `sideEffects` flag added to `package.json` to improve tree-shaking performance
 - `asciify-image` again a dependency (since it has cleaned up their dependencies).
