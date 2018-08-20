@@ -5,6 +5,8 @@
 import isElectron from './is-electron';
 
 export default function isBrowser() {
+
+  // Check if in browser by duck-typing Node context
   const isNode =
     typeof process === 'object' &&
     String(process) === '[object process]' &&

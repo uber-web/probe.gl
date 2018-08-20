@@ -16,7 +16,7 @@ export default function isElectron(mockUserAgent) {
   const realUserAgent = typeof navigator === 'object' && typeof navigator.userAgent === 'string' &&
     navigator.userAgent;
   const userAgent = mockUserAgent || realUserAgent;
-  if (userAgent.indexOf('Electron') >= 0) {
+  if (userAgent && userAgent.indexOf('Electron') >= 0) {
     return true;
   }
   return false;
