@@ -18,6 +18,7 @@
     "dist",
     "src",
     "bench.js",
+    "env.js",
     "test.js",
     "test-utils.js"
   ],
