@@ -18,10 +18,15 @@
     "dist",
     "src",
     "bench.js",
+    "env.js",
     "test.js",
     "test-utils.js"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/init.js",
+    "./src/env/globals.js",
+    "./src/lib/globals.js"
+  ],
   "browser": {
     "asciify-image": false,
     "child_process": false,

@@ -19,5 +19,6 @@
 // THE SOFTWARE.
 
 import './src/test-utils';
+import './src/env';
 import './src/bench';
 import './src/lib';
