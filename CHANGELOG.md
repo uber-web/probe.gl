@@ -1,6 +1,6 @@
 CHANGELOG
 
-v2.0.0-alpha.1 - Aug ?, 2018
+v2.0.0-beta.1 - Aug 28, 2018
 - `asciify-image` again not a depedency, due to installing 90+ subdependencies.
 
 v2.0.0-alpha.1 - Aug 19, 2018
