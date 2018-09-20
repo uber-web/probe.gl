@@ -1,5 +1,8 @@
 CHANGELOG
 
+v2.0.0-beta.2 - Sep 20, 2018
+- Introduce @babel/runtime and multiple dists
+
 v2.0.0-beta.1 - Aug 28, 2018
 - `asciify-image` again not a depedency, due to installing 90+ subdependencies.
 
