@@ -14,6 +14,8 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "es6": "dist/es6/index.js",
   "files": [
     "dist",
     "src",
@@ -37,7 +39,7 @@
   },
   "scripts": {
     "clean": "rm -fr dist dist-es6 && mkdir -p dist/es5 dist/esm dist/es6",
-    "build": "npm run clean && npm run build-es5 && npm run build-es6 && npm run build-size",
+    "build": "npm run clean && npm run build-es6 && npm run build-esm && npm run build-es5 && npm run build-size",
     "build-es6": "BABEL_ENV=es6 babel src --config-file ./babel.config.js --out-dir dist/es6 --source-maps --ignore 'node_modules/'",
     "build-esm": "BABEL_ENV=esm babel src --config-file ./babel.config.js --out-dir dist/esm --source-maps --ignore 'node_modules/'",
     "build-es5": "BABEL_ENV=es5 babel src --config-file ./babel.config.js --out-dir dist/es5 --source-maps --ignore 'node_modules/'",
@@ -47,7 +49,7 @@
     "lint-yarn": "!(grep -q unpm.u yarn.lock) || (echo 'Please rebuild yarn file using public npmrc' && false)",
     "publish-prod": "npm run test && npm run test-dist && npm publish",
     "publish-beta": "npm run test && npm run test-dist && npm publish --tag beta",
-    "test": "node test/start.js test && node test/start.js log && npm run build",
+    "test": "node test/start.js test && node test/start.js log && npm run build && node test/start.js test-dist",
     "test-fast": "node test/start.js test | tap-diff",
     "test-dist": "node test/start.js test-dist",
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
