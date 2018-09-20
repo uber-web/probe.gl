@@ -12,6 +12,7 @@ const window_ = globals.window || globals.self || globals.global;
 const global_ = globals.global || globals.self || globals.window;
 const document_ = globals.document || {};
 const process_ = globals.process || {};
+const console_ = console;
 
 export {
   self_ as self,
@@ -19,5 +20,5 @@ export {
   global_ as global,
   document_ as document,
   process_ as process,
-  console
+  console_ as console
 };
