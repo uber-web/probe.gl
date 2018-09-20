@@ -22,8 +22,7 @@ case 'log':
   break;
 
 case 'test-dist':
-  // Load deck.gl itself from the dist folder
-  moduleAlias.addAlias('probe.gl', path.resolve('./dist'));
+  moduleAlias.addAlias('probe.gl', path.resolve('./dist/es5'));
   require('./test-index'); // Run the tests
   break;
 
