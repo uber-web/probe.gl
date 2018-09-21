@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "keywords": [
     "javascript",
     "profiling",
@@ -15,7 +15,7 @@
   },
   "main": "dist/es5/index.js",
   "module": "dist/esm/index.js",
-  "es6": "dist/es6/index.js",
+  "esnext": "dist/es6/index.js",
   "files": [
     "dist",
     "src",

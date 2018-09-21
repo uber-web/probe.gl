@@ -1,5 +1,8 @@
 CHANGELOG
 
+v2.0.0-beta.3 - Sep 20, 2018
+- Add `esnext` target
+
 v2.0.0-beta.2 - Sep 20, 2018
 - Introduce @babel/runtime and multiple dists
 
