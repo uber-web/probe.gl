@@ -1,5 +1,8 @@
 CHANGELOG
 
+v2.0.0-beta.4 - Sep 22, 2018
+- Fix `assert` export
+
 v2.0.0-beta.3 - Sep 20, 2018
 - Add `esnext` target
 
