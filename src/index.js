@@ -9,7 +9,7 @@ export {default as getBrowser, isMobile} from './env/get-browser';
 export {default as isElectron} from './env/is-electron';
 
 // ENVIRONMENT'S ASSERT IS 5-15KB, SO WE PROVIDE OUR OWN
-export {assert} from './env/assert';
+export {default as assert} from './env/assert';
 
 // STATS (PERFORMANCE PROFILING)
 export {default as Stats} from './lib/stats';
