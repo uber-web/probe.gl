@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0",
   "keywords": [
     "javascript",
     "profiling",
