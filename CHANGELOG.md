@@ -1,5 +1,6 @@
 CHANGELOG
 
+v2.0.1 - Oct 9, 2018
 v2.0.0 - Oct 9, 2018
 
 v2.0.0-beta.4 - Sep 22, 2018
