@@ -124,3 +124,24 @@ test('Log#table', t => {
   t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table(columns) works');
   t.end();
 });
+
+test('Log#get', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.get('priority'), 'log.get(\'priority\') works');
+  t.end();
+});
+
+test('Log#set', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.set('priority', 1), 'log.set(\'priority\', 1) works');
+  t.end();
+});
+
+test('Log#status', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.status(), 'log.status() works');
+  t.end();
+});

@@ -244,6 +244,21 @@ in a later version. Use \`${newUsage}\` instead`);
       this._logImageInNode({image, message, scale});
   }
 
+  // Logs the current settings as a table
+  status() {
+    console.table(this._storage.config);
+  }
+
+  // logs the current status of the setting
+  get(setting) {
+    return this._storage.config[setting];
+  }
+
+  // update the status of the setting
+  set(setting, value) {
+    this._storage.updateConfiguration({[setting]: value});
+  }
+
   // Use the asciify module to log an image under node.js
   _logImageInNode({image, message = '', scale = 1}) {
     // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles

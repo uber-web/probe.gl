@@ -174,6 +174,24 @@ Logs an image (under Chrome)
 `log.image({priority, image, message = '', scale = 1})`
 
 
+### status
+
+Logs the current settings as a table
+
+`log.status()`
+
+### get(setting)
+
+Logs the current value of setting
+
+`log.get('priority')`
+
+### set(setting, value)
+
+Updates the value of setting
+
+`log.set('priority', 3)`
+
 ### time
 
 `log.time(priority, label)`
