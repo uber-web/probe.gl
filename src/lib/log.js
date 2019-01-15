@@ -246,7 +246,11 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Logs the current settings as a table
   status() {
-    console.table(this._storage.config);
+    if(console.table) {
+      console.table(this._storage.config);
+    } else {
+      console.log(this._storage.config);
+    }
   }
 
   // logs the current status of the setting
