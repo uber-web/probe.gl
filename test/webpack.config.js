@@ -84,6 +84,12 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
   }
 });
 
+const TEST_AUTO_CONFIG = Object.assign({}, TEST_CONFIG, {
+  entry: {
+    'test-browser': resolve('./test/test-browser-auto.js')
+  }
+});
+
 const SIZE_CONFIG = Object.assign({}, TEST_CONFIG, {
   resolve: {
     alias: Object.assign({}, ALIASES, {
@@ -112,6 +118,9 @@ module.exports = env => {
   }
   if (env.test) {
     return TEST_CONFIG;
+  }
+  if (env.testAuto) {
+    return TEST_AUTO_CONFIG;
   }
   return Object.assign({}, SIZE_CONFIG, {
     // Replace the entry point for webpack-dev-server

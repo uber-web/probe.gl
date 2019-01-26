@@ -35,6 +35,7 @@ if (process.argv.length >= 3) {
 
 const DEFAULT_CONFIG = {
   title: 'BrowserTest',
+  exposeFunctions: {},
   exposeFunction: 'taskComplete',
   parameters: [`--env.${webpackEnv}`]
 };
@@ -51,18 +52,23 @@ export default class BrowserTestDriver extends BrowserDriver {
     this.time = Date.now();
     return Promise.resolve()
       .then(_ => this.startServer(config))
-      .then(_ => this.startBrowser())
+      .then(_ => this.startBrowser(config.puppeteer))
       .then(_ => this.newPage())
       .then(_ => {
-        return this.exposeFunction(exposeFunction);
+        for (const key in config.exposeFunctions) {
+          this.exposeFunction(key, config.exposeFunctions[key]);
+        }
+        const onComplete = exposeFunction;
+        return new Promise(resolve => {
+          this.exposeFunction(onComplete, resolve);
+        });
       })
-      .then(resultString => {
-        const result = JSON.parse(resultString);
+      .then(result => {
         const ok =
           result.success === Boolean(result.success) &&
           (!result.failedTest || typeof result.failedTest === 'string');
         if (!ok) {
-          throw new Error(`Illegal response "${resultString}" returned from Chrome test script`);
+          throw new Error(`Illegal response "${JSON.stringify(result)}" returned from Chrome test script`);
         }
         if (!result.success) {
           throw new Error(result.failedTest || 'Unknown failure');

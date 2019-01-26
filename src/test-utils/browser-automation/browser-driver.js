@@ -78,10 +78,8 @@ export default class BrowserDriver {
       .then(_ => this.page.setViewport({width: 1550, height: 850}));
   }
 
-  exposeFunction(name = 'testDriverDone') {
-    return new Promise(resolve => {
-      this.page.exposeFunction(name, resolve);
-    });
+  exposeFunction(name, cb) {
+    this.page.exposeFunction(name, cb);
   }
 
   stopBrowser() {

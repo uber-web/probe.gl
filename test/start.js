@@ -5,6 +5,8 @@ require('reify');
 
 require('../aliases');
 
+const {BrowserTestDriver} = require('probe.gl/test-utils');
+
 /* global process */
 const path = require('path');
 const moduleAlias = require('module-alias');
@@ -19,6 +21,18 @@ case 'bench':
 
 case 'log':
   require('./src/lib/raw-logging');
+  break;
+
+case 'browser':
+  new BrowserTestDriver().run({
+    process: 'webpack-dev-server',
+    parameters: ['--config', 'test/webpack.config.js', '--env.testAuto'],
+    exposeFunctions: {
+      testProgress: console.log // eslint-disable-line
+    },
+    exposeFunction: 'testDone',
+    puppeteer: {headless: true}
+  });
   break;
 
 case 'test-dist':
