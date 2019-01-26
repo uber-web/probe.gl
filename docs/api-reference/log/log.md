@@ -146,6 +146,11 @@ Print an error, using the console's error method
 Returns: a function closure that should be called immediately.
 
 
+### assert(condition : Boolean [, message: String])
+
+Throws an error with the supplied message (or a default message) if condition is false
+
+
 ### deprecated
 
 Generates a deprecation warning (using `log.warn`):

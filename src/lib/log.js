@@ -152,6 +152,10 @@ export default class Log {
 
   // Unconditional logging
 
+  assert(condition, message){
+    assert(condition, message);
+  }
+
   // Warn, but only once, no console flooding
   warn(message, ...args) {
     return this._getLogFunction({
@@ -245,7 +249,7 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // Logs the current settings as a table
-  status() {
+  settings() {
     if(console.table) {
       console.table(this._storage.config);
     } else {

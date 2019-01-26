@@ -117,6 +117,14 @@ test('Log#error', t => {
   t.end();
 });
 
+test('Log#assert', t => {
+  const log = new Log({id: 'test'});
+  t.ok(log instanceof Log, 'log created successfully');
+  t.doesNotThrow(() => log.assert(true, 'test'), 'log.assert works');
+  t.throws(() => log.assert(false, 'test'), 'log.assert works');
+  t.end();
+});
+
 test('Log#table', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
@@ -142,6 +150,6 @@ test('Log#set', t => {
 test('Log#status', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.status(), 'log.status() works');
+  t.doesNotThrow(() => log.settings(), 'log.status() works');
   t.end();
 });
