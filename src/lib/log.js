@@ -152,6 +152,10 @@ export default class Log {
 
   // Unconditional logging
 
+  assert(condition, message){
+    assert(condition, message);
+  }
+
   // Warn, but only once, no console flooding
   warn(message, ...args) {
     return this._getLogFunction({
@@ -242,6 +246,25 @@ in a later version. Use \`${newUsage}\` instead`);
     return isBrowser ?
       this._logImageInBrowser({image, message, scale}) :
       this._logImageInNode({image, message, scale});
+  }
+
+  // Logs the current settings as a table
+  settings() {
+    if(console.table) {
+      console.table(this._storage.config);
+    } else {
+      console.log(this._storage.config);
+    }
+  }
+
+  // logs the current status of the setting
+  get(setting) {
+    return this._storage.config[setting];
+  }
+
+  // update the status of the setting
+  set(setting, value) {
+    this._storage.updateConfiguration({[setting]: value});
   }
 
   // Use the asciify module to log an image under node.js

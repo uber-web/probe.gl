@@ -146,6 +146,11 @@ Print an error, using the console's error method
 Returns: a function closure that should be called immediately.
 
 
+### assert(condition : Boolean [, message: String])
+
+Throws an error with the supplied message (or a default message) if condition is false
+
+
 ### deprecated
 
 Generates a deprecation warning (using `log.warn`):
@@ -173,6 +178,24 @@ Logs an image (under Chrome)
 
 `log.image({priority, image, message = '', scale = 1})`
 
+
+### status
+
+Logs the current settings as a table
+
+`log.status()`
+
+### get(setting)
+
+Logs the current value of setting
+
+`log.get('priority')`
+
+### set(setting, value)
+
+Updates the value of setting
+
+`log.set('priority', 3)`
 
 ### time
 
