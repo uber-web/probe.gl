@@ -6,22 +6,20 @@
 
 > Note: Requires Chrome version 64 or higher
 
-A Chrome Browser test automation driver class (based on the [Chrome `DevTools` protocol](https://chromedevtools.github.io/devtools-protocol/) via the [`puppeteer`](https://github.com/GoogleChrome/puppeteer) module. The `BrowserDriver` class is primarily intended for automating runs of browser based tests from shell scripts.
+A Chrome Browser test automation driver class (based on the [Chrome `DevTools` protocol](https://chromedevtools.github.io/devtools-protocol/) via the [`puppeteer`](https://github.com/GoogleChrome/puppeteer) module. The `BrowserDriver` class is primarily intended for automating browser based applications from shell scripts.
 
 A `BrowserDriver` is typically used to do the following:
-* Start a Chrome browser instance
-* Start a (webpack) dev server that builds a bundle of a JavaScript code to execute in the browser.
-* Opens a browser page with a URL that loads the bundle into the browser and runs the tests.
-* Extracts a pass/fail value from the browser back into node
-* Closes browser, server and terminates the current node script.
-* Passes the pass/fail value as exit status (0/1) back to the invoking shell.
+* Launch/close a Chromium browser instance
+* Start/stop a local web service.
+* Opens a browser page with a URL in the browser.
 
+To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) must be installed as a dev dependency.
 
 ## Usage
 
 ```js
 import {BrowserDriver} from 'probe.gl/test-utils';
-new BrowserDriver({...});
+new BrowserDriver({id: 'browser-test'});
 ```
 
 
@@ -29,92 +27,83 @@ new BrowserDriver({...});
 
 ### constructor
 
-`new BrowserDriver({...})`
+```js
+const browserDriver = new BrowserDriver(opts);
+```
 
-### startBrowser
+Parameters:
 
-`driver.startBrowser(options)`
+* `opts` (Object)
+  - `id` (String) - an id for this `BrowserDriver` instance. Default `browser-driver`.
+
+### startBrowser(options)
+
+Launch a new browser instance.
+
+Parameters:
+
+* `options` (Object) - options to pass to [puppeteer.launch](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions).
 
 Returns a `Promise` that resolves when the browser has started.
 
+### openPage(options)
 
-### newPage
+Open a new tab in the browser. Only works after a browser instance is started:
 
-Opens a new tab in the browser
+```js
+browserDriver.startBrowser().openPage({url: 'http://localhost'});
+```
 
-`driver.newPage({url, width, height})`
+Parameters:
 
-* `url` = `http://localhost:8080` - The url to load in the page.
-* `width` = `1550` - The width of the page
-* `height` = `850` - The height of the page
+* `options` (Object)
+  - `url` (String) - The url to load in the page. Default `http://localhost`.
+  - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
+
 Returns a `Promise` that resolves when the page is open.
 
 
-### exposeFunction
+### stopBrowser()
 
-Exposes a function on the `window` object in the controlled browser and waits until the controlled script has called that function. In addition, a string parameter to the function will be returned (as the value of the resolved `Promise`).
-
-`driver.exposeFunction(functionToExpose)`
-
-* `functionToExpose`=`sendMessage` (`String`)
-Returns: a `Promise` that resolves when the browser code calls the function to the string the browser script passed to the exposed function.
-
-
-### stopBrowser
-
-Stops and closes the browser.
-
-`driver.stopBrowser()`
+Terminate the browser instance.
 
 Returns a `Promise` that resolves when the browser is closed.
 
 
-### setShellStatus
-
-`driver.setShellStatus(success)`
-
-Set the return value that will be visible to the shell, truthy values will generate 0 which represents success.
-
-
-### startServer
+### startServer(config)
 
 Runs a server in a new child process, that the browser can connect to.
 
-`driver.startServer({process, parameters, options})`
-
-* `process`=`'./node_modules/.bin/webpack-dev-server'` - The process to fork
-* `parameters`=`['--config', 'test/render/webpack.config.js']` - The parameters to the process
-* `options`=`{maxBuffer: 5000 * 1024}`
-
-Example:
 ```js
 driver.startServer({
-  process: './node_modules/.bin/webpack-dev-server',
-  parameters: ['--config', 'test/render/webpack.config.js'],
-  options: {maxBuffer: 5000 * 1024}
+  command: './node_modules/.bin/webpack-dev-server',
+  arguments: ['--config', 'test/webpack.config.js'],
+  wait: 2000
 })
 ```
 
-Returns: nothing
+Parameters:
+
+* `command` (String) - the command to run, default `'webpack-dev-server'`.
+* `arguments` (Array<String>) - a list of string arguments.
+* `options` (Object) - options for the new process. Default `{maxBuffer: 5000 * 1024}`. See [child_process.spawn](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) for details.
+* `port` (`'auto'`|`false`) - `startServer` can attempt to bind the service to an available port if `port` is set to `'auto'`. In this case, the command receives additional arguments `--port <port>`. Default `'auto'`.
+* `wait` (Number) - time in milliseconds to wait after executing the command. If any error is generated from the child process during this period, the `Promise` will reject. Otherwise, the service is considered available. Default `2000`.
+
+Returns a `Promise` that resolves to the service URL when the server is available.
 
 
-### stopServer
+### stopServer()
 
-Stopsthe server (kills the child process)
+Stops the server (kills the child process).
 
-`driver.stopServer()`
-
-Returns: nothing
+Returns: a `Promise` that resolves when the server is closed.
 
 
-### exit
+### exit(statusCode)
 
-Stops all started sub processes and terminates current script. Generates a return value that is visible to the shell, `0` is success.
+Exit the process after safely closing down any running browser and server instances.
 
-`driver.exit(...)`
+Parameter:
 
-Notes:
-* Stops the browser via `this.stopBrowser()`.
-* Stops the server (child process), via `this.stopServer()`.
-* Exits the current script with a status code.
-
+* `statusCode` - the status code to use when exit the process. Default `0`.

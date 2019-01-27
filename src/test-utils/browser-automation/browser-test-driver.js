@@ -21,84 +21,84 @@
 /* global process */
 import BrowserDriver from './browser-driver';
 import {COLOR} from '../../lib/utils/color';
-import Log from '../../lib/log';
-
-const log = new Log({id: 'render-test'});
-
-// DEFAULT config, intended to be overridden in the node script that calls us
-
-// read the webpack env from 3 arg (node script arg)
-let webpackEnv = 'render';
-if (process.argv.length >= 3) {
-  webpackEnv = process.argv[2];
-}
-
-const DEFAULT_CONFIG = {
-  title: 'BrowserTest',
-  exposeFunctions: {},
-  parameters: [`--env.${webpackEnv}`]
-};
 
 export default class BrowserTestDriver extends BrowserDriver {
   run(config = {}) {
-    config = Object.assign(DEFAULT_CONFIG, config);
-    const {title} = config;
+    const {title = 'Browser Test'} = config;
     this.title = title;
-    log.log({
-      message: `${title} started. Launching Chromium instance...`,
+    this.time = Date.now();
+    this.failures = 0;
+
+    this.logger.log({
+      message: `${title}`,
       color: COLOR.YELLOW
     })();
-    this.time = Date.now();
+
     return Promise.resolve()
-      .then(_ => this.startServer(config))
-      .then(_ => this.startBrowser(config.puppeteer))
-      .then(_ => this.newPage())
-      .then(_ => new Promise(resolve => {
-        const exposeFunctions = Object.assign({
-          browserTestLog: console.log, // eslint-disable-line
-          browserTestComplete: resolve
-        }, config.exposeFunctions);
-        // deprecated API
-        if (config.exposeFunction) {
-          exposeFunctions[config.exposeFunction] = resolve;
-        }
-        for (const name in exposeFunctions) {
-          this.exposeFunction(name, exposeFunctions[name]);
-        }
-      }))
-      .then(result => {
-        const ok =
-          result.success === Boolean(result.success) &&
-          (!result.failedTest || typeof result.failedTest === 'string');
-        if (!ok) {
-          throw new Error(`Illegal response "${JSON.stringify(result)}" returned from Chrome test script`);
-        }
-        if (!result.success) {
-          throw new Error(result.failedTest || 'Unknown failure');
-        }
-        this._success();
-      })
+      .then(_ => this._startServer(config.server))
+      .then(url => this._openPage(url, config))
+      .then(result => this._onFinish(result))
       .catch(error => {
-        this._failure(error);
+        this._fail(error.message);
       });
   }
 
-  _success() {
-    const elapsed = ((Date.now() - this.time) / 1000).toFixed(1);
-    log.log({
-      message: `${this.title} successfully completed in ${elapsed}s!`,
-      color: COLOR.BRIGHT_GREEN
-    })();
-    this.setShellStatus(true);
-    this.exit();
+  _openPage(url, config = {}) {
+    return this.startBrowser(config.browser)
+      .then(_ => new Promise(resolve => {
+        const exposeFunctions = Object.assign({
+          browserTestLog: console.log, // eslint-disable-line
+          browserTestFail: () => this.failures++,
+          browserTestComplete: resolve,
+
+          // This overwrites window.onerror and captures any unhandled error on the page
+          // Otherwise if page crashes this process will hang forever
+          onerror: error => {
+            throw error;
+          }
+        }, config.exposeFunctions);
+
+        this.openPage({url: config.url || url, exposeFunctions});
+      }));
   }
 
-  _failure(error) {
-    log.log({
-      message: `${this.title} failed: ${error.message}. Keeping browser open to allow debugging.`,
+  _startServer(config = {}) {
+    if (!config) {
+      return null;
+    }
+    if (typeof config === 'function') {
+      return config();
+    }
+    return this.startServer(config);
+  }
+
+  _onFinish(message) {
+    const elapsed = ((Date.now() - this.time) / 1000).toFixed(1);
+    this.logger.log({
+      message: `${this.title} completed in ${elapsed}s.`,
+      color: COLOR.YELLOW
+    })();
+
+    if (this.failures) {
+      this._fail(message || `${this.failures} test${this.failures > 1 ? 's' : ''} failed`)
+    } else {
+      this._pass(message || 'All tests passed');
+    }
+  }
+
+  _pass(message) {
+    this.logger.log({
+      message: `${this.title} successful: ${message}`,
+      color: COLOR.BRIGHT_GREEN
+    })();
+    this.exit(0);
+  }
+
+  _fail(message) {
+    this.logger.log({
+      message: `${this.title} failed: ${message}`,
       color: COLOR.BRIGHT_RED
     })();
-    // Don't call exit(). Leave browser running so user can inspect image that failed to render
-    this.setShellStatus(false);
+    this.exit(1);
   }
 }

@@ -25,9 +25,12 @@ case 'log':
 
 case 'browser':
   new BrowserTestDriver().run({
-    process: 'webpack-dev-server',
-    parameters: ['--config', 'test/webpack.config.js', '--env.test', '--env.headless'],
-    puppeteer: {headless: true}
+    title: 'Unit Tests',
+    server: {
+      command: 'webpack-dev-server',
+      arguments: ['--config', 'test/webpack.config.js', '--env.test', '--env.headless']
+    },
+    browser: {headless: true}
   });
   break;
 

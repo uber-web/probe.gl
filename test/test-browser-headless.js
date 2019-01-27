@@ -18,13 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 const test = require('tape');
-const {callExposedFunction} = require('probe.gl/test-utils');
 
+/* global window */
 // Set up tape to print to console instead of browser window
-test.createStream().on('data', row => callExposedFunction('browserTestLog', row.trim()));
+test.createStream().on('data', row => window.browserTestLog(row.trim()));
 
 // Notify the Node script of the test result; terminate browser instance
-test.onFinish(() => callExposedFunction('browserTestComplete', {success: true}));
-test.onFailure(() => callExposedFunction('browserTestComplete', {success: false}));
+test.onFinish(window.browserTestComplete);
+test.onFailure(window.browserTestFail);
 
 require('./test-browser');
