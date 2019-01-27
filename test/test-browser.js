@@ -26,6 +26,6 @@ if (window.browserTestDriver_sendMessage) {
 }
 
 require('probe.gl'); // ensure probe gets access to pure console first
-require('tap-browser-color')();
+// require('tap-browser-color')();
 require('./test-index');
 require('./src/lib/raw-logging');

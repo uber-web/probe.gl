@@ -20,6 +20,7 @@
 /* global console */
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from '../../lib/utils/color';
+import diffImages from '../image-utils/diff-images';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
@@ -96,12 +97,16 @@ export default class BrowserTestDriver extends BrowserDriver {
       this.failures++;
       break;
 
+    case 'image-diff':
+      return this._imageDiff(args);
+
     case 'done':
       resolve(args);
       break;
 
     default:
     }
+    return null;
   }
 
   /* eslint-disable no-console */
@@ -164,5 +169,27 @@ export default class BrowserTestDriver extends BrowserDriver {
     if (this.headless) {
       this.exit(1);
     }
+  }
+
+  _imageDiff(opts) {
+    if (!opts.goldenImage) {
+      return Promise.reject(new Error('Must supply golden image for image diff'));
+    }
+
+    const screenshotOptions = {
+      type: 'png',
+      omitBackground: true,
+      encoding: 'binary'
+    };
+    if (opts.region) {
+      screenshotOptions.clip = opts.region;
+    } else {
+      screenshotOptions.fullPage = true;
+    }
+    return this.page.screenshot(screenshotOptions)
+      .then(image => diffImages(image, opts.goldenImage, opts))
+      .catch(error => {
+        return {success: false, match: 0, error: error.message};
+      });
   }
 }

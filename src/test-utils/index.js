@@ -6,14 +6,4 @@ export {default as BrowserTestDriver} from './browser-automation/browser-test-dr
 // EXPERIMENTAL TEST UTILS
 
 // Image tools
-import {loadImage} from './image-utils/load-image';
-import {createImage, getImageFromContext, getImagePixelData} from './image-utils/image-tools';
-import {diffImagePixels} from './image-utils/diff-images';
-
-export const experimental = {
-  loadImage,
-  createImage,
-  getImageFromContext,
-  getImagePixelData,
-  diffImagePixels
-};
+export {default as _diffImages} from './image-utils/diff-images';

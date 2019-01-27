@@ -99,3 +99,29 @@ window.browserTestDriver_sendMessage('done', 'custom message');
 
 Notify the node script that the app has finished executing and the browser should be closed.
 
+### browserTestDriver_captureAndDiffScreen(options : Object)
+
+```js
+window.browserTestDriver_captureAndDiffScreen({
+  goldenImage: './golden-images/map.png',
+  region: {x: 0, y: 0, width: 800, height: 600},
+  threshold: 0.99
+});
+```
+
+Request an pixel diff between the current page and a reference "golden image." This can be used to verify that the page is visually rendered as expected.
+
+* `goldenImage` (String) - path to the golden image, relative to the directory where the shell command is executed
+* `region` (Object, optional) - a bounding box to take a screenshot of. In shape of `{x, y, width, height}` relative to the page. If not specified, will take a screenshot of the whole page.
+* `threshold` (Number, optional) - the match rate for the test to pass. Between `0` (no pixels matched) to `1` (all pixels matched). Default `0.99`.
+* `tolerance` (Number, optional) - the tolerance during pixel matching. Between `0` (strict match) to `1` (anything will pass). Default `0.1`.
+* `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
+* `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels.
+
+Returns: a `Promise` that resolves to an object with the following fields:
+
+* `success` (Boolean) - whether the test passed. A test can fail either because the match rate is lower than the specified `threshold`, or an unexpected error occurred.
+* `match` (Number) - the result match rate. Between `0` (no pixels matched) to `1` (all pixels matched).
+* `matchPercentage` (String) - `match` formatted in percentage form.
+* `diffImage` (Uint8Array) - image data that highlight the mismatched pixels. Only if `createDiffImage: true`.
+* `error` (String) - error message if any.
