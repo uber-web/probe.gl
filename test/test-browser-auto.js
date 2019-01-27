@@ -22,10 +22,10 @@ const {callExposedFunction} = require('probe.gl/test-utils');
 
 // set up tape to print to console instead of browser window
 test.createStream().on('data', (row) => {
-  callExposedFunction('testProgress', row.trim());
+  callExposedFunction('browserTestLog', row.trim());
 });
 
-test.onFinish(() => callExposedFunction('testDone', {success: true}));
-test.onFailure(() => callExposedFunction('testDone', {success: false}));
+test.onFinish(() => callExposedFunction('browserTestComplete', {success: true}));
+test.onFailure(() => callExposedFunction('browserTestComplete', {success: false}));
 
 require('./test-browser');

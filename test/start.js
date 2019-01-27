@@ -27,10 +27,6 @@ case 'browser':
   new BrowserTestDriver().run({
     process: 'webpack-dev-server',
     parameters: ['--config', 'test/webpack.config.js', '--env.testAuto'],
-    exposeFunctions: {
-      testProgress: console.log // eslint-disable-line
-    },
-    exposeFunction: 'testDone',
     puppeteer: {headless: true}
   });
   break;

@@ -36,17 +36,16 @@ if (process.argv.length >= 3) {
 const DEFAULT_CONFIG = {
   title: 'BrowserTest',
   exposeFunctions: {},
-  exposeFunction: 'taskComplete',
   parameters: [`--env.${webpackEnv}`]
 };
 
 export default class BrowserTestDriver extends BrowserDriver {
   run(config = {}) {
     config = Object.assign(DEFAULT_CONFIG, config);
-    const {title, exposeFunction} = config;
+    const {title} = config;
     this.title = title;
     log.log({
-      message: `${title} started. Launching Chromium instance, waiting for ${exposeFunction}...`,
+      message: `${title} started. Launching Chromium instance...`,
       color: COLOR.YELLOW
     })();
     this.time = Date.now();
@@ -54,15 +53,19 @@ export default class BrowserTestDriver extends BrowserDriver {
       .then(_ => this.startServer(config))
       .then(_ => this.startBrowser(config.puppeteer))
       .then(_ => this.newPage())
-      .then(_ => {
-        for (const key in config.exposeFunctions) {
-          this.exposeFunction(key, config.exposeFunctions[key]);
+      .then(_ => new Promise(resolve => {
+        const exposeFunctions = Object.assign({
+          browserTestLog: console.log, // eslint-disable-line
+          browserTestComplete: resolve
+        }, config.exposeFunctions);
+        // deprecated API
+        if (config.exposeFunction) {
+          exposeFunctions[config.exposeFunction] = resolve;
         }
-        const onComplete = exposeFunction;
-        return new Promise(resolve => {
-          this.exposeFunction(onComplete, resolve);
-        });
-      })
+        for (const name in exposeFunctions) {
+          this.exposeFunction(name, exposeFunctions[name]);
+        }
+      }))
       .then(result => {
         const ok =
           result.success === Boolean(result.success) &&

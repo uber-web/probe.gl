@@ -6,5 +6,7 @@ export function callExposedFunction(exposedFunction, result, retry = 0) {
     window[exposedFunction](result);
   } else if (retry < 3) {
     window.setTimeout(callExposedFunction.bind(null, exposedFunction, result, retry + 1), 1000);
+  } else {
+    console.error(`${exposedFunction} is undefined`);
   }
 }
