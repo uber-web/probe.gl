@@ -26,12 +26,12 @@ case 'log':
 case 'browser':
   new BrowserTestDriver().run({
     process: 'webpack-dev-server',
-    parameters: ['--config', 'test/webpack.config.js', '--env.testAuto'],
+    parameters: ['--config', 'test/webpack.config.js', '--env.test', '--env.headless'],
     puppeteer: {headless: true}
   });
   break;
 
-case 'test-dist':
+case 'dist':
   moduleAlias.addAlias('probe.gl', path.resolve('./dist/es5'));
   require('./test-index'); // Run the tests
   break;

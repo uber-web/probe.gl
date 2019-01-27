@@ -84,9 +84,9 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
   }
 });
 
-const TEST_AUTO_CONFIG = Object.assign({}, TEST_CONFIG, {
+const TEST_HEADLESS_CONFIG = Object.assign({}, TEST_CONFIG, {
   entry: {
-    'test-browser': resolve('./test/test-browser-auto.js')
+    'test-browser': resolve('./test/test-browser-headless.js')
   }
 });
 
@@ -117,10 +117,7 @@ module.exports = env => {
     return BENCH_CONFIG;
   }
   if (env.test) {
-    return TEST_CONFIG;
-  }
-  if (env.testAuto) {
-    return TEST_AUTO_CONFIG;
+    return env.headless ? TEST_HEADLESS_CONFIG : TEST_CONFIG;
   }
   return Object.assign({}, SIZE_CONFIG, {
     // Replace the entry point for webpack-dev-server
