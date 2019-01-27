@@ -38,7 +38,7 @@ const DEFAULT_PUPPETEER_OPTIONS = {
   defaultViewport: {width: 800, height: 600}
 };
 
-const MIN_PORT = 3000;
+const AUTO_PORT_START = 5000;
 
 function mergeServerConfigs(...configs) {
   const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
@@ -167,9 +167,12 @@ export default class BrowserDriver {
 
   _getAvailablePort() {
     return new Promise((resolve, reject) => {
+      // Get a list of all ports in use
       ChildProcess.exec('lsof -i -P -n | grep LISTEN', (error, stdout, stderr) => {
         if (error) {
-          reject(error);
+          // likely no permission, e.g. CI
+          resolve(AUTO_PORT_START);
+          return;
         }
 
         const portsInUse = [];
@@ -180,7 +183,7 @@ export default class BrowserDriver {
             portsInUse.push(Number(match[1]));
           }
         });
-        let port = MIN_PORT;
+        let port = AUTO_PORT_START;
         while (portsInUse.includes(port)) {
           port++;
         }
