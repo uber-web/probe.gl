@@ -35,9 +35,19 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     return this._startServer(config.server)
-      .then(url => this._openPage(url, config))
-      .then(result => this._onFinish(result))
-      .catch(error => this._fail(error.message));
+      .then(url => {
+        this.logger.log({
+          message: `Started service at ${url}`,
+          color: COLOR.BRIGHT_GREEN
+        })();
+        return this._openPage(url, config);
+      })
+      .then(result => {
+        return this._onFinish(result);
+      })
+      .catch(error => {
+        this._fail(error.message || error)
+      });
   }
 
   _openPage(url, config = {}) {
@@ -46,8 +56,15 @@ export default class BrowserTestDriver extends BrowserDriver {
     return this.startBrowser(browserConfig)
       .then(_ => new Promise((resolve, reject) => {
         const exposeFunctions = Object.assign({}, config.exposeFunctions, {
-          browserTest: this._onMessage.bind(this, resolve, reject)
+          browserTest: this._onMessage.bind(this, resolve, reject),
+          // Capture any uncaught errors
+          onerror: reject
         });
+
+        this.logger.log({
+          message: 'Loading page in browser...',
+          color: COLOR.BRIGHT_YELLOW
+        })()
 
         this.openPage({
           url: config.url || url,

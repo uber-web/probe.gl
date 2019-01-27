@@ -38,9 +38,7 @@ window.browserTest('done', 'All tests passed');
 ```
 
 
-## Methods
-
-### constructor
+## Constructor
 
 ```js
 const browserTestDriver = new BrowserTestDriver(opts);
@@ -51,6 +49,8 @@ Parameters:
 * `opts` (Object)
   - `id` (String) - an id for this `BrowserTestDriver` instance. Default `browser-driver`.
 
+
+## Methods
 
 ### run(config)
 
@@ -77,7 +77,7 @@ Parameters:
   - `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 
 
-## Events
+## Test Events
 
 The `BrowserTestDriver` instance exposes a `browserTest` global function to the browser application.
 The following events can be emitted from the browser script:

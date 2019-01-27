@@ -86,11 +86,6 @@ export default class BrowserDriver {
     onConsole = noop,
     onError = noop
   } = {}) {
-    this.logger.log({
-      message: `Opening page at ${url}`,
-      color: COLOR.BRIGHT_YELLOW
-    })();
-
     if (!this.browser) {
       return Promise.reject(
         new Error('No browser instance is found. Forgot to call startBrowser()?')
@@ -150,11 +145,6 @@ export default class BrowserDriver {
       this.server = server;
       this.port = port;
 
-      this.logger.log({
-        message: `Started service on port ${port}`,
-        color: COLOR.BRIGHT_GREEN
-      })();
-
       setTimeout(() => resolve(`http://localhost:${this.port}`), config.wait);
     }));
   }
@@ -173,7 +163,7 @@ export default class BrowserDriver {
       .then(() => this.stopServer())
       .then(() => process.exit(statusCode))
       .catch(error => {
-        this.logger.error(error.message);
+        this.logger.error(error.message || error);
         process.exit(1);
       });
   }

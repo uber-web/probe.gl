@@ -23,9 +23,7 @@ new BrowserDriver({id: 'browser-test'});
 ```
 
 
-## Methods
-
-### constructor
+## Constructor
 
 ```js
 const browserDriver = new BrowserDriver(opts);
@@ -35,6 +33,9 @@ Parameters:
 
 * `opts` (Object)
   - `id` (String) - an id for this `BrowserDriver` instance. Default `browser-driver`.
+
+
+## Methods
 
 ### startBrowser(options)
 
@@ -59,6 +60,9 @@ Parameters:
 * `options` (Object)
   - `url` (String) - The url to load in the page. Default `http://localhost`.
   - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
+  - `onLoad` (Function) - callback when the page is loaded
+  - `onConsole` (Function) - callback when the page logs to console
+  - `onError` (Function) - callback when the page crashes
 
 Returns a `Promise` that resolves when the page is open.
 
