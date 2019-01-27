@@ -40,6 +40,8 @@ const DEFAULT_PUPPETEER_OPTIONS = {
 
 const AUTO_PORT_START = 5000;
 
+function noop() {}
+
 function mergeServerConfigs(...configs) {
   const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
 
@@ -77,10 +79,16 @@ export default class BrowserDriver {
       });
   }
 
-  openPage({url = 'http://localhost', exposeFunctions = {}} = {}) {
+  openPage({
+    url = 'http://localhost',
+    exposeFunctions = {},
+    onLoad = noop,
+    onConsole = noop,
+    onError = noop
+  } = {}) {
     this.logger.log({
       message: `Opening page at ${url}`,
-      color: COLOR.YELLOW
+      color: COLOR.BRIGHT_YELLOW
     })();
 
     if (!this.browser) {
@@ -92,6 +100,11 @@ export default class BrowserDriver {
     return this.browser.newPage()
       .then(page => {
         this.page = page;
+
+        // attach events
+        page.on('load', onLoad);
+        page.on('console', onConsole);
+        page.on('error', onError);
 
         const promises = [];
         for (const name in exposeFunctions) {

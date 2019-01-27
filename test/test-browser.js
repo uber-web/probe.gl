@@ -17,6 +17,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+/* global window */
+if (window.browserTest) {
+  // Is automated test, add BrowserTestDriver hooks
+  const test = require('tape');
+  test.onFailure(() => window.browserTest('fail'));
+  test.onFinish(() => window.browserTest('done'));
+}
 
 require('probe.gl'); // ensure probe gets access to pure console first
 require('tap-browser-color')();

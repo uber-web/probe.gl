@@ -24,13 +24,14 @@ case 'log':
   break;
 
 case 'browser':
+case 'browser-headless':
   new BrowserTestDriver().run({
     title: 'Unit Tests',
     server: {
       command: 'webpack-dev-server',
-      arguments: ['--config', 'test/webpack.config.js', '--env.test', '--env.headless']
+      arguments: ['--config', 'test/webpack.config.js', '--env.test']
     },
-    browser: {headless: true}
+    headless: mode === 'browser-headless'
   });
   break;
 

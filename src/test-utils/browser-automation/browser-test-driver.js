@@ -17,47 +17,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
+/* global console */
 import BrowserDriver from './browser-driver';
-import {COLOR} from '../../lib/utils/color';
+import {COLOR, addColor} from '../../lib/utils/color';
 
 export default class BrowserTestDriver extends BrowserDriver {
   run(config = {}) {
-    const {title = 'Browser Test'} = config;
+    const {title = 'Browser Test', headless = false} = config;
     this.title = title;
+    this.headless = headless;
     this.time = Date.now();
     this.failures = 0;
 
     this.logger.log({
       message: `${title}`,
-      color: COLOR.YELLOW
+      color: COLOR.BRIGHT_YELLOW
     })();
 
-    return Promise.resolve()
-      .then(_ => this._startServer(config.server))
+    return this._startServer(config.server)
       .then(url => this._openPage(url, config))
       .then(result => this._onFinish(result))
-      .catch(error => {
-        this._fail(error.message);
-      });
+      .catch(error => this._fail(error.message));
   }
 
   _openPage(url, config = {}) {
-    return this.startBrowser(config.browser)
-      .then(_ => new Promise(resolve => {
-        const exposeFunctions = Object.assign({
-          browserTestLog: console.log, // eslint-disable-line
-          browserTestFail: () => this.failures++,
-          browserTestComplete: resolve,
+    const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
-          // This overwrites window.onerror and captures any unhandled error on the page
-          // Otherwise if page crashes this process will hang forever
-          onerror: error => {
-            throw error;
-          }
-        }, config.exposeFunctions);
+    return this.startBrowser(browserConfig)
+      .then(_ => new Promise((resolve, reject) => {
+        const exposeFunctions = Object.assign({}, config.exposeFunctions, {
+          browserTest: this._onMessage.bind(this, resolve, reject)
+        });
 
-        this.openPage({url: config.url || url, exposeFunctions});
+        this.openPage({
+          url: config.url || url,
+          exposeFunctions,
+          onConsole: event => this._onConsole(event),
+          onError: reject
+        });
       }));
   }
 
@@ -71,11 +68,53 @@ export default class BrowserTestDriver extends BrowserDriver {
     return this.startServer(config);
   }
 
+  _onMessage(resolve, reject, event, args) {
+    switch (event) {
+    case 'fail':
+      this.failures++;
+      break;
+
+    case 'done':
+      resolve(args);
+      break;
+
+    default:
+    }
+  }
+
+  /* eslint-disable no-console */
+  _onConsole(event) {
+    if (!this.headless) {
+      // Do not mirror console messages if the browser is open
+      return;
+    }
+
+    // Crop very long text messages
+    const text = event.text().slice(0, 500);
+    switch (event.type()) {
+    case 'log':
+      console.log(text);
+      break;
+
+    case 'warning':
+      console.log(addColor(text, COLOR.YELLOW));
+      break;
+
+    case 'error':
+      console.log(addColor(text, COLOR.RED));
+      break;
+
+    default:
+      // ignore
+    }
+  }
+  /* eslint-enable no-console */
+
   _onFinish(message) {
     const elapsed = ((Date.now() - this.time) / 1000).toFixed(1);
     this.logger.log({
       message: `${this.title} completed in ${elapsed}s.`,
-      color: COLOR.YELLOW
+      color: COLOR.BRIGHT_YELLOW
     })();
 
     if (this.failures) {
@@ -98,6 +137,9 @@ export default class BrowserTestDriver extends BrowserDriver {
       message: `${this.title} failed: ${message}`,
       color: COLOR.BRIGHT_RED
     })();
-    this.exit(1);
+
+    if (this.headless) {
+      this.exit(1);
+    }
   }
 }
