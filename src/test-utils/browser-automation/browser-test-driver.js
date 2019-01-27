@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* global process */
 import BrowserDriver from './browser-driver';
 import {COLOR} from '../../lib/utils/color';
 
@@ -80,7 +79,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     if (this.failures) {
-      this._fail(message || `${this.failures} test${this.failures > 1 ? 's' : ''} failed`)
+      this._fail(message || `${this.failures} test${this.failures > 1 ? 's' : ''} failed`);
     } else {
       this._pass(message || 'All tests passed');
     }

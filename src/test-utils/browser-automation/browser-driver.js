@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* global setTimeout */
+/* global process, setTimeout */
 import {COLOR} from '../../lib/utils/color';
 import Log from '../../lib/log';
 import puppeteer from 'puppeteer';
@@ -39,7 +39,6 @@ const DEFAULT_PUPPETEER_OPTIONS = {
 };
 
 const MIN_PORT = 3000;
-const MAX_PORT = 99999;
 
 function mergeServerConfigs(...configs) {
   const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
@@ -119,9 +118,10 @@ export default class BrowserDriver {
   startServer(config = {}) {
     config = mergeServerConfigs(config);
 
-    const port = config.port === 'auto' ? this._getAvailablePort() : Promise.resolve(port);
+    const getPort = config.port === 'auto' ?
+      this._getAvailablePort() : Promise.resolve(config.port);
 
-    return port.then(port => new Promise((resolve, reject) => {
+    return getPort.then(port => new Promise((resolve, reject) => {
       const args = [...config.arguments];
       if (port) {
         args.push('--port', port);
@@ -154,6 +154,7 @@ export default class BrowserDriver {
     return Promise.resolve();
   }
 
+  /* eslint-disable no-process-exit */
   exit(statusCode = 0) {
     this.stopBrowser()
       .then(() => this.stopServer())
