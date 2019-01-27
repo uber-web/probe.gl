@@ -20,7 +20,6 @@ const {BrowserTestDriver} = require('probe.gl/test-utils');
 new BrowserTestDriver().run({
   process: 'webpack-dev-server',
   parameters: ['--env.browser-test'],
-  exposeFunction: 'testDone'
 });
 ```
 
@@ -28,8 +27,11 @@ In your script that is run on the browser:
 ```js
 // This is the script that runs in Node.js and starts the browser
 import {callExposedFunction} from 'probe.gl/test-utils';
+// Log to terminal console
+callExposedFunction('browserTestLog', 'Test started');
 ...
-callExposedFunction('testDone', {success: true});
+// App is done running, terminate the browser instance
+callExposedFunction('browserTestComplete', {success: true});
 ```
 
 
@@ -44,7 +46,7 @@ Creates a `BrowserTestDriver` instance.
 
 ### run
 
-`renderTestDriver.run()`
+`renderTestDriver.run(config)`
 
 Runs the tests:
 * starts a Chrome browser instance,
@@ -52,3 +54,15 @@ Runs the tests:
 * the test script renders a set of tests (described below), compares the output against golden images
 * closes down all processes and browser tabs.
 * the test script returns a pass/fail value to the `BrowserTestDriver` which ultimately passes back a `0` (success) or `1` failure to the invoking shell.
+
+Parameters:
+
+* `config` (Object)
+  - `title` (String) - name of the test
+  - `parameters` (Array<String>) - parameters to pass to the dev server prodcess
+  - `puppeteer` (Object) - options for the Puppeteer instance, default `{headless: false}`.
+  - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. This object will be merged with the following default callbacks:
+    + `browserTestLog` - logs to Node console
+    + `browserTestComplete` - declare the test is complete and the Puppeteer instance can be safely terminated. Expects an argument `{sucess: true|false}` which will be used to determine if the test has passed.
+
+  For more information, see [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction).
