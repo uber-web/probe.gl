@@ -23,13 +23,14 @@ function diffPNGs(image1, image2, options) {
 
   const diffImage = createDiffImage ? new Uint8Array(width * height) : null;
 
+  // pixelmatch returns the number of mismatched pixels
   const mismatchedPixels = pixelmatch(
-    image1.data,
-    image2.data,
-    diffImage,
-    width,
-    height,
-    {threshold: tolerance, includeAA}
+    image1.data, // image 1
+    image2.data, // image 2
+    diffImage,  // output
+    width,      // width
+    height,     // height
+    {threshold: tolerance, includeAA} // options
   );
 
   const match = 1 - mismatchedPixels / (width * height);
@@ -42,18 +43,19 @@ function diffPNGs(image1, image2, options) {
   };
 }
 
+// TODO - replace pngjs with @loaders.gl/images
 function parsePNG(source) {
   const image = new PNG();
   if (typeof source === 'string') {
-    // url
+    // url or local path
     return new Promise((resolve, reject) => {
-      fs.createReadStream(source)
-        .on('error', reject)
-        .pipe(image)
+      const readStream = fs.createReadStream(source).on('error', reject);
+      readStream.pipe(image)
         .on('parsed', () => resolve(image));
     });
   }
   if (source instanceof Buffer) {
+    // puppeteer.screenshot returns a Buffer object
     return new Promise((resolve, reject) => {
       image.parse(source, (error, data) => {
         if (error) {

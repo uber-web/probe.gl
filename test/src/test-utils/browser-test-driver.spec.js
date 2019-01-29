@@ -9,7 +9,7 @@ test('BrowserTestDriver#import', t => {
 });
 
 test('BrowserTestDriver#ImageDiff', t => {
-  if (typeof document === 'undefined' || !window.browserTest) {
+  if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
     t.end();
     return;
@@ -43,7 +43,7 @@ test('BrowserTestDriver#ImageDiff', t => {
     region: {x: 0, y: 0, width: 40, height: 40}
   };
 
-  window.browserTest('image-diff', diffSettings)
+  window.browserTestDriver_captureAndDiffScreen(diffSettings)
     .then(result => {
       if (result.success) {
         t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
@@ -56,7 +56,7 @@ test('BrowserTestDriver#ImageDiff', t => {
     .then(() => {
       ctx.fillStyle = '#ff0';
       ctx.fillRect(10, 10, 12, 12);
-      return window.browserTest('image-diff', diffSettings);
+      return window.browserTestDriver_captureAndDiffScreen(diffSettings);
     })
     .then(result => {
       if (result.success) {
