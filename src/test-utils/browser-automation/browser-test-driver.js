@@ -55,14 +55,15 @@ export default class BrowserTestDriver extends BrowserDriver {
     return this.startBrowser(browserConfig)
       .then(_ => new Promise((resolve, reject) => {
         const exposeFunctions = Object.assign({}, config.exposeFunctions, {
-          browserTest: this._onMessage.bind(this, resolve, reject),
+          // eslint-disable-next-line camelCase
+          browserTestDriver_sendMessage: this._onMessage.bind(this, resolve, reject),
           // Capture any uncaught errors
           onerror: reject
         });
 
         // Legacy config
         if (config.exposeFunction) {
-          this.logger.removed('exposeFunction', 'browserTest');
+          this.logger.removed('exposeFunction', 'browserTestDriver_sendMessage');
         }
 
         this.logger.log({

@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 /* global window */
-if (window.browserTest) {
+if (window.browserTestDriver_sendMessage) {
   // Is automated test, add BrowserTestDriver hooks
   const test = require('tape');
-  test.onFailure(() => window.browserTest('fail'));
-  test.onFinish(() => window.browserTest('done'));
+  test.onFailure(() => window.browserTestDriver_sendMessage('fail'));
+  test.onFinish(() => window.browserTestDriver_sendMessage('done'));
 }
 
 require('probe.gl'); // ensure probe gets access to pure console first

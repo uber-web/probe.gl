@@ -34,7 +34,7 @@ In your script that is run on the browser:
 // Run test cases
 ...
 // App is done running, terminate the browser instance
-window.browserTest('done', 'All tests passed');
+window.browserTestDriver_sendMessage('done', 'All tests passed');
 ```
 
 
@@ -76,23 +76,25 @@ Parameters:
 * `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 
 
-## Test Events
+## Built-in Exposed Functions
 
-The `BrowserTestDriver` instance exposes a `browserTest` global function to the browser application.
-The following events can be emitted from the browser script:
+The `BrowserTestDriver` instance exposes a series of global functions to the browser application.
+The following functions can be called from the browser application to communicate with the nodejs script:
 
-### fail
+### browserTestDriver_sendMessage(type : String, args: Any)
+
+#### fail
 
 ```js
-window.browserTest('fail');
+window.browserTestDriver_sendMessage('fail');
 ```
 
 Notify the node script that some test has failed.
 
-### done
+#### done
 
 ```js
-window.browserTest('done', 'custom message');
+window.browserTestDriver_sendMessage('done', 'custom message');
 ```
 
 Notify the node script that the app has finished executing and the browser should be closed.
