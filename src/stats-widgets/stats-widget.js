@@ -1,52 +1,46 @@
 // Built on https://github.com/Erkaman/regl-stats-widget (MIT license)
-
+/* eslint-disable */
 // widget styling constants.
 const TEXT_SIZE = 10;
 const TEXT_START = [7, 37];
 const TEXT_SPACING = 6;
 const HEADER_SIZE = 20;
-const BOTTOM_SPACING = 20
+const BOTTOM_SPACING = 20;
 const HEADER_POS = [3, 3];
 const BG = '#000';
 const FG = '#ccc';
 
 const WIDTH = 160;
 const HEIGHT = items =>
-  items.length * TEXT_SIZE +
-  (items.length - 1) * TEXT_SPACING +
-  TEXT_START[1] +
-  BOTTOM_SPACING;
-
+  items.length * TEXT_SIZE + (items.length - 1) * TEXT_SPACING + TEXT_START[1] + BOTTOM_SPACING;
 
 class StatsWidget {
-
   constructor(items) {
     // the widget keeps track of the previous values of gpuTime,
     // in order to compute the frame time.
-    const prevGpuTimes = []
+    const prevGpuTimes = [];
     for (let i = 0; i < items.length; i++) {
-      prevGpuTimes[i] = 0
+      prevGpuTimes[i] = 0;
     }
 
     // we update the widget every second, we need to keep track of the time:
-    const totalTime = 1.1
+    const totalTime = 1.1;
 
     // we show the average frametime to the user.
-    const N = 50
-    const totalFrameTime = []
-    const frameTimeCount = 0
-    const avgFrameTime = []
+    const N = 50;
+    const totalFrameTime = [];
+    const frameTimeCount = 0;
+    const avgFrameTime = [];
     for (i = 0; i < items.length; ++i) {
-      totalFrameTime[i] = 0.0
-      avgFrameTime[i] = 0.0
+      totalFrameTime[i] = 0.0;
+      avgFrameTime[i] = 0.0;
     }
   }
 
   update(deltaTime) {
-    totalTime += deltaTime
+    totalTime += deltaTime;
     if (totalTime > 1.0) {
-      totalTime = 0
-
+      totalTime = 0;
 
       // make sure that we clear the old text before drawing new text.
       _clearTextArea();
@@ -58,7 +52,7 @@ class StatsWidget {
       //   this._drawTextItem(context, i, drawCalls[i], avgFrameTime[i]);
     }
 
-    frameTimeCount++
+    frameTimeCount++;
     // make sure to update the previous gpuTime, and to compute the average.
     for (i = 0; i < drawCalls.length; i++) {
       drawCall = drawCalls[i];
@@ -132,10 +126,10 @@ class StatsWidget {
     const pr = Math.round(window.devicePixelRatio || 1);
     // context, i, drawCalls[i], avgFrameTime[i]);
     const textCursor = [TEXT_START[0], TEXT_START[1]];
-    const str = `${drawCall[1]} : ${Math.round(100.0 * avgFrameTime[i]) / 100.0}ms`
-    context.fillText(str, textCursor[0] * pr, textCursor[1] * pr)
+    const str = `${drawCall[1]} : ${Math.round(100.0 * avgFrameTime[i]) / 100.0}ms`;
+    context.fillText(str, textCursor[0] * pr, textCursor[1] * pr);
 
     // next line
-    textCursor[1] += TEXT_SIZE + TEXT_SPACING
+    textCursor[1] += TEXT_SIZE + TEXT_SPACING;
   }
 }

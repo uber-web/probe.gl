@@ -53,35 +53,35 @@ export default class BrowserTestDriver extends BrowserDriver {
   _openPage(url, config = {}) {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
-    return this.startBrowser(browserConfig)
-      .then(_ => new Promise((resolve, reject) => {
-        /* eslint-disable camelCase */
-        const exposeFunctions = Object.assign({}, config.exposeFunctions, {
-          browserTestDriver_fail: () => this.failures++,
-          browserTestDriver_finish: message => resolve(message),
-          browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
-          // Capture any uncaught errors
-          onerror: reject
-        });
-        /* eslint-enable camelCase */
+    return this.startBrowser(browserConfig).then(
+      _ =>
+        new Promise((resolve, reject) => {
+          const exposeFunctions = Object.assign({}, config.exposeFunctions, {
+            browserTestDriver_fail: () => this.failures++,
+            browserTestDriver_finish: message => resolve(message),
+            browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
+            // Capture any uncaught errors
+            onerror: reject
+          });
 
-        // Legacy config
-        if (config.exposeFunction) {
-          this.logger.removed('exposeFunction', 'browserTestDriver_sendMessage');
-        }
+          // Legacy config
+          if (config.exposeFunction) {
+            this.logger.removed('exposeFunction', 'browserTestDriver_sendMessage');
+          }
 
-        this.logger.log({
-          message: 'Loading page in browser...',
-          color: COLOR.BRIGHT_YELLOW
-        })();
+          this.logger.log({
+            message: 'Loading page in browser...',
+            color: COLOR.BRIGHT_YELLOW
+          })();
 
-        this.openPage({
-          url: config.url || url,
-          exposeFunctions,
-          onConsole: event => this._onConsole(event),
-          onError: reject
-        });
-      }));
+          this.openPage({
+            url: config.url || url,
+            exposeFunctions,
+            onConsole: event => this._onConsole(event),
+            onError: reject
+          });
+        })
+    );
   }
 
   _startServer(config = {}) {
@@ -105,19 +105,19 @@ export default class BrowserTestDriver extends BrowserDriver {
     // Crop very long text messages to avoid flooding
     const text = event.text().slice(0, MAX_CONSOLE_MESSAGE_LENGTH);
     switch (event.type()) {
-    case 'log':
-      console.log(text);
-      break;
+      case 'log':
+        console.log(text);
+        break;
 
-    case 'warning':
-      console.log(addColor(text, COLOR.YELLOW));
-      break;
+      case 'warning':
+        console.log(addColor(text, COLOR.YELLOW));
+        break;
 
-    case 'error':
-      console.log(addColor(text, COLOR.RED));
-      break;
+      case 'error':
+        console.log(addColor(text, COLOR.RED));
+        break;
 
-    default:
+      default:
       // ignore
     }
   }
@@ -174,7 +174,8 @@ export default class BrowserTestDriver extends BrowserDriver {
     } else {
       screenshotOptions.fullPage = true;
     }
-    return this.page.screenshot(screenshotOptions)
+    return this.page
+      .screenshot(screenshotOptions)
       .then(image => diffImages(image, opts.goldenImage, opts))
       .catch(error => {
         return {success: false, match: 0, error: error.message};

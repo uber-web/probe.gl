@@ -7,8 +7,8 @@ const FORMAT_SI_TESTS = [
   {value: 1.234, result: '1.23'},
   {value: 1234, result: '1.23K'},
   {value: 12340, result: '12.3K'},
-  {value: 0.12340, result: '123m'},
-  {value: 0.00012340, result: '123µ'}
+  {value: 0.1234, result: '123m'},
+  {value: 0.0001234, result: '123µ'}
 ];
 
 test('formatters#formatSI', t => {

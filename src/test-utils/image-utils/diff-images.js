@@ -4,8 +4,9 @@ import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
 export default function diffImages(source1, source2, options = {}) {
-  return Promise.all([parsePNG(source1), parsePNG(source2)])
-    .then(([image1, image2]) => diffPNGs(image1, image2, options));
+  return Promise.all([parsePNG(source1), parsePNG(source2)]).then(([image1, image2]) =>
+    diffPNGs(image1, image2, options)
+  );
 }
 
 function diffPNGs(image1, image2, options) {
@@ -14,12 +15,7 @@ function diffPNGs(image1, image2, options) {
     throw new Error('Image sizes do not match');
   }
 
-  const {
-    threshold = 0.99,
-    createDiffImage = false,
-    tolerance = 0.1,
-    includeAA = false
-  } = options;
+  const {threshold = 0.99, createDiffImage = false, tolerance = 0.1, includeAA = false} = options;
 
   const diffImage = createDiffImage ? new Uint8Array(width * height) : null;
 
@@ -27,9 +23,9 @@ function diffPNGs(image1, image2, options) {
   const mismatchedPixels = pixelmatch(
     image1.data, // image 1
     image2.data, // image 2
-    diffImage,  // output
-    width,      // width
-    height,     // height
+    diffImage, // output
+    width, // width
+    height, // height
     {threshold: tolerance, includeAA} // options
   );
 
@@ -50,8 +46,7 @@ function parsePNG(source) {
     // url or local path
     return new Promise((resolve, reject) => {
       const readStream = fs.createReadStream(source).on('error', reject);
-      readStream.pipe(image)
-        .on('parsed', () => resolve(image));
+      readStream.pipe(image).on('parsed', () => resolve(image));
     });
   }
   if (source instanceof Buffer) {

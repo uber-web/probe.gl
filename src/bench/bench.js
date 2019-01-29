@@ -175,7 +175,11 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
           const itersPerSecond = formatSI(iterationsPerSecond);
           if (!silent) {
             logEntry(test, {
-              entry: LOG_ENTRY.TEST, id: test.id, priority: test.priority, itersPerSecond, time,
+              entry: LOG_ENTRY.TEST,
+              id: test.id,
+              priority: test.priority,
+              itersPerSecond,
+              time,
               message: `${test.id} ${itersPerSecond}/s`
             });
           }
@@ -246,46 +250,45 @@ export function logResultsAsMarkdownTable({entry, id, itersPerSecond, time}) {
   const COL1 = 50;
   const COL2 = 12;
   switch (entry) {
-  case LOG_ENTRY.GROUP:
-    console.log('');
-    console.log(`| ${rightPad(id, COL1)} | iterations/s |`);
-    console.log(`| ${rightPad('---', COL1)} | ---          |`);
-    break;
-  case LOG_ENTRY.TEST:
-    console.log(`| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} |`);
-    break;
-  case LOG_ENTRY.COMPLETE:
-    console.log('');
-    console.log(`Completed benchmark in ${time}s`);
-    break;
-  default:
+    case LOG_ENTRY.GROUP:
+      console.log('');
+      console.log(`| ${rightPad(id, COL1)} | iterations/s |`);
+      console.log(`| ${rightPad('---', COL1)} | ---          |`);
+      break;
+    case LOG_ENTRY.TEST:
+      console.log(`| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} |`);
+      break;
+    case LOG_ENTRY.COMPLETE:
+      console.log('');
+      console.log(`Completed benchmark in ${time}s`);
+      break;
+    default:
   }
 }
 
 export function logResultsAsTree({entry, id, itersPerSecond, time}) {
   switch (entry) {
-  case LOG_ENTRY.GROUP:
-    console.log('');
-    console.log(`${id}`);
-    break;
-  case LOG_ENTRY.TEST:
-    console.log(`├─ ${id}: ${itersPerSecond} iterations/s`);
-    break;
-  case LOG_ENTRY.COMPLETE:
-    console.log('');
-    console.log(`Completed benchmark in ${time}s`);
-    break;
-  default:
+    case LOG_ENTRY.GROUP:
+      console.log('');
+      console.log(`${id}`);
+      break;
+    case LOG_ENTRY.TEST:
+      console.log(`├─ ${id}: ${itersPerSecond} iterations/s`);
+      break;
+    case LOG_ENTRY.COMPLETE:
+      console.log('');
+      console.log(`Completed benchmark in ${time}s`);
+      break;
+    default:
   }
 }
 
 export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, time}) {
   switch (entry) {
-  case LOG_ENTRY.TEST:
-    console.log(`├─ ${id}: ${itersPerSecond} iterations/s (${time.toFixed(2)}s elapsed)`);
-    break;
-  default:
-    logResultsAsTree({entry, id, itersPerSecond, time});
+    case LOG_ENTRY.TEST:
+      console.log(`├─ ${id}: ${itersPerSecond} iterations/s (${time.toFixed(2)}s elapsed)`);
+      break;
+    default:
+      logResultsAsTree({entry, id, itersPerSecond, time});
   }
 }
-

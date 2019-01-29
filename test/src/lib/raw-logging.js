@@ -4,9 +4,10 @@
 /* eslint-disable no-console */
 const path = require('path');
 const {Log, COLOR} = require('probe.gl');
-const image = typeof window !== 'undefined' ?
-  require('../../data/image.jpg') :
-  module.require('fs').readFileSync(path.join(__dirname, '../../data/image.jpg'));
+const image =
+  typeof window !== 'undefined'
+    ? require('../../data/image.jpg')
+    : module.require('fs').readFileSync(path.join(__dirname, '../../data/image.jpg'));
 
 const log = new Log({id: 'test'});
 log.priority = 5;
