@@ -20,6 +20,7 @@
 /* global console */
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from '../../lib/utils/color';
+import diffImages from '../image-utils/diff-images';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
@@ -54,12 +55,15 @@ export default class BrowserTestDriver extends BrowserDriver {
 
     return this.startBrowser(browserConfig)
       .then(_ => new Promise((resolve, reject) => {
+        /* eslint-disable camelCase */
         const exposeFunctions = Object.assign({}, config.exposeFunctions, {
-          // eslint-disable-next-line camelCase
-          browserTestDriver_sendMessage: this._onMessage.bind(this, resolve, reject),
+          browserTestDriver_fail: () => this.failures++,
+          browserTestDriver_finish: message => resolve(message),
+          browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
           // Capture any uncaught errors
           onerror: reject
         });
+        /* eslint-enable camelCase */
 
         // Legacy config
         if (config.exposeFunction) {
@@ -88,20 +92,6 @@ export default class BrowserTestDriver extends BrowserDriver {
       return config();
     }
     return this.startServer(config);
-  }
-
-  _onMessage(resolve, reject, event, args) {
-    switch (event) {
-    case 'fail':
-      this.failures++;
-      break;
-
-    case 'done':
-      resolve(args);
-      break;
-
-    default:
-    }
   }
 
   /* eslint-disable no-console */
@@ -152,7 +142,10 @@ export default class BrowserTestDriver extends BrowserDriver {
       message: `${this.title} successful: ${message}`,
       color: COLOR.BRIGHT_GREEN
     })();
-    this.exit(0);
+
+    if (this.headless) {
+      this.exit(0);
+    }
   }
 
   _fail(message) {
@@ -164,5 +157,27 @@ export default class BrowserTestDriver extends BrowserDriver {
     if (this.headless) {
       this.exit(1);
     }
+  }
+
+  _captureAndDiff(opts) {
+    if (!opts.goldenImage) {
+      return Promise.reject(new Error('Must supply golden image for image diff'));
+    }
+
+    const screenshotOptions = {
+      type: 'png',
+      omitBackground: true,
+      encoding: 'binary'
+    };
+    if (opts.region) {
+      screenshotOptions.clip = opts.region;
+    } else {
+      screenshotOptions.fullPage = true;
+    }
+    return this.page.screenshot(screenshotOptions)
+      .then(image => diffImages(image, opts.goldenImage, opts))
+      .catch(error => {
+        return {success: false, match: 0, error: error.message};
+      });
   }
 }
