@@ -1,8 +1,8 @@
+# BrowserDriver (Test Automation Class)
+
 <p class="badges">
   <img src="https://img.shields.io/badge/Node.js-v8.0-blue.svg?style=flat-square" alt="Node" />
 </p>
-
-# BrowserDriver (Test Automation Class)
 
 > Note: Requires Chrome version 64 or higher
 
@@ -62,7 +62,7 @@ Parameters:
   - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
   - `onLoad` (Function) - callback when the page is loaded
   - `onConsole` (Function) - callback when the page logs to console
-  - `onError` (Function) - callback when the page crashes
+  - `onError` (Function) - callback if the puppeteer page crashes
 
 Returns a `Promise` that resolves when the page is open.
 
@@ -81,7 +81,7 @@ Runs a server in a new child process, that the browser can connect to.
 ```js
 driver.startServer({
   command: './node_modules/.bin/webpack-dev-server',
-  arguments: ['--config', 'test/webpack.config.js'],
+  arguments: ['--config', 'webpack.config.js'],
   wait: 2000
 })
 ```

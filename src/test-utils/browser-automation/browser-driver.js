@@ -42,15 +42,22 @@ const AUTO_PORT_START = 5000;
 
 function noop() {}
 
-function mergeServerConfigs(...configs) {
+function normalizeServerConfig(config, logger) {
   const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
 
-  for (const config of configs) {
-    Object.assign(result, config, {
-      arguments: result.arguments.concat(config.arguments),
-      options: Object.assign({}, result.options, result.options)
-    });
+  // Handle legacy configs
+  if (config.process) {
+    result.command = config.process;
+    logger.deprecated('process', 'command');
   }
+  if (config.parameters) {
+    result.arguments = config.parameters;
+    logger.deprecated('parameters', 'arguments');
+  }
+
+  Object.assign(result, config, {
+    options: Object.assign({}, result.options, config.options)
+  });
 
   return result;
 }
@@ -124,7 +131,7 @@ export default class BrowserDriver {
   // Starts a web server with the provided configs
   // Resolves to the bound url if successful
   startServer(config = {}) {
-    config = mergeServerConfigs(config);
+    config = normalizeServerConfig(config, this.logger);
 
     const getPort = config.port === 'auto' ?
       this._getAvailablePort() : Promise.resolve(config.port);
@@ -145,7 +152,16 @@ export default class BrowserDriver {
       this.server = server;
       this.port = port;
 
-      setTimeout(() => resolve(`http://localhost:${this.port}`), config.wait);
+      setTimeout(() => {
+        const url = `http://localhost:${this.port}`;
+
+        this.logger.log({
+          message: `Started ${config.command} at ${url}`,
+          color: COLOR.BRIGHT_GREEN
+        })();
+
+        resolve(url);
+      }, config.wait);
     }));
   }
 

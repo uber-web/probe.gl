@@ -21,6 +21,8 @@
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from '../../lib/utils/color';
 
+const MAX_CONSOLE_MESSAGE_LENGTH = 500;
+
 export default class BrowserTestDriver extends BrowserDriver {
   run(config = {}) {
     const {title = 'Browser Test', headless = false} = config;
@@ -34,19 +36,16 @@ export default class BrowserTestDriver extends BrowserDriver {
       color: COLOR.BRIGHT_YELLOW
     })();
 
-    return this._startServer(config.server)
+    // Backward compatibility: if `server` is not defined, fallback to config object
+    return this._startServer(config.server || config)
       .then(url => {
-        this.logger.log({
-          message: `Started service at ${url}`,
-          color: COLOR.BRIGHT_GREEN
-        })();
         return this._openPage(url, config);
       })
       .then(result => {
         return this._onFinish(result);
       })
       .catch(error => {
-        this._fail(error.message || error)
+        this._fail(error.message || error);
       });
   }
 
@@ -61,10 +60,15 @@ export default class BrowserTestDriver extends BrowserDriver {
           onerror: reject
         });
 
+        // Legacy config
+        if (config.exposeFunction) {
+          this.logger.removed('exposeFunction', 'browserTest');
+        }
+
         this.logger.log({
           message: 'Loading page in browser...',
           color: COLOR.BRIGHT_YELLOW
-        })()
+        })();
 
         this.openPage({
           url: config.url || url,
@@ -106,8 +110,9 @@ export default class BrowserTestDriver extends BrowserDriver {
       return;
     }
 
-    // Crop very long text messages
-    const text = event.text().slice(0, 500);
+    // Terminal console does not collapse big messages like Chrome does
+    // Crop very long text messages to avoid flooding
+    const text = event.text().slice(0, MAX_CONSOLE_MESSAGE_LENGTH);
     switch (event.type()) {
     case 'log':
       console.log(text);
