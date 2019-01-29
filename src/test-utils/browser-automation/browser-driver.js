@@ -19,10 +19,12 @@
 // THE SOFTWARE.
 
 /* global process, setTimeout */
-import {COLOR} from '../../lib/utils/color';
-import Log from '../../lib/log';
 import puppeteer from 'puppeteer';
 import ChildProcess from 'child_process';
+
+import {COLOR} from '../../lib/utils/color';
+import Log from '../../lib/log';
+import {getAvailablePort} from './process-utils';
 
 const DEFAULT_SERVER_CONFIG = {
   command: 'webpack-dev-server',
@@ -134,7 +136,7 @@ export default class BrowserDriver {
     config = normalizeServerConfig(config, this.logger);
 
     const getPort = config.port === 'auto' ?
-      this._getAvailablePort() : Promise.resolve(config.port);
+      getAvailablePort(AUTO_PORT_START) : Promise.resolve(config.port);
 
     return getPort.then(port => new Promise((resolve, reject) => {
       const args = [...config.arguments];
@@ -182,32 +184,5 @@ export default class BrowserDriver {
         this.logger.error(error.message || error);
         process.exit(1);
       });
-  }
-
-  _getAvailablePort() {
-    return new Promise((resolve, reject) => {
-      // Get a list of all ports in use
-      ChildProcess.exec('lsof -i -P -n | grep LISTEN', (error, stdout, stderr) => {
-        if (error) {
-          // likely no permission, e.g. CI
-          resolve(AUTO_PORT_START);
-          return;
-        }
-
-        const portsInUse = [];
-        const regex = /:(\d+) \(LISTEN\)/;
-        stdout.split('\n').forEach(line => {
-          const match = line.match(regex);
-          if (match) {
-            portsInUse.push(Number(match[1]));
-          }
-        });
-        let port = AUTO_PORT_START;
-        while (portsInUse.includes(port)) {
-          port++;
-        }
-        resolve(port);
-      });
-    });
   }
 }
