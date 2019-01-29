@@ -27,10 +27,8 @@ test('Probe#probe', t => {
   const log = probe.getLog();
   const row = log[0];
 
-  t.equals(log.length, 1,
-    'Expected row logged');
-  t.equal(row.name, 'test',
-    'Name logged');
+  t.equals(log.length, 1, 'Expected row logged');
+  t.equal(row.name, 'test', 'Name logged');
   t.equal(typeof row.total, 'number', 'Start is set');
   t.equal(typeof row.delta, 'number', 'Delta is set');
 
@@ -47,16 +45,13 @@ test('Probe#probe - level methods', t => {
 
   const log = probe.getLog();
 
-  t.equals(log.length, 4,
-    'Expected rows logged');
-  t.deepEqual(
-    log.map(row => row.level),
-    [1, 1, 2, 3],
-    'Levels match expected');
+  t.equals(log.length, 4, 'Expected rows logged');
+  t.deepEqual(log.map(row => row.level), [1, 1, 2, 3], 'Levels match expected');
   t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
-    'Names match expected');
+    'Names match expected'
+  );
 
   for (const row of log) {
     t.equal(typeof row.total, 'number', 'Start is set');
@@ -76,12 +71,8 @@ test('Probe#probe - level methods, lower level set', t => {
 
   const log = probe.getLog();
 
-  t.equals(log.length, 2,
-    'Expected rows logged');
-  t.deepEqual(
-    log.map(row => row.level),
-    [1, 1],
-    'Levels match expected');
+  t.equals(log.length, 2, 'Expected rows logged');
+  t.deepEqual(log.map(row => row.level), [1, 1], 'Levels match expected');
 
   t.end();
 });
@@ -96,8 +87,7 @@ test('Probe#probe - level methods, disabled', t => {
 
   const log = probe.getLog();
 
-  t.equals(log.length, 0,
-    'No rows logged');
+  t.equals(log.length, 0, 'No rows logged');
 
   t.end();
 });
@@ -112,16 +102,13 @@ test('Probe#sample - level methods', t => {
 
   const log = probe.getLog();
 
-  t.equals(log.length, 4,
-    'Expected rows logged');
-  t.deepEqual(
-    log.map(row => row.level),
-    [1, 1, 2, 3],
-    'Levels match expected');
+  t.equals(log.length, 4, 'Expected rows logged');
+  t.deepEqual(log.map(row => row.level), [1, 1, 2, 3], 'Levels match expected');
   t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
-    'Names match expected');
+    'Names match expected'
+  );
 
   for (const row of log) {
     t.equal(typeof row.total, 'number', 'Start is set');

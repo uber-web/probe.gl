@@ -4,7 +4,6 @@ import {formatTime} from './utils/formatters';
 // const MAX_FPS = 70;
 
 export default class Stats {
-
   constructor({id}) {
     this.id = id;
     this.time = getTimestamp();
@@ -71,7 +70,7 @@ export default class Stats {
   // ACCESSORS
 
   hasTimeElapsed(deltaTime = 1000) {
-    return (getTimestamp() - this.time) > 1000;
+    return getTimestamp() - this.time > 1000;
   }
 
   getStats() {

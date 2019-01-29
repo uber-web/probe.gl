@@ -15,33 +15,33 @@ const mode = process.argv.length >= 3 ? process.argv[2] : 'default';
 console.log(`Running ${mode} tests...`); // eslint-disable-line
 
 switch (mode) {
-case 'bench':
-  require('./bench/index'); // Run the benchmarks
-  break;
+  case 'bench':
+    require('./bench/index'); // Run the benchmarks
+    break;
 
-case 'log':
-  require('./src/lib/raw-logging');
-  break;
+  case 'log':
+    require('./src/lib/raw-logging');
+    break;
 
-case 'browser':
-case 'browser-headless':
-  new BrowserTestDriver().run({
-    title: 'Unit Tests',
-    server: {
-      command: 'webpack-dev-server',
-      arguments: ['--config', 'test/webpack.config.js', '--env.test']
-    },
-    headless: mode === 'browser-headless'
-  });
-  break;
+  case 'browser':
+  case 'browser-headless':
+    new BrowserTestDriver().run({
+      title: 'Unit Tests',
+      server: {
+        command: 'webpack-dev-server',
+        arguments: ['--config', 'test/webpack.config.js', '--env.test']
+      },
+      headless: mode === 'browser-headless'
+    });
+    break;
 
-case 'dist':
-  moduleAlias.addAlias('probe.gl', path.resolve('./dist/es5'));
-  require('./test-index'); // Run the tests
-  break;
+  case 'dist':
+    moduleAlias.addAlias('probe.gl', path.resolve('./dist/es5'));
+    require('./test-index'); // Run the tests
+    break;
 
-case 'test':
-default:
-  require('./test-index'); // Run the tests
-  break;
+  case 'test':
+  default:
+    require('./test-index'); // Run the tests
+    break;
 }

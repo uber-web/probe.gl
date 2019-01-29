@@ -4,8 +4,7 @@ import test from 'tape-catch';
 import parseColorBench from './parse-color.bench';
 
 test('Bench#import', t => {
-  t.equals(typeof Bench, 'function',
-    'Expected row logged');
+  t.equals(typeof Bench, 'function', 'Expected row logged');
   t.end();
 });
 
@@ -24,7 +23,5 @@ test('Bench#run', t => {
   parseColorBench(suite);
 
   t.ok(suite instanceof Bench, 'suite created successfully');
-  suite.run().then(
-    () => t.end()
-  );
+  suite.run().then(() => t.end());
 });

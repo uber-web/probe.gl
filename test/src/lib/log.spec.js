@@ -31,8 +31,10 @@ const NORMALIZE_ARGUMENTS_TEST_CASES = [
 test('Log#import', t => {
   t.equals(typeof Log, 'function', 'Log imported OK');
   t.equals(typeof Probe, 'object', 'default (Probe) imported OK');
-  t.ok(Probe.VERSION === version || Probe.VERSION === 'untranspiled source',
-    'Probe.VERSION imported OK');
+  t.ok(
+    Probe.VERSION === version || Probe.VERSION === 'untranspiled source',
+    'Probe.VERSION imported OK'
+  );
   t.end();
 });
 
@@ -40,8 +42,11 @@ test('Log#_normalizeArguments', t => {
   const log = new Log({id: 'test'});
   for (const tc of NORMALIZE_ARGUMENTS_TEST_CASES) {
     const opts = log._normalizeArguments(tc.args);
-    t.deepEqual(opts, tc.opts,
-      `log(${JSON.stringify(tc.args)}) => ${JSON.stringify(opts)} args parsed correctly`);
+    t.deepEqual(
+      opts,
+      tc.opts,
+      `log(${JSON.stringify(tc.args)}) => ${JSON.stringify(opts)} args parsed correctly`
+    );
   }
   t.end();
 });
@@ -136,14 +141,14 @@ test('Log#table', t => {
 test('Log#get', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.get('priority'), 'log.get(\'priority\') works');
+  t.doesNotThrow(() => log.get('priority'), "log.get('priority') works");
   t.end();
 });
 
 test('Log#set', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.set('priority', 1), 'log.set(\'priority\', 1) works');
+  t.doesNotThrow(() => log.set('priority', 1), "log.set('priority', 1) works");
   t.end();
 });
 

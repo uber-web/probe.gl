@@ -81,11 +81,9 @@ export default class BrowserDriver {
     if (this.browser) {
       return Promise.resolve(this.browser);
     }
-    return puppeteer
-      .launch(options)
-      .then(browser => {
-        this.browser = browser;
-      });
+    return puppeteer.launch(options).then(browser => {
+      this.browser = browser;
+    });
   }
 
   openPage({
@@ -101,7 +99,8 @@ export default class BrowserDriver {
       );
     }
 
-    return this.browser.newPage()
+    return this.browser
+      .newPage()
       .then(page => {
         this.page = page;
 
@@ -112,9 +111,7 @@ export default class BrowserDriver {
 
         const promises = [];
         for (const name in exposeFunctions) {
-          promises.push(
-            page.exposeFunction(name, exposeFunctions[name])
-          );
+          promises.push(page.exposeFunction(name, exposeFunctions[name]));
         }
         return Promise.all(promises);
       })
@@ -135,36 +132,39 @@ export default class BrowserDriver {
   startServer(config = {}) {
     config = normalizeServerConfig(config, this.logger);
 
-    const getPort = config.port === 'auto' ?
-      getAvailablePort(AUTO_PORT_START) : Promise.resolve(config.port);
+    const getPort =
+      config.port === 'auto' ? getAvailablePort(AUTO_PORT_START) : Promise.resolve(config.port);
 
-    return getPort.then(port => new Promise((resolve, reject) => {
-      const args = [...config.arguments];
-      if (port) {
-        args.push('--port', port);
-      }
+    return getPort.then(
+      port =>
+        new Promise((resolve, reject) => {
+          const args = [...config.arguments];
+          if (port) {
+            args.push('--port', port);
+          }
 
-      const server = ChildProcess.spawn(config.command, args, config.options);
-      server.on('error', error => {
-        reject(error);
-      });
-      server.on('close', () => () => {
-        this.server = null;
-      });
-      this.server = server;
-      this.port = port;
+          const server = ChildProcess.spawn(config.command, args, config.options);
+          server.on('error', error => {
+            reject(error);
+          });
+          server.on('close', () => () => {
+            this.server = null;
+          });
+          this.server = server;
+          this.port = port;
 
-      setTimeout(() => {
-        const url = `http://localhost:${this.port}`;
+          setTimeout(() => {
+            const url = `http://localhost:${this.port}`;
 
-        this.logger.log({
-          message: `Started ${config.command} at ${url}`,
-          color: COLOR.BRIGHT_GREEN
-        })();
+            this.logger.log({
+              message: `Started ${config.command} at ${url}`,
+              color: COLOR.BRIGHT_GREEN
+            })();
 
-        resolve(url);
-      }, config.wait);
-    }));
+            resolve(url);
+          }, config.wait);
+        })
+    );
   }
 
   stopServer() {

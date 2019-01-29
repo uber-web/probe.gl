@@ -3,19 +3,7 @@ import test from 'tape-catch';
 
 import {BrowserTestDriver} from 'probe.gl/test-utils';
 
-test('BrowserTestDriver#import', t => {
-  t.ok(BrowserTestDriver, 'BrowserTestDriver symbol imported');
-  t.end();
-});
-
-test('BrowserTestDriver#ImageDiff', t => {
-  if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
-    t.comment('ImageDiff only works in automated browser tests');
-    t.end();
-    return;
-  }
-
-  // Create test canvas
+function createTestCanvas() {
   const canvas = document.createElement('canvas');
   Object.assign(canvas.style, {position: 'fixed', top: 0, left: 0, zIndex: 99});
   canvas.width = 40;
@@ -35,6 +23,23 @@ test('BrowserTestDriver#ImageDiff', t => {
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
+
+  return canvas;
+}
+
+test('BrowserTestDriver#import', t => {
+  t.ok(BrowserTestDriver, 'BrowserTestDriver symbol imported');
+  t.end();
+});
+
+test('BrowserTestDriver#ImageDiff', t => {
+  if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
+    t.comment('ImageDiff only works in automated browser tests');
+    t.end();
+    return;
+  }
+
+  const canvas = createTestCanvas();
   document.body.append(canvas);
 
   const diffSettings = {
@@ -43,7 +48,8 @@ test('BrowserTestDriver#ImageDiff', t => {
     region: {x: 0, y: 0, width: 40, height: 40}
   };
 
-  window.browserTestDriver_captureAndDiffScreen(diffSettings)
+  window
+    .browserTestDriver_captureAndDiffScreen(diffSettings)
     .then(result => {
       if (result.success) {
         t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
@@ -54,6 +60,7 @@ test('BrowserTestDriver#ImageDiff', t => {
       }
     })
     .then(() => {
+      const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ff0';
       ctx.fillRect(10, 10, 12, 12);
       return window.browserTestDriver_captureAndDiffScreen(diffSettings);

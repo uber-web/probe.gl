@@ -90,7 +90,6 @@ function getTableHeader(table) {
 // A console wrapper
 
 export default class Log {
-
   constructor({id} = {}) {
     this.id = id;
     this.VERSION = VERSION;
@@ -152,7 +151,7 @@ export default class Log {
 
   // Unconditional logging
 
-  assert(condition, message){
+  assert(condition, message) {
     assert(condition, message);
   }
 
@@ -207,7 +206,9 @@ in a later version. Use \`${newUsage}\` instead`);
   // Log a normal message
   info(priority, message, ...args) {
     return this._getLogFunction({
-      priority, message, args,
+      priority,
+      message,
+      args,
       method: console.info
     });
   }
@@ -243,14 +244,14 @@ in a later version. Use \`${newUsage}\` instead`);
     if (priority > this.getPriority()) {
       return noop;
     }
-    return isBrowser ?
-      this._logImageInBrowser({image, message, scale}) :
-      this._logImageInNode({image, message, scale});
+    return isBrowser
+      ? this._logImageInBrowser({image, message, scale})
+      : this._logImageInNode({image, message, scale});
   }
 
   // Logs the current settings as a table
   settings() {
-    if(console.table) {
+    if (console.table) {
       console.table(this._storage.config);
     } else {
       console.log(this._storage.config);
@@ -278,8 +279,9 @@ in a later version. Use \`${newUsage}\` instead`);
     }
     if (asciify) {
       return () =>
-        asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`})
-        .then(data => console.log(data));
+        asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then(data =>
+          console.log(data)
+        );
     }
     return noop;
   }
@@ -447,16 +449,16 @@ in a later version. Use \`${newUsage}\` instead`);
     let resolvedPriority;
 
     switch (typeof priority) {
-    case 'number':
-      resolvedPriority = priority;
-      break;
+      case 'number':
+        resolvedPriority = priority;
+        break;
 
-    case 'object':
-      resolvedPriority = priority.priority || 0;
-      break;
+      case 'object':
+        resolvedPriority = priority.priority || 0;
+        break;
 
-    default:
-      resolvedPriority = 0;
+      default:
+        resolvedPriority = 0;
     }
     // 'log priority must be a number'
     assert(Number.isFinite(resolvedPriority) && resolvedPriority >= 0);
@@ -477,19 +479,19 @@ in a later version. Use \`${newUsage}\` instead`);
     };
 
     switch (typeof priority) {
-    case 'string':
-    case 'function':
-      if (message !== undefined) {
-        args.unshift(message);
-      }
-      Object.assign(newOpts, {message: priority});
-      break;
+      case 'string':
+      case 'function':
+        if (message !== undefined) {
+          args.unshift(message);
+        }
+        Object.assign(newOpts, {message: priority});
+        break;
 
-    case 'object':
-      Object.assign(newOpts, priority);
-      break;
+      case 'object':
+        Object.assign(newOpts, priority);
+        break;
 
-    default:
+      default:
     }
 
     // Resolve functions into strings by calling them
