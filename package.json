@@ -32,6 +32,7 @@
   "browser": {
     "asciify-image": false,
     "child_process": false,
+    "puppeteer": false,
     "console": false,
     "net": false,
     "readline": false,
@@ -49,13 +50,13 @@
     "lint-yarn": "!(grep -q unpm.u yarn.lock) || (echo 'Please rebuild yarn file using public npmrc' && false)",
     "publish-prod": "npm run test && npm run test-dist && npm publish",
     "publish-beta": "npm run test && npm run test-dist && npm publish --tag beta",
-    "test": "node test/start.js test && node test/start.js log && node test/start.js browser",
+    "test": "node test/start.js test && node test/start.js log && node test/start.js browser-headless",
     "test-fast": "node test/start.js test | tap-diff",
     "test-dist": "node test/start.js dist",
     "test-cover": "NODE_ENV=test tape -r babel-register test/node.js && nyc report",
     "test-size": "npm run build && webpack --config test/webpack.config.js --env.import-nothing",
     "bench": "node test/start.js bench",
-    "test-browser": "webpack-dev-server --config test/webpack.config.js --env.test --progress --hot --open",
+    "test-browser": "node test/start.js browser",
     "bench-browser": "webpack-dev-server --config test/webpack.config.js --env.bench --progress --hot --open"
   },
   "dependencies": {

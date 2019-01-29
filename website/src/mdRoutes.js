@@ -69,9 +69,6 @@ export default [{
       name: 'BrowserTestDriver',
       markdown: require('../../docs/api-reference/test-utils/browser-test-driver.md')
     }, {
-      name: 'callExposedFunction',
-      markdown: require('../../docs/api-reference/test-utils/call-exposed-function.md')
-    }, {
       name: 'makeSpy',
       markdown: require('../../docs/api-reference/test-utils/make-spy.md')
     }]

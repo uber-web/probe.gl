@@ -18,137 +18,171 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/* global process, setTimeout */
+import puppeteer from 'puppeteer';
+import ChildProcess from 'child_process';
+
 import {COLOR} from '../../lib/utils/color';
 import Log from '../../lib/log';
-const log = new Log({id: 'render-test'});
+import {getAvailablePort} from './process-utils';
 
-const DEFAULT_CONFIG = {
-  process: './node_modules/.bin/webpack-dev-server',
-  parameters: ['--config', 'webpack.config.js'],
-  port: 5000,
+const DEFAULT_SERVER_CONFIG = {
+  command: 'webpack-dev-server',
+  arguments: [],
+  port: 'auto',
+  wait: 2000,
   options: {maxBuffer: 5000 * 1024}
 };
 
+// https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions
 const DEFAULT_PUPPETEER_OPTIONS = {
-  headless: false
+  headless: false,
+  defaultViewport: {width: 800, height: 600}
 };
 
-export default class BrowserDriver {
-  constructor() {
-    this.execFile = module.require('child_process').execFile;
-    this.puppeteer = module.require('puppeteer');
-    this.console = module.require('console');
-    this.process = module.require('process');
+const AUTO_PORT_START = 5000;
 
-    this.child = null;
+function noop() {}
+
+function normalizeServerConfig(config, logger) {
+  const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
+
+  // Handle legacy configs
+  if (config.process) {
+    result.command = config.process;
+    logger.deprecated('process', 'command');
+  }
+  if (config.parameters) {
+    result.arguments = config.parameters;
+    logger.deprecated('parameters', 'arguments');
+  }
+
+  Object.assign(result, config, {
+    options: Object.assign({}, result.options, config.options)
+  });
+
+  return result;
+}
+
+export default class BrowserDriver {
+  constructor({id = 'browser-driver'} = {}) {
+    this.id = id;
+    this.logger = new Log({id});
+
+    this.server = null;
     this.browser = null;
     this.page = null;
     this.port = null;
-    this.shellStatus = 0;
   }
 
-  setShellStatus(success) {
-    // return value that is visible to the shell, 0 is success
-    this.shellStatus = success ? 0 : 1;
-  }
+  startBrowser(options = {}) {
+    options = Object.assign({}, DEFAULT_PUPPETEER_OPTIONS, options);
 
-  startBrowser(options = DEFAULT_PUPPETEER_OPTIONS) {
     if (this.browser) {
       return Promise.resolve(this.browser);
     }
-    return this.puppeteer
+    return puppeteer
       .launch(options)
       .then(browser => {
         this.browser = browser;
       });
   }
 
-  newPage({url = 'http://localhost', width = 1550, height = 850} = {}) {
-    log.log({
-      message: `Connecting to port: ${this.port}`,
-      color: COLOR.YELLOW
-    })();
-    return this.startBrowser()
-      .then(_ => this.browser.newPage())
+  openPage({
+    url = 'http://localhost',
+    exposeFunctions = {},
+    onLoad = noop,
+    onConsole = noop,
+    onError = noop
+  } = {}) {
+    if (!this.browser) {
+      return Promise.reject(
+        new Error('No browser instance is found. Forgot to call startBrowser()?')
+      );
+    }
+
+    return this.browser.newPage()
       .then(page => {
         this.page = page;
-      })
-      .then(_ => this.page.waitFor(1000))
-      .then(_ => this.page.goto(`${url}:${this.port}`))
-      .then(_ => this.page.setViewport({width: 1550, height: 850}));
-  }
 
-  exposeFunction(name, cb) {
-    this.page.exposeFunction(name, cb);
+        // attach events
+        page.on('load', onLoad);
+        page.on('console', onConsole);
+        page.on('error', onError);
+
+        const promises = [];
+        for (const name in exposeFunctions) {
+          promises.push(
+            page.exposeFunction(name, exposeFunctions[name])
+          );
+        }
+        return Promise.all(promises);
+      })
+      .then(_ => this.page.goto(url));
   }
 
   stopBrowser() {
-    return Promise.resolve()
-      .then(_ => this.page.waitFor(1000))
-      .then(_ => this.browser.close());
+    if (this.browser) {
+      return this.browser.close().then(() => {
+        this.browser = null;
+      });
+    }
+    return Promise.resolve();
   }
 
-  startServer(config = {}, maxRetryTimes = 30) {
-    const newConfig = Object.assign({}, DEFAULT_CONFIG, config);
-    return new Promise((resolve, reject) => {
-      log.log({
-        message: `Binding to port: ${newConfig.port}`,
-        color: COLOR.YELLOW
-      })();
-      const timeout = setTimeout(() => { // eslint-disable-line
-        resolve();
-      }, 2000);
-      this.child = this.execFile(
-        newConfig.process,
-        [...newConfig.parameters, '--port', `${newConfig.port}`],
-        newConfig.options,
-        error => {
-          if (error) {
-            clearTimeout(timeout); // eslint-disable-line
-            log.log({
-              message: `Failed to bind port: ${newConfig.port}`,
-              color: COLOR.YELLOW
-            })();
-            reject(error);
-          }
-        }
-      );
-    })
-      .then(() => {
-        this.port = newConfig.port;
-      })
-      .catch(error => {
-        if (maxRetryTimes > 0) {
-          newConfig.port++;
-          return this.startServer(newConfig, maxRetryTimes - 1);
-        } else { // eslint-disable-line
-          log.log({
-            message: 'Failed to start server, use \'killall node\' to stop existing services',
-            color: COLOR.RED
-          })();
-          throw error;
-        }
+  // Starts a web server with the provided configs
+  // Resolves to the bound url if successful
+  startServer(config = {}) {
+    config = normalizeServerConfig(config, this.logger);
+
+    const getPort = config.port === 'auto' ?
+      getAvailablePort(AUTO_PORT_START) : Promise.resolve(config.port);
+
+    return getPort.then(port => new Promise((resolve, reject) => {
+      const args = [...config.arguments];
+      if (port) {
+        args.push('--port', port);
+      }
+
+      const server = ChildProcess.spawn(config.command, args, config.options);
+      server.on('error', error => {
+        reject(error);
       });
+      server.on('close', () => () => {
+        this.server = null;
+      });
+      this.server = server;
+      this.port = port;
+
+      setTimeout(() => {
+        const url = `http://localhost:${this.port}`;
+
+        this.logger.log({
+          message: `Started ${config.command} at ${url}`,
+          color: COLOR.BRIGHT_GREEN
+        })();
+
+        resolve(url);
+      }, config.wait);
+    }));
   }
 
   stopServer() {
-    if (this.child) {
-      this.child.kill();
-      this.child = null;
+    if (this.server) {
+      this.server.kill();
+      this.server = null;
     }
+    return Promise.resolve();
   }
 
-  exitProcess() {
-    // generate a return value that is visible to the shell, 0 is success
-    this.process.exit(this.shellStatus);
-  }
-
-  exit() {
-    return Promise.resolve()
-      .then(() => this.stopBrowser())
-      .then(() => {
-        this.stopServer();
-        this.exitProcess();
+  /* eslint-disable no-process-exit */
+  exit(statusCode = 0) {
+    this.stopBrowser()
+      .then(() => this.stopServer())
+      .then(() => process.exit(statusCode))
+      .catch(error => {
+        this.logger.error(error.message || error);
+        process.exit(1);
       });
   }
 }

@@ -2,7 +2,6 @@ export {makeSpy} from './make-spy';
 
 export {default as BrowserDriver} from './browser-automation/browser-driver';
 export {default as BrowserTestDriver} from './browser-automation/browser-test-driver';
-export {callExposedFunction} from './browser-automation/call-exposed-function';
 
 // EXPERIMENTAL TEST UTILS
 

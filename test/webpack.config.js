@@ -84,12 +84,6 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
   }
 });
 
-const TEST_HEADLESS_CONFIG = Object.assign({}, TEST_CONFIG, {
-  entry: {
-    'test-browser': resolve('./test/test-browser-headless.js')
-  }
-});
-
 const SIZE_CONFIG = Object.assign({}, TEST_CONFIG, {
   resolve: {
     alias: Object.assign({}, ALIASES, {
@@ -117,7 +111,7 @@ module.exports = env => {
     return BENCH_CONFIG;
   }
   if (env.test) {
-    return env.headless ? TEST_HEADLESS_CONFIG : TEST_CONFIG;
+    return TEST_CONFIG;
   }
   return Object.assign({}, SIZE_CONFIG, {
     // Replace the entry point for webpack-dev-server
