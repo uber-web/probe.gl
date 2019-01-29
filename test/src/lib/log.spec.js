@@ -147,9 +147,9 @@ test('Log#set', t => {
   t.end();
 });
 
-test('Log#status', t => {
+test('Log#settings', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.settings(), 'log.status() works');
+  t.doesNotThrow(() => log.settings(), 'log.settings() works');
   t.end();
 });

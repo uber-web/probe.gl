@@ -179,15 +179,15 @@ Logs an image (under Chrome)
 `log.image({priority, image, message = '', scale = 1})`
 
 
-### status
+### settings
 
 Logs the current settings as a table
 
-`log.status()`
+`log.settings()`
 
 ### get(setting)
 
-Logs the current value of setting
+Returns the current value of setting
 
 `log.get('priority')`
 
