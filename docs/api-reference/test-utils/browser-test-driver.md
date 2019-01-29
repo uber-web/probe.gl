@@ -52,7 +52,7 @@ Parameters:
 
 ## Methods
 
-### run(config)
+### run(config : Object)
 
 Runs the tests:
 
@@ -65,16 +65,15 @@ Runs the tests:
 
 Parameters:
 
-* `config` (Object)
-  - `title` (String) - name of the test, e.g. `'Unit tests'`. Default `'Browser Test'`.
-  - `headless` (Boolean) - whether to run the test in headless mode. If `true`, all console outputs from the test app will be piped to the shell. If `false`, the browser window will remain open in case any test fails.
-  - `server` (Object|Function|`false`)
-    + If an object is supplied: used as options to create a dev server. Passed to [BroserDriver.startServer](/docs/api-reference/test-utils/browser-driver.md).
-    + If a function is supplied: will be called to create a dev server. Should return a `Promise` that resolves to the service URL.
-    + If `false`: no dev server.
-  - `browser` (Object) - options to user for creating the Puppeteer instance. Passed to [BroserDriver.startBrowser](/docs/api-reference/test-utils/browser-driver.md).
-  - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
-  - `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
+* `title` (String) - name of the test, e.g. `'Unit tests'`. Default `'Browser Test'`.
+* `headless` (Boolean) - whether to run the test in headless mode. If `true`, all console outputs from the test app will be piped to the shell. If `false`, the browser window will remain open in case any test fails.
+* `server` (Object|Function|`false`)
+  - If an object is supplied: used as options to create a dev server. Passed to [BroserDriver.startServer](/docs/api-reference/test-utils/browser-driver.md).
+  - If a function is supplied: will be called to create a dev server. Should return a `Promise` that resolves to the service URL.
+  - If `false`: no dev server.
+* `browser` (Object) - options to user for creating the Puppeteer instance. Passed to [BroserDriver.startBrowser](/docs/api-reference/test-utils/browser-driver.md).
+* `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
+* `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 
 
 ## Test Events

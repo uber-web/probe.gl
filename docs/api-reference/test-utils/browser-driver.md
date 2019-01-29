@@ -37,17 +37,15 @@ Parameters:
 
 ## Methods
 
-### startBrowser(options)
+### startBrowser(options : Object)
 
 Launch a new browser instance.
 
-Parameters:
-
-* `options` (Object) - options to pass to [puppeteer.launch](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions).
+`options` are directly passed to [puppeteer.launch](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions).
 
 Returns a `Promise` that resolves when the browser has started.
 
-### openPage(options)
+### openPage(options : Object)
 
 Open a new tab in the browser. Only works after a browser instance is started:
 
@@ -57,12 +55,11 @@ browserDriver.startBrowser().openPage({url: 'http://localhost'});
 
 Parameters:
 
-* `options` (Object)
-  - `url` (String) - The url to load in the page. Default `http://localhost`.
-  - `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
-  - `onLoad` (Function) - callback when the page is loaded
-  - `onConsole` (Function) - callback when the page logs to console
-  - `onError` (Function) - callback if the puppeteer page crashes
+* `url` (String) - The url to load in the page. Default `http://localhost`.
+* `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
+* `onLoad` (Function) - callback when the page is loaded
+* `onConsole` (Function) - callback when the page logs to console
+* `onError` (Function) - callback if the puppeteer page crashes
 
 Returns a `Promise` that resolves when the page is open.
 
@@ -74,7 +71,7 @@ Terminate the browser instance.
 Returns a `Promise` that resolves when the browser is closed.
 
 
-### startServer(config)
+### startServer(config : Object)
 
 Runs a server in a new child process, that the browser can connect to.
 
@@ -104,7 +101,7 @@ Stops the server (kills the child process).
 Returns: a `Promise` that resolves when the server is closed.
 
 
-### exit(statusCode)
+### exit(statusCode : Number)
 
 Exit the process after safely closing down any running browser and server instances.
 
