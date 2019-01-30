@@ -10,7 +10,7 @@ A higher level helper class that inherits the [`BrowserDriver`](./docs/api-refer
 
 A `BrowserTestDriver` starts a Chromium browser instance and a server and opens a page with a URL that loads a script from the server. The script that runs in the browser is expected to report test results back using predefined global functions.
 
-To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) must be installed as a dev dependency.
+To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) and [pixelmatch](https://www.npmjs.com/package/pixelmatch) must be installed as dev dependencies.
 
 ## Usage
 
