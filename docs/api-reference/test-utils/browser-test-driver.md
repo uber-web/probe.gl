@@ -97,6 +97,20 @@ window.browserTestDriver_finish('Congratulations! All tests passed.');
 
 Notify the node script that the app has finished executing and the browser should be closed.
 
+### browserTestDriver_isHeadless()
+
+```js
+window.browserTestDriver_isHeadless().then(isHeadless => {
+  if (isHeadless) {
+    console.log('Test is running in headless mode');
+  }
+});
+```
+
+Check if the current test environment is headless.
+
+Returns a `Promise` that resolves to `true` if the current test environment is headless.
+
 ### browserTestDriver_captureAndDiffScreen(options : Object)
 
 ```js
@@ -104,6 +118,8 @@ window.browserTestDriver_captureAndDiffScreen({
   goldenImage: './golden-images/map.png',
   region: {x: 0, y: 0, width: 800, height: 600},
   threshold: 0.99
+}).then(result => {
+  // do something
 });
 ```
 
@@ -115,6 +131,7 @@ Request a pixel diff between the current page and a reference "golden image." Th
 * `tolerance` (Number, optional) - the tolerance when comparing two pixels. Between `0` (strict color match) to `1` (anything will pass). Default `0.1`.
 * `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
 * `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels. Default `false`.
+* `saveOnFail` (String, optional) - the filename to save failed screenshots to. If supplied, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. For example, `[name]-actual.png` saves the screenshot to where the golden image is, with the suffix `-actual.png`. Default `null`.
 
 Returns: a `Promise` that resolves to an object with the following fields:
 

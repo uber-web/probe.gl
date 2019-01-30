@@ -4,9 +4,14 @@ import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
 export default function diffImages(source1, source2, options = {}) {
-  return Promise.all([parsePNG(source1), parsePNG(source2)]).then(([image1, image2]) =>
-    diffPNGs(image1, image2, options)
-  );
+  return Promise.all([parsePNG(source1), parsePNG(source2)]).then(([image1, image2]) => {
+    const result = diffPNGs(image1, image2, options);
+    return Object.assign(result, {
+      source1,
+      source2,
+      options
+    });
+  });
 }
 
 function diffPNGs(image1, image2, options) {
