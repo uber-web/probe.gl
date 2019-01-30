@@ -181,10 +181,8 @@ export default class BrowserTestDriver extends BrowserDriver {
       .then(image => diffImages(image, opts.goldenImage, opts))
       .then(result => {
         if (!result.success && opts.saveOnFail) {
-          let filename = opts.saveOnFail;
-          if (typeof filename !== 'string') {
-            filename = '[name]-failed.png';
-          }
+          let filename =
+            typeof opts.saveOnFail === 'string' ? opts.saveOnFail : '[name]-failed.png';
           filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
           this._saveScreenshot(filename, result.source1);
         }

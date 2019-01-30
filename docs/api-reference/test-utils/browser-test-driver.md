@@ -131,7 +131,7 @@ Request a pixel diff between the current page and a reference "golden image." Th
 * `tolerance` (Number, optional) - the tolerance when comparing two pixels. Between `0` (strict color match) to `1` (anything will pass). Default `0.1`.
 * `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
 * `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels. Default `false`.
-* `saveOnFail` (String, optional) - the filename to save failed screenshots to. If supplied, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. For example, `[name]-actual.png` saves the screenshot to where the golden image is, with the suffix `-actual.png`. Default `null`.
+* `saveOnFail` (Boolean|String, optional) - if truthy, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. If `true`, the filename will be `[name]-failed.png`, where `[name]` is replaced by the golden image path. If a string is supplied, will be used as the template for the target filename. Default `false`.
 
 Returns: a `Promise` that resolves to an object with the following fields:
 
