@@ -1,5 +1,8 @@
 CHANGELOG
 
+v2.2.0-beta.1 - Jan 30, 2019
+- Browser test tools
+
 v2.0.1 - Oct 9, 2018
 v2.0.0 - Oct 9, 2018
 
