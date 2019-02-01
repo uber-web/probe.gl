@@ -10,7 +10,7 @@ A higher level helper class that inherits the [`BrowserDriver`](./docs/api-refer
 
 A `BrowserTestDriver` starts a Chromium browser instance and a server and opens a page with a URL that loads a script from the server. The script that runs in the browser is expected to report test results back using predefined global functions.
 
-To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) must be installed as a dev dependency.
+To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) and [pixelmatch](https://www.npmjs.com/package/pixelmatch) must be installed as dev dependencies.
 
 ## Usage
 
@@ -97,6 +97,20 @@ window.browserTestDriver_finish('Congratulations! All tests passed.');
 
 Notify the node script that the app has finished executing and the browser should be closed.
 
+### browserTestDriver_isHeadless()
+
+```js
+window.browserTestDriver_isHeadless().then(isHeadless => {
+  if (isHeadless) {
+    console.log('Test is running in headless mode');
+  }
+});
+```
+
+Check if the current test environment is headless.
+
+Returns a `Promise` that resolves to `true` if the current test environment is headless.
+
 ### browserTestDriver_captureAndDiffScreen(options : Object)
 
 ```js
@@ -104,6 +118,8 @@ window.browserTestDriver_captureAndDiffScreen({
   goldenImage: './golden-images/map.png',
   region: {x: 0, y: 0, width: 800, height: 600},
   threshold: 0.99
+}).then(result => {
+  // do something
 });
 ```
 
@@ -115,10 +131,13 @@ Request a pixel diff between the current page and a reference "golden image." Th
 * `tolerance` (Number, optional) - the tolerance when comparing two pixels. Between `0` (strict color match) to `1` (anything will pass). Default `0.1`.
 * `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
 * `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels. Default `false`.
+* `saveOnFail` (Boolean, optional) - if `true`, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. Default `false`.
+* `saveAs` (String, optional) - the filename to save the screenshot as. If the string contains `[name]`, it will be replaced by the golden image path. Default `[name]-failed.png`.
 
 Returns: a `Promise` that resolves to an object with the following fields:
 
 * `success` (Boolean) - whether the test passed. A test can fail either because the matching score is lower than the specified `threshold`, or an unexpected error occurred.
+* `headless` (Boolean) - whether the browser was running in headless mode.
 * `match` (Number) - the matching score. Between `0` (no pixels matched) to `1` (all pixels matched).
 * `matchPercentage` (String) - `match` formatted in percentage form.
 * `diffImage` (Uint8Array) - image data that highlight the mismatched pixels. Only if `createDiffImage: true`.

@@ -21,6 +21,7 @@
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from '../../lib/utils/color';
 import diffImages from '../image-utils/diff-images';
+import fs from 'fs';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
@@ -57,6 +58,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       _ =>
         new Promise((resolve, reject) => {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
+            browserTestDriver_isHeadless: () => this.headless,
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
             browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
@@ -177,8 +179,43 @@ export default class BrowserTestDriver extends BrowserDriver {
     return this.page
       .screenshot(screenshotOptions)
       .then(image => diffImages(image, opts.goldenImage, opts))
+      .then(result => {
+        if (!result.success && opts.saveOnFail) {
+          let filename = opts.saveAs || '[name]-failed.png';
+          filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
+          this._saveScreenshot(filename, result.source1);
+        }
+        return {
+          headless: this.headless,
+          match: result.match,
+          matchPercentage: result.matchPercentage,
+          success: result.success,
+          diffImage: result.diffImage
+        };
+      })
       .catch(error => {
-        return {success: false, match: 0, error: error.message};
+        return {
+          headless: this.headless,
+          match: 0,
+          matchPercentage: 'N/A',
+          success: false,
+          error: error.message
+        };
       });
+  }
+
+  _saveScreenshot(filename, data) {
+    this.logger.log({
+      message: `Writing screenshot to ${filename}`,
+      color: COLOR.BRIGHT_YELLOW
+    })();
+    fs.writeFile(filename, data, error => {
+      if (error) {
+        this.logger.log({
+          message: `Save screenshot failed: ${error.message}`,
+          color: COLOR.BRIGHT_RED
+        })();
+      }
+    });
   }
 }
