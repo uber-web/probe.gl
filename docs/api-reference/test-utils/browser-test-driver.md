@@ -131,11 +131,13 @@ Request a pixel diff between the current page and a reference "golden image." Th
 * `tolerance` (Number, optional) - the tolerance when comparing two pixels. Between `0` (strict color match) to `1` (anything will pass). Default `0.1`.
 * `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
 * `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels. Default `false`.
-* `saveOnFail` (Boolean|String, optional) - if truthy, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. If `true`, the filename will be `[name]-failed.png`, where `[name]` is replaced by the golden image path. If a string is supplied, will be used as the template for the target filename. Default `false`.
+* `saveOnFail` (Boolean, optional) - if `true`, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. Default `false`.
+* `saveAs` (String, optional) - the filename to save the screenshot as. If the string contains `[name]`, it will be replaced by the golden image path. Default `[name]-failed.png`.
 
 Returns: a `Promise` that resolves to an object with the following fields:
 
 * `success` (Boolean) - whether the test passed. A test can fail either because the matching score is lower than the specified `threshold`, or an unexpected error occurred.
+* `headless` (Boolean) - whether the browser was running in headless mode.
 * `match` (Number) - the matching score. Between `0` (no pixels matched) to `1` (all pixels matched).
 * `matchPercentage` (String) - `match` formatted in percentage form.
 * `diffImage` (Uint8Array) - image data that highlight the mismatched pixels. Only if `createDiffImage: true`.
