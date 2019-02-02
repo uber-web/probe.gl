@@ -31,4 +31,4 @@ require('probe.gl'); // ensure probe gets access to pure console first
 // during puppeteer.screenshot.
 // require('tap-browser-color')();
 require('./test-index');
-require('./src/lib/raw-logging');
+require('./modules/core/lib/raw-logging');

@@ -18,7 +18,7 @@ To use this class, [puppeteer](https://www.npmjs.com/package/puppeteer) must be 
 ## Usage
 
 ```js
-import {BrowserDriver} from 'probe.gl/test-utils';
+const {BrowserDriver} = require('@probe.gl/test-utils');
 new BrowserDriver({id: 'browser-test'});
 ```
 

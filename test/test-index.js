@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import './src/test-utils';
-import './src/env';
-import './src/bench';
-import './src/lib';
+import './modules/bench';
+import './modules/core';
+import './modules/test-utils';

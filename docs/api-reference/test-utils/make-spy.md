@@ -15,7 +15,7 @@ There are also `restore` and `reset` methods that allows you to reset the test s
 
 Override function return value
 ```js
-import {makeSpy} from 'probe.gl/test';
+import {makeSpy} from '@probe.gl/test-utils';
 const spy = makeSpy(Class, 'method');
 spy.returns(false);
 // Call code that calls the wrapped method.

@@ -1,0 +1,24 @@
+{
+  "name": "@probe.gl/bench",
+  "description": "JavaScript benchmarking utility",
+  "license": "MIT",
+  "version": "3.0.0-alpha.0",
+  "keywords": [
+    "benchmarking"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/probe.gl.git"
+  },
+  "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "esnext": "dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "probe.gl": "^3.0.0-alpha.0"
+  }
+}

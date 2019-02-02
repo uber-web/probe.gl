@@ -6,6 +6,8 @@ Bench is a benchmark harness class that allows you to organize a number of bench
 ## Usage
 
 ```js
+import {Bench} from '@probe.gl/bench';
+
 const bench = new Bench()
   .group('Utility tests')
   .add('Math.sqrt', () => Math.sqrt(100))
