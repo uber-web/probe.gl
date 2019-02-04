@@ -17,7 +17,7 @@
     "modules/*"
   ],
   "scripts": {
-    "bootstrap": "ocular-bootstrap",
+    "bootstrap": "yarn && ocular-bootstrap",
     "clean": "ocular-clean",
     "build": "ocular-clean && ocular-build",
     "lint": "ocular-lint",
