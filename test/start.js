@@ -5,7 +5,7 @@ require('reify');
 
 require('../aliases');
 
-const {BrowserTestDriver} = require('probe.gl/test-utils');
+const {BrowserTestDriver} = require('@probe.gl/test-utils');
 
 /* global process */
 const path = require('path');
@@ -20,7 +20,7 @@ switch (mode) {
     break;
 
   case 'log':
-    require('./src/lib/raw-logging');
+    require('./modules/core/lib/raw-logging');
     break;
 
   case 'browser':

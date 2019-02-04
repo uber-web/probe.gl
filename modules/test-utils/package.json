@@ -1,0 +1,32 @@
+{
+  "name": "@probe.gl/test-utils",
+  "description": "JavaScript browser-based testing utilities",
+  "license": "MIT",
+  "version": "3.0.0-alpha.0",
+  "keywords": [
+    "integration test",
+    "render test"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/probe.gl.git"
+  },
+  "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "esnext": "dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "browser": {
+    "child_process": false,
+    "fs": false,
+    "puppeteer": false
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "pixelmatch": "^4.0.2",
+    "probe.gl": "^3.0.0-alpha.0",
+    "puppeteer": "^1.1.1"
+  }
+}

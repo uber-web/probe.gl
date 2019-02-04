@@ -18,7 +18,7 @@ In your node.js start script:
 
 ```js
 // This is the script that runs in Node.js and starts the browser
-const {BrowserTestDriver} = require('probe.gl/test-utils');
+const {BrowserTestDriver} = require('@probe.gl/test-utils');
 new BrowserTestDriver().run({
   server: {
     command: 'webpack-dev-server',
@@ -34,7 +34,7 @@ In your script that is run on the browser:
 // Run test cases
 ...
 // App is done running, terminate the browser instance
-window.browserTestDriver_sendMessage('done', 'All tests passed');
+window.browserTestDriver_finish('All tests passed');
 ```
 
 
