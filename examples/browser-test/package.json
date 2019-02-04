@@ -1,0 +1,21 @@
+{
+  "name": "browser-test-example",
+  "description": "@probe.gl/test-utils browser based tests example",
+  "license": "MIT",
+  "private": "true",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "test": "node index.js",
+    "test-headless": "node index.js headless"
+  },
+  "dependencies": {
+    "@probe.gl/test-utils": "^3.0.0-alpha",
+    "tape": "^4.5.1"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.0.7",
+    "webpack": "^4.20.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.0"
+  }
+}
