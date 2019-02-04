@@ -4,8 +4,8 @@ This is a minimal example of using `@probe.gl/test-utils` for browser-based test
 
 The example consists of two parts:
 
-* `index.js` - test script executed under Node
-* `test/index.js` - test script executed under Browser
+* `start.js` - launcher of the browser test, executed under Node
+* `index.js` - entry point of the tests executed in Browser
 
 See [BrowserTestDriver API](/docs/api-reference/test-utils/browser-test-driver.md) for documentation.
 
