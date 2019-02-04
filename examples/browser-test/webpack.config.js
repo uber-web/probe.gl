@@ -5,7 +5,7 @@ module.exports = {
   mode: 'development',
 
   entry: {
-    app: './test.js'
+    app: './test/index.js'
   },
 
   node: {

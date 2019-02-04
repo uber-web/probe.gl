@@ -1,5 +1,6 @@
 const {BrowserTestDriver} = require('@probe.gl/test-utils');
 
+/* global process */
 const mode = process.argv[2];
 
 new BrowserTestDriver().run({
