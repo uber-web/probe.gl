@@ -32,3 +32,4 @@ require('probe.gl'); // ensure probe gets access to pure console first
 // require('tap-browser-color')();
 require('./test-index');
 require('./modules/core/lib/raw-logging');
+require('./modules/stats-widget');
