@@ -10,7 +10,7 @@ function createTestCanvas() {
   canvas.height = 40;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, 80, 20);
+  ctx.fillRect(0, 0, 40, 40);
   ctx.strokeStyle = '#000';
   ctx.fillStyle = '#f00';
   ctx.lineWidth = 4;
@@ -75,7 +75,7 @@ test('BrowserTestDriver#ImageDiff', t => {
       }
     })
     .finally(() => {
-      document.body.remove(canvas);
+      document.body.removeChild(canvas);
       t.end();
     });
 });

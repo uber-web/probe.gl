@@ -1,19 +1,20 @@
 /* eslint-disable no-console */
-import {document, console, global} from './globals';
+import {document, console} from './globals';
 
 let old = null;
 
 // Can log a (not too long) number of messages to a div in the DOM
-export function enableDOMLogging(enable = true) {
+// Set options to false to disable
+export function enableDOMLogging(options = {}) {
   // First time, add a log div
-  if (enable && !old) {
+  if (options && !old) {
     old = console.log.bind(console);
     console.log = (...args) => {
-      logLineToDOM(...args);
+      logLineToDOM(options, ...args);
       old(...args);
     };
   }
-  if (!enable && old) {
+  if (!options && old) {
     console.log = old;
     old = null;
   }
@@ -21,18 +22,21 @@ export function enableDOMLogging(enable = true) {
 
 let logDiv = null;
 
-export function logLineToDOM(message) {
+function logLineToDOM(options, message) {
+  logDiv = options.container || logDiv;
+
   if (!logDiv) {
-    const markdown = global.probe.markdown;
-    logDiv = document.createElement(markdown ? 'pre' : 'div');
+    logDiv = document.createElement('pre');
+    document.body.append(logDiv);
   }
-  // Ensure the element comes first
-  const {childNodes} = document.body;
-  document.body.insertBefore(logDiv, childNodes && childNodes[0]);
 
   // Add the line to the log element
   if (typeof message === 'string') {
-    logDiv.innerHTML += `${message}<br />`;
+    logDiv.innerHTML += `${message}\n`;
+
+    if (options.getStyle) {
+      Object.assign(logDiv.style, options.getStyle(message));
+    }
   }
 }
 
