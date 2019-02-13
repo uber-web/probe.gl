@@ -58,13 +58,16 @@ export default class BrowserTestDriver extends BrowserDriver {
       _ =>
         new Promise((resolve, reject) => {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
-            browserTestDriver_isHeadless: () => this.headless,
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
             browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
             // Capture any uncaught errors
             onerror: reject
           });
+
+          if (this.headless) {
+            exposeFunctions.browserTestDriver_isHeadless = () => true;
+          }
 
           // Legacy config
           if (config.exposeFunction) {
