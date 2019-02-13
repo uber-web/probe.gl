@@ -76,7 +76,7 @@ Parameters:
 * `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 
 
-## Built-in Exposed Functions
+## Built-in Exposed Globals
 
 The `BrowserTestDriver` instance exposes a series of global functions to the browser application.
 The following functions can be called from the browser application to communicate with the nodejs script:
@@ -97,19 +97,16 @@ window.browserTestDriver_finish('Congratulations! All tests passed.');
 
 Notify the node script that the app has finished executing and the browser should be closed.
 
-### browserTestDriver_isHeadless()
+### browserTestDriver_isHeadless
 
 ```js
-window.browserTestDriver_isHeadless().then(isHeadless => {
-  if (isHeadless) {
-    console.log('Test is running in headless mode');
-  }
-});
+if (window.browserTestDriver_isHeadless) {
+  console.log('Test is running in headless mode');
+}
 ```
 
-Check if the current test environment is headless.
+Truthy if the current test environment is headless.
 
-Returns a `Promise` that resolves to `true` if the current test environment is headless.
 
 ### browserTestDriver_captureAndDiffScreen(options : Object)
 
