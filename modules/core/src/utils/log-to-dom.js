@@ -4,16 +4,17 @@ import {document, console} from './globals';
 let old = null;
 
 // Can log a (not too long) number of messages to a div in the DOM
-export function enableDOMLogging(enable = {}) {
+// Set options to false to disable
+export function enableDOMLogging(options = {}) {
   // First time, add a log div
-  if (enable && !old) {
+  if (options && !old) {
     old = console.log.bind(console);
     console.log = (...args) => {
-      logLineToDOM(enable, ...args);
+      logLineToDOM(options, ...args);
       old(...args);
     };
   }
-  if (!enable && old) {
+  if (!options && old) {
     console.log = old;
     old = null;
   }
@@ -21,8 +22,8 @@ export function enableDOMLogging(enable = {}) {
 
 let logDiv = null;
 
-function logLineToDOM(opts, message) {
-  logDiv = opts.container || logDiv;
+function logLineToDOM(options, message) {
+  logDiv = options.container || logDiv;
 
   if (!logDiv) {
     logDiv = document.createElement('pre');
@@ -33,8 +34,8 @@ function logLineToDOM(opts, message) {
   if (typeof message === 'string') {
     logDiv.innerHTML += `${message}\n`;
 
-    if (opts.getStyle) {
-      Object.assign(logDiv.style, opts.getStyle(message));
+    if (options.getStyle) {
+      Object.assign(logDiv.style, options.getStyle(message));
     }
   }
 }
