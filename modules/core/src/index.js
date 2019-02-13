@@ -27,7 +27,3 @@ export {addColor} from './utils/color';
 export {leftPad, rightPad} from './utils/formatters';
 export {autobind} from './utils/autobind';
 export {default as LocalStorage} from './utils/local-storage';
-
-// EXPERIMENTAL EXPORTS
-// DOM LOGGING
-export {enableDOMLogging as _enableDOMLogging} from './utils/log-to-dom';
