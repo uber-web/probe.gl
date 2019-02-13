@@ -18,8 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 /* global window */
-const probe = require('probe.gl'); // ensure probe gets access to pure console first
+require('probe.gl'); // ensure probe gets access to pure console first
+
 const test = require('tape');
+const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
 
 let failed = false;
 test.onFailure(() => {
@@ -29,7 +31,7 @@ test.onFailure(() => {
 test.onFinish(window.browserTestDriver_finish);
 
 // tap-browser-color alternative
-probe._enableDOMLogging({
+enableDOMLogging({
   getStyle: message => ({background: failed ? '#F28E82' : '#8ECA6C'})
 });
 

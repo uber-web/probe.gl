@@ -7,3 +7,5 @@ export {default as BrowserTestDriver} from './browser-automation/browser-test-dr
 
 // Image tools
 export {default as _diffImages} from './utils/diff-images';
+// DOM logging
+export {enableDOMLogging as _enableDOMLogging} from './utils/log-to-dom';
