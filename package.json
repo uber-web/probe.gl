@@ -49,8 +49,6 @@
     "prettier": "^1.16.0",
     "reify": "^0.4.4",
     "source-map-loader": "^0.2.1",
-    "tap-browser-color": "^0.1.2",
-    "tap-diff": "^0.1.1",
     "tape": "^4.5.1",
     "tape-catch": "^1.0.4",
     "uglifyjs-webpack-plugin": "^1.2.4",

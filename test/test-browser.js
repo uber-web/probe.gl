@@ -18,18 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 /* global window */
-if (window.browserTestDriver_finish) {
-  // Is automated test, add BrowserTestDriver hooks
-  const test = require('tape');
-  test.onFailure(window.browserTestDriver_fail);
-  test.onFinish(window.browserTestDriver_finish);
-}
+const probe = require('probe.gl'); // ensure probe gets access to pure console first
+const test = require('tape');
 
-require('probe.gl'); // ensure probe gets access to pure console first
-// TODO - restore browser display of test results
-// tap-browser-color directly accesses document.body which becomes null
-// during puppeteer.screenshot.
-// require('tap-browser-color')();
+let failed = false;
+test.onFailure(() => {
+  failed = true;
+  window.browserTestDriver_fail();
+});
+test.onFinish(window.browserTestDriver_finish);
+
+// tap-browser-color alternative
+probe._enableDOMLogging({
+  getStyle: message => ({background: failed ? '#F28E82' : '#8ECA6C'})
+});
+
 require('./test-index');
 require('./modules/core/lib/raw-logging');
 require('./modules/stats-widget');
