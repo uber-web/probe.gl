@@ -5,7 +5,8 @@ const ALIASES = {
   // Main lib
   'probe.gl': path.resolve(__dirname, './modules/core/src'),
   '@probe.gl/bench': path.resolve(__dirname, './modules/bench/src'),
-  '@probe.gl/test-utils': path.resolve(__dirname, './modules/test-utils/src')
+  '@probe.gl/test-utils': path.resolve(__dirname, './modules/test-utils/src'),
+  '@probe.gl/stats-widget': path.resolve(__dirname, './modules/stats-widget/src')
 };
 
 // Registers an alias for this module

@@ -1,0 +1,27 @@
+{
+  "name": "@probe.gl/widgets",
+  "description": "DOM widgets for testing and profiling",
+  "license": "MIT",
+  "version": "3.0.0-alpha.1",
+  "keywords": [
+    "javascript",
+    "profiling",
+    "instrumentation",
+    "logging"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/probe.gl.git"
+  },
+  "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "esnext": "dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "sideEffects": false,
+  "dependencies": {
+    "@babel/runtime": "^7.0.0"
+  }
+}
