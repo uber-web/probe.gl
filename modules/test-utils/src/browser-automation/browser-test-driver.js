@@ -65,6 +65,9 @@ export default class BrowserTestDriver extends BrowserDriver {
             onerror: reject
           });
 
+          // Puppeteer can only inject functions, not values, into the global scope
+          // In headless mode, we inject the function so it's truthy
+          // In non-headless mode, we don't inject the function so it's undefined
           if (this.headless) {
             exposeFunctions.browserTestDriver_isHeadless = () => true;
           }
