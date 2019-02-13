@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {document, console, global} from './globals';
+import {document, console} from './globals';
 
 let old = null;
 
