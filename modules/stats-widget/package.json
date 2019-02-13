@@ -1,5 +1,5 @@
 {
-  "name": "@probe.gl/widgets",
+  "name": "@probe.gl/stats-widget",
   "description": "DOM widgets for testing and profiling",
   "license": "MIT",
   "version": "3.0.0-alpha.3",
