@@ -2,7 +2,7 @@
   "name": "@probe.gl/test-utils",
   "description": "JavaScript browser-based testing utilities",
   "license": "MIT",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "keywords": [
     "integration test",
     "render test"
