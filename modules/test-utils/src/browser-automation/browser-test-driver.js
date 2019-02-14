@@ -186,17 +186,18 @@ export default class BrowserTestDriver extends BrowserDriver {
       .screenshot(screenshotOptions)
       .then(image => diffImages(image, opts.goldenImage, opts))
       .then(result => {
-        if (!result.success && opts.saveOnFail) {
+        if (!result.success && opts.saveOnFail && result.source1) {
           let filename = opts.saveAs || '[name]-failed.png';
           filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
           this._saveScreenshot(filename, result.source1);
         }
         return {
           headless: this.headless,
-          match: result.match,
-          matchPercentage: result.matchPercentage,
+          match: result.match || 0,
+          matchPercentage: result.matchPercentage || 'N/A',
           success: result.success,
-          diffImage: result.diffImage
+          diffImage: result.diffImage || null,
+          error: result.error || null
         };
       })
       .catch(error => {
