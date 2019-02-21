@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-const {experimental} = require('probe.gl');
-experimental.enableDOMLogging();
+const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
+enableDOMLogging(true);
 
-require('./bench-index');
+require('./index');
