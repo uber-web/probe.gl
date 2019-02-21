@@ -43,7 +43,11 @@ test('statistics#std', t => {
   ];
   for (const tc of STD_TESTS) {
     const result = std(tc.input);
-    t.equal(result.toPrecision(11), tc.output.toPrecision(11), 'returns correct standard deviation');
+    t.equal(
+      result.toPrecision(11),
+      tc.output.toPrecision(11),
+      'returns correct standard deviation'
+    );
   }
   t.end();
 });
@@ -62,7 +66,11 @@ test('statistics#cv', t => {
   ];
   for (const tc of STD_ERR_TESTS) {
     const result = cv(tc.input);
-    t.equal(result.toPrecision(11), tc.output.toPrecision(11), 'returns correct standard deviation');
+    t.equal(
+      result.toPrecision(11),
+      tc.output.toPrecision(11),
+      'returns correct standard deviation'
+    );
   }
   t.end();
 });
