@@ -2,27 +2,19 @@
 /* global setTimeout, console */
 import {global, assert, rightPad, autobind, LocalStorage} from 'probe.gl';
 import {formatSI} from './format-utils';
+import {mean, cv} from './stat-utils';
 
 const noop = () => {};
 
 const TIME_THRESHOLD_MS = 80; // Minimum number of milliseconds to iterate each bench test
 const TIME_COOLDOWN_MS = 5; // milliseconds of "cooldown" between tests
-const MIN_ITERATIONS = 1; // Increase if OK to let slow benchmarks take long time
+const MIN_ITERATIONS = 3; // Increase if OK to let slow benchmarks take long time
 
 export const LOG_ENTRY = {
   GROUP: 'group',
   TEST: 'test',
   COMPLETE: 'complete'
 };
-
-const CALIBRATION_TESTS = [
-  {
-    id: 'warmup',
-    initFunc: noop,
-    testFunc: () => 100,
-    opts: {}
-  }
-];
 
 export default class Bench {
   constructor({
@@ -136,20 +128,20 @@ export default class Bench {
 // Helper methods
 
 function runCalibrationTests({tests}) {
-  let promise = Promise.resolve(true);
-
-  // Run default warm up and calibration tests
-  for (const test of CALIBRATION_TESTS) {
-    promise = promise.then(() => runAsyncTest({test, silent: true}));
+  // Beat JIT - run each test once
+  for (const id in tests) {
+    const test = tests[id];
+    if (!test.group) {
+      runBenchTestIterations(test, 1);
+    }
   }
-
-  return promise;
 }
 
 // Run a list of bench test case async
 function runAsyncTests({tests, onBenchmarkComplete = noop}) {
   // Run default warm up and calibration tests
-  let promise = runCalibrationTests({tests, onBenchmarkComplete});
+  runCalibrationTests({tests, onBenchmarkComplete});
+  let promise = Promise.resolve(true);
 
   // Run the suite tests
   for (const id in tests) {
@@ -166,9 +158,8 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
         if (test.group) {
           logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
         } else {
-          const {time, iterations} = runBenchTest(test);
+          const {iterationsPerSecond, time, iterations, error} = runBenchTest(test);
 
-          const iterationsPerSecond = iterations / time;
           const itersPerSecond = formatSI(iterationsPerSecond);
           if (!silent) {
             logEntry(test, {
@@ -177,7 +168,8 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
               priority: test.priority,
               itersPerSecond,
               time,
-              message: `${test.id} ${itersPerSecond}/s`
+              error,
+              message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
             });
           }
 
@@ -198,9 +190,30 @@ function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
   });
 }
 
-// Run a test func for an increasing amount of iterations until time threshold exceeded
 function runBenchTest(test) {
-  let iterations = test.opts.minIterations / 10;
+  const results = [];
+  let totalTime = 0;
+  let totalIterations = 0;
+
+  for (let i = 0; i < test.opts.minIterations; i++) {
+    const {time, iterations} = runBenchTestOnce(test);
+    const iterationsPerSecond = iterations / time;
+    results.push(iterationsPerSecond);
+    totalTime += time;
+    totalIterations += iterations;
+  }
+
+  return {
+    time: totalTime,
+    iterations: totalIterations,
+    iterationsPerSecond: mean(results),
+    error: cv(results)
+  };
+}
+
+// Run a test func for an increasing amount of iterations until time threshold exceeded
+function runBenchTestOnce(test) {
+  let iterations = 1;
   let elapsedMillis = 0;
 
   // Run increasing amount of interations until we reach time threshold, default at least 100ms
@@ -243,17 +256,21 @@ function logEntry(test, opts) {
   }
 }
 
-export function logResultsAsMarkdownTable({entry, id, itersPerSecond, time}) {
+export function logResultsAsMarkdownTable({entry, id, itersPerSecond, error, time}) {
   const COL1 = 50;
   const COL2 = 12;
   switch (entry) {
     case LOG_ENTRY.GROUP:
       console.log('');
-      console.log(`| ${rightPad(id, COL1)} | iterations/s |`);
-      console.log(`| ${rightPad('---', COL1)} | ---          |`);
+      console.log(`| ${rightPad(id, COL1)} | iterations/s | error |`);
+      console.log(`| ${rightPad('---', COL1)} | ---          | --- |`);
       break;
     case LOG_ENTRY.TEST:
-      console.log(`| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} |`);
+      console.log(
+        `| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} | ±${(error * 100).toFixed(
+          2
+        )}% |`
+      );
       break;
     case LOG_ENTRY.COMPLETE:
       console.log('');
@@ -263,14 +280,14 @@ export function logResultsAsMarkdownTable({entry, id, itersPerSecond, time}) {
   }
 }
 
-export function logResultsAsTree({entry, id, itersPerSecond, time}) {
+export function logResultsAsTree({entry, id, itersPerSecond, error, time}) {
   switch (entry) {
     case LOG_ENTRY.GROUP:
       console.log('');
       console.log(`${id}`);
       break;
     case LOG_ENTRY.TEST:
-      console.log(`├─ ${id}: ${itersPerSecond} iterations/s`);
+      console.log(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
       break;
     case LOG_ENTRY.COMPLETE:
       console.log('');
@@ -280,10 +297,14 @@ export function logResultsAsTree({entry, id, itersPerSecond, time}) {
   }
 }
 
-export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, time}) {
+export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, time}) {
   switch (entry) {
     case LOG_ENTRY.TEST:
-      console.log(`├─ ${id}: ${itersPerSecond} iterations/s (${time.toFixed(2)}s elapsed)`);
+      console.log(
+        `├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}% (${time.toFixed(
+          2
+        )}s elapsed)`
+      );
       break;
     default:
       logResultsAsTree({entry, id, itersPerSecond, time});
