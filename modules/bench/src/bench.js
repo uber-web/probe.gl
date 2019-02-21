@@ -2,6 +2,7 @@
 /* global setTimeout, console */
 import {global, assert, rightPad, autobind, LocalStorage} from 'probe.gl';
 import {formatSI} from './format-utils';
+import timer from './timer';
 import {mean, cv} from './stat-utils';
 
 const noop = () => {};
@@ -43,13 +44,13 @@ export default class Bench {
   }
 
   run() {
-    const timer = new Date();
+    const timeStart = timer();
 
     const {tests, onBenchmarkComplete} = this;
     const promise = runAsyncTests({tests, onBenchmarkComplete});
 
     promise.then(() => {
-      const elapsed = (new Date() - timer) / 1000;
+      const elapsed = (timer() - timeStart) / 1000;
       logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
       this.onSuiteComplete();
     });
@@ -223,9 +224,9 @@ function runBenchTestOnce(test) {
       multiplier = (test.opts.time / elapsedMillis) * 1.25;
     }
     iterations *= multiplier;
-    const timer = new Date();
+    const timeStart = timer();
     runBenchTestIterations(test, iterations);
-    elapsedMillis = new Date() - timer;
+    elapsedMillis = timer() - timeStart;
   }
 
   const time = elapsedMillis / 1000;
