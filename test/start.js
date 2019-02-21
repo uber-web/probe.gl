@@ -19,6 +19,17 @@ switch (mode) {
     require('./bench/index'); // Run the benchmarks
     break;
 
+  case 'bench-browser':
+    new BrowserTestDriver().run({
+      title: 'Benchmarks',
+      server: {
+        command: 'webpack-dev-server',
+        arguments: ['--config', 'test/webpack.config.js', '--env.bench']
+      },
+      headless: false
+    });
+    break;
+
   case 'log':
     require('./modules/core/lib/raw-logging');
     break;
