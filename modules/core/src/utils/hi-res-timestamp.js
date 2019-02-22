@@ -23,16 +23,17 @@
  */
 import {window, process, isBrowser} from './globals';
 
-// High resolution timer
-export function getTimestamp() {
-  if (!isBrowser) {
-    const secondsAndNanoseconds = process.hrtime();
-    return secondsAndNanoseconds[0] + secondsAndNanoseconds[1] / 1e6;
+export default function getHiResTimestamp() {
+  let timestamp;
+  // Get best timer available.
+  if (isBrowser && window.performance) {
+    timestamp = window.performance.now();
+  } else if (process.hrtime) {
+    const timeParts = process.hrtime();
+    timestamp = timeParts[0] * 1000 + timeParts[1] / 1e6;
+  } else {
+    timestamp = Date.now();
   }
-  if (window.performance) {
-    return window.performance.now();
-  }
-  return Date.now();
-}
 
-export const startTimestamp = getTimestamp();
+  return timestamp;
+}

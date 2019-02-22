@@ -1,5 +1,7 @@
 # What's New
 
+- New method `getHiResTimestamp`
+
 ## v2.1
 
 ### Log class additions
