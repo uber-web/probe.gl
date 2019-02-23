@@ -47,11 +47,7 @@ export default class Bench {
     const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
-<<<<<<< HEAD
     const promise = runTests({tests, onBenchmarkComplete});
-=======
-    const promise = runTestsAsynchronously({tests, onBenchmarkComplete});
->>>>>>> Simplify bench code
 
     promise.then(() => {
       const elapsed = (getHiResTimestamp() - timeStart) / 1000;
@@ -74,25 +70,14 @@ export default class Bench {
   // add(id, initFunc, testFunc)
   // add(id, testFunc)
   add(priority, id, func1, func2) {
-    if (typeof priority === 'string') {
-      func2 = func1;
-      func1 = id;
-      id = priority;
-      priority = 0;
-    }
+    this._add(priority, id, func1, func2);
+    return this;
+  }
 
-    assert(id);
-    assert(typeof func1 === 'function');
-
-    let initFunc = null;
-    let testFunc = func1;
-    if (typeof func2 === 'function') {
-      initFunc = func1;
-      testFunc = func2;
-    }
-
-    assert(!this.tests[id], 'tests need unique id strings');
-    this.tests[id] = {id, priority, initFunc, testFunc, opts: this.opts};
+  // Mark test as async (returns promise)
+  addAsync(priority, id, func1, func2) {
+    const test = this._add(priority, id, func1, func2);
+    test.async = true;
     return this;
   }
 
@@ -128,6 +113,29 @@ export default class Bench {
     }
     return current;
   }
+
+  _add(priority, id, func1, func2) {
+    if (typeof priority === 'string') {
+      func2 = func1;
+      func1 = id;
+      id = priority;
+      priority = 0;
+    }
+
+    assert(id);
+    assert(typeof func1 === 'function');
+
+    let initFunc = null;
+    let testFunc = func1;
+    if (typeof func2 === 'function') {
+      initFunc = func1;
+      testFunc = func2;
+    }
+
+    assert(!this.tests[id], 'tests need unique id strings');
+    this.tests[id] = {id, priority, initFunc, testFunc, opts: this.opts};
+    return this.tests[id];
+  }
 }
 
 // Helper methods
@@ -157,55 +165,54 @@ function logEntry(test, opts) {
 }
 
 // Run a list of bench test case asynchronously (with short timeouts inbetween)
-function runTests({tests, onBenchmarkComplete = noop}) {
+async function runTests({tests, onBenchmarkComplete = noop}) {
   // Run default warm up and calibration tests
   runCalibrationTests({tests, onBenchmarkComplete});
-  let promise = Promise.resolve(true);
 
   // Run the suite tests
   for (const id in tests) {
     const test = tests[id];
-    promise = promise.then(() => runTest({test, onBenchmarkComplete}));
+    if (test.group) {
+      logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
+    } else {
+      await runTest({test, onBenchmarkComplete});
+    }
   }
-  return promise;
 }
 
-function runTest({test, onBenchmarkComplete, silent = false}) {
-  // small delay between each test. System cools and DOM console updates...
-  return addDelay(test.opts.delay).then(() => {
-    try {
-      if (test.group) {
-        logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
-      } else {
-        const {iterationsPerSecond, time, iterations, error} = runBenchTest(test);
+async function runTest({test, onBenchmarkComplete, silent = false}) {
+  // Inject a small delay between each test. System cools and DOM console updates...
+  await addDelay(test.opts.delay);
 
-        const itersPerSecond = formatSI(iterationsPerSecond);
-        if (!silent) {
-          logEntry(test, {
-            entry: LOG_ENTRY.TEST,
-            id: test.id,
-            priority: test.priority,
-            itersPerSecond,
-            time,
-            error,
-            message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
-          });
-        }
+  const result = test.async ? await runBenchTestAsync(test) : runBenchTest(test);
 
-        if (onBenchmarkComplete) {
-          onBenchmarkComplete({
-            id: test.id,
-            time,
-            iterations,
-            iterationsPerSecond,
-            itersPerSecond
-          });
-        }
-      }
-      // eslint-disable-next-line
-    } catch (error) {}
-  });
+  const {iterationsPerSecond, time, iterations, error} = result;
+
+  const itersPerSecond = formatSI(iterationsPerSecond);
+  if (!silent) {
+    logEntry(test, {
+      entry: LOG_ENTRY.TEST,
+      id: test.id,
+      priority: test.priority,
+      itersPerSecond,
+      time,
+      error,
+      message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
+    });
+  }
+
+  if (onBenchmarkComplete) {
+    onBenchmarkComplete({
+      id: test.id,
+      time,
+      iterations,
+      iterationsPerSecond,
+      itersPerSecond
+    });
+  }
 }
+
+// Sync tests
 
 function runBenchTest(test) {
   const results = [];
@@ -213,7 +220,7 @@ function runBenchTest(test) {
   let totalIterations = 0;
 
   for (let i = 0; i < test.opts.minIterations; i++) {
-    const {time, iterations} = runBenchTestTimed(test);
+    const {time, iterations} = runBenchTestTimed(test, test.opts.time);
     const iterationsPerSecond = iterations / time;
     results.push(iterationsPerSecond);
     totalTime += time;
@@ -229,12 +236,12 @@ function runBenchTest(test) {
 }
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
-function runBenchTestTimed(test) {
+function runBenchTestTimed(test, minTime) {
   let iterations = 1;
   let elapsedMillis = 0;
 
   // Run increasing amount of interations until we reach time threshold, default at least 100ms
-  while (elapsedMillis < test.opts.time) {
+  while (elapsedMillis < minTime) {
     let multiplier = 10;
     if (elapsedMillis > 10) {
       multiplier = (test.opts.time / elapsedMillis) * 1.25;
@@ -262,6 +269,69 @@ function runBenchTestIterations(test, iterations) {
   } else {
     for (let i = 0; i < iterations; i++) {
       testFunc.call(context);
+    }
+  }
+}
+
+// ASYNC TESTS
+// This path is duplicated to minimize overhead in the sync case
+// TODO - increase code sharing between paths
+
+async function runBenchTestAsync(test) {
+  const results = [];
+  let totalTime = 0;
+  let totalIterations = 0;
+
+  for (let i = 0; i < test.opts.minIterations; i++) {
+    const {time, iterations} = await runBenchTestTimedAsync(test, test.opts.time);
+    const iterationsPerSecond = iterations / time;
+    results.push(iterationsPerSecond);
+    totalTime += time;
+    totalIterations += iterations;
+  }
+
+  return {
+    time: totalTime,
+    iterations: totalIterations,
+    iterationsPerSecond: mean(results),
+    error: cv(results)
+  };
+}
+
+// Run a test func for an increasing amount of iterations until time threshold exceeded
+async function runBenchTestTimedAsync(test, minTime) {
+  let iterations = 1;
+  let elapsedMillis = 0;
+
+  // Run increasing amount of interations until we reach time threshold, default at least 100ms
+  while (elapsedMillis < minTime) {
+    let multiplier = 10;
+    if (elapsedMillis > 10) {
+      multiplier = (test.opts.time / elapsedMillis) * 1.25;
+    }
+    iterations *= multiplier;
+    const timeStart = timer();
+    await runBenchTestIterationsAsync(test, iterations);
+    elapsedMillis = timer() - timeStart;
+  }
+
+  const time = elapsedMillis / 1000;
+
+  return {time, iterations};
+}
+
+// Run a test func for a specific amount of iterations
+async function runBenchTestIterationsAsync(test, iterations) {
+  const testArgs = test.initFunc && test.initFunc();
+
+  const {context, testFunc} = test;
+  if (context && testArgs) {
+    for (let i = 0; i < iterations; i++) {
+      await testFunc.call(context, testArgs);
+    }
+  } else {
+    for (let i = 0; i < iterations; i++) {
+      await testFunc.call(context);
     }
   }
 }
