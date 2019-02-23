@@ -19,7 +19,6 @@
 // THE SOFTWARE.
 
 const {resolve} = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // const webpack = require('webpack');
@@ -122,6 +121,6 @@ module.exports = env => {
       path: resolve('./dist'),
       filename: '[name]-bundle.js'
     },
-    plugins: [new UglifyJsPlugin(), new BundleAnalyzerPlugin()]
+    plugins: [new BundleAnalyzerPlugin()]
   });
 };
