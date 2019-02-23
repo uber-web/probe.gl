@@ -47,7 +47,11 @@ export default class Bench {
     const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
+<<<<<<< HEAD
     const promise = runTests({tests, onBenchmarkComplete});
+=======
+    const promise = runTestsAsynchronously({tests, onBenchmarkComplete});
+>>>>>>> Simplify bench code
 
     promise.then(() => {
       const elapsed = (getHiResTimestamp() - timeStart) / 1000;
