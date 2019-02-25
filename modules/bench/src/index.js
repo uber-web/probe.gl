@@ -1,7 +1,6 @@
+export {default as Bench, LOG_ENTRY} from './bench';
 export {
-  default as Bench,
-  LOG_ENTRY,
   logResultsAsMarkdownTable,
   logResultsAsTree,
   logResultsAsTreeWithElapsed
-} from './bench';
+} from './bench-loggers';
