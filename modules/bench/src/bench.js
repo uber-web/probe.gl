@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* global setTimeout, console */
-import {global, assert, rightPad, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
+import {global, assert, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
