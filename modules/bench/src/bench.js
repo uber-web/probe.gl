@@ -47,7 +47,7 @@ export default class Bench {
     const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
-    const promise = runTestsAsynchronously({tests, onBenchmarkComplete});
+    const promise = runTests({tests, onBenchmarkComplete});
 
     promise.then(() => {
       const elapsed = (getHiResTimestamp() - timeStart) / 1000;
@@ -152,8 +152,8 @@ function logEntry(test, opts) {
   }
 }
 
-// Run a list of bench test case async
-function runTestsAsynchronously({tests, onBenchmarkComplete = noop}) {
+// Run a list of bench test case asynchronously (with short timeouts inbetween)
+function runTests({tests, onBenchmarkComplete = noop}) {
   // Run default warm up and calibration tests
   runCalibrationTests({tests, onBenchmarkComplete});
   let promise = Promise.resolve(true);
@@ -161,12 +161,12 @@ function runTestsAsynchronously({tests, onBenchmarkComplete = noop}) {
   // Run the suite tests
   for (const id in tests) {
     const test = tests[id];
-    promise = promise.then(() => runTestAsynchronously({test, onBenchmarkComplete}));
+    promise = promise.then(() => runTest({test, onBenchmarkComplete}));
   }
   return promise;
 }
 
-function runTestAsynchronously({test, onBenchmarkComplete, silent = false}) {
+function runTest({test, onBenchmarkComplete, silent = false}) {
   // small delay between each test. System cools and DOM console updates...
   return addDelay(test.opts.delay).then(() => {
     try {
