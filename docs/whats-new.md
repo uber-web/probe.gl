@@ -1,8 +1,5 @@
 # What's New
 
-<<<<<<< HEAD
-- New method `getHiResTimestamp`
-=======
 ## v3.0-alpha
 
 Target Release Date: Q1, 2019
@@ -18,7 +15,11 @@ The subfile import scheme has been replaced with proper npm modules:
 ## Bench class
 
 * **Benchmark async functions** - New method `Bench.addAsync`.
->>>>>>> Add support for async benchmarks
+
+## Utilities
+
+* New method `getHiResTimestamp` - Uses high res timer APIs in both browser and Node.
+
 
 ## v2.1
 
