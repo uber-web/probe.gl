@@ -26,7 +26,7 @@ import {formatImage, formatTime, leftPad} from '../utils/formatters';
 import {addColor} from '../utils/color';
 import {autobind} from '../utils/autobind';
 import assert from '../utils/assert';
-import hiResTimestamp from '../utils/hi-res-timestamp';
+import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 /* eslint-disable no-console */
 /* global console, Image */
@@ -92,8 +92,8 @@ export default class Log {
   constructor({id} = {}) {
     this.id = id;
     this.VERSION = VERSION;
-    this._startTs = hiResTimestamp();
-    this._deltaTs = hiResTimestamp();
+    this._startTs = getHiResTimestamp();
+    this._deltaTs = getHiResTimestamp();
     // TODO - fix support from throttling groups
     this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
     this._storage = new LocalStorage(`__probe-${this.id}__`, DEFAULT_SETTINGS);
@@ -128,12 +128,12 @@ export default class Log {
 
   // @return {Number} milliseconds, with fractions
   getTotal() {
-    return Number((hiResTimestamp() - this._startTs).toPrecision(10));
+    return Number((getHiResTimestamp() - this._startTs).toPrecision(10));
   }
 
   // @return {Number} milliseconds, with fractions
   getDelta() {
-    return Number((hiResTimestamp() - this._deltaTs).toPrecision(10));
+    return Number((getHiResTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   // Configure
@@ -390,7 +390,7 @@ in a later version. Use \`${newUsage}\` instead`);
     const total = this.getTotal();
     const delta = this.getDelta();
     // reset delta timer
-    this._deltaTs = hiResTimestamp();
+    this._deltaTs = getHiResTimestamp();
     return {total, delta};
   }
 
@@ -407,7 +407,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
       if (opts.once) {
         if (!cache[tag]) {
-          cache[tag] = hiResTimestamp();
+          cache[tag] = getHiResTimestamp();
         } else {
           return noop;
         }

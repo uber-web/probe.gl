@@ -23,24 +23,17 @@
  */
 import {window, process, isBrowser} from './globals';
 
-let hiResTimestamp;
-
-// Get best timer available.
-if (isBrowser && window.performance) {
-  hiResTimestamp = () => {
-    return window.performance.now();
-  };
-} else if (process.hrtime) {
-  hiResTimestamp = () => {
+export default function getHiResTimestamp() {
+  let timestamp;
+  // Get best timer available.
+  if (isBrowser && window.performance) {
+    timestamp = window.performance.now();
+  } else if (process.hrtime) {
     const timeParts = process.hrtime();
-    return timeParts[0] * 1000 + timeParts[1] / 1e6;
-  };
-} else {
-  hiResTimestamp = () => {
-    return Date.now();
-  };
+    timestamp = timeParts[0] * 1000 + timeParts[1] / 1e6;
+  } else {
+    timestamp = Date.now();
+  }
+
+  return timestamp;
 }
-
-export default hiResTimestamp;
-
-export const startTimestamp = hiResTimestamp();

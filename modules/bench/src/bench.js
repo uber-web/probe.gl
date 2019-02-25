@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* global setTimeout, console */
-import {global, assert, rightPad, autobind, LocalStorage, hiResTimestamp} from 'probe.gl';
+import {global, assert, rightPad, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 
@@ -43,13 +43,13 @@ export default class Bench {
   }
 
   run() {
-    const timeStart = hiResTimestamp();
+    const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
     const promise = runAsyncTests({tests, onBenchmarkComplete});
 
     promise.then(() => {
-      const elapsed = (hiResTimestamp() - timeStart) / 1000;
+      const elapsed = (getHiResTimestamp() - timeStart) / 1000;
       logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
       this.onSuiteComplete();
     });
@@ -223,9 +223,9 @@ function runBenchTestOnce(test) {
       multiplier = (test.opts.time / elapsedMillis) * 1.25;
     }
     iterations *= multiplier;
-    const timeStart = hiResTimestamp();
+    const timeStart = getHiResTimestamp();
     runBenchTestIterations(test, iterations);
-    elapsedMillis = hiResTimestamp() - timeStart;
+    elapsedMillis = getHiResTimestamp() - timeStart;
   }
 
   const time = elapsedMillis / 1000;

@@ -1,4 +1,4 @@
-import hiResTimestamp from '../utils/hi-res-timestamp';
+import getHiResTimestamp from '../utils/hi-res-timestamp';
 import {formatTime} from '../utils/formatters';
 
 // const MAX_FPS = 70;
@@ -6,7 +6,7 @@ import {formatTime} from '../utils/formatters';
 export default class Stats {
   constructor({id}) {
     this.id = id;
-    this.time = hiResTimestamp();
+    this.time = getHiResTimestamp();
     this.counters = {};
     Object.seal(this);
   }
@@ -48,17 +48,17 @@ export default class Stats {
 
   timeStart(name, subname) {
     const timer = this._getCounter(name);
-    timer._startTime = hiResTimestamp();
+    timer._startTime = getHiResTimestamp();
   }
 
   timeEnd(name, subname) {
     const timer = this._getCounter(name);
-    this.addTime(name, hiResTimestamp() - timer._startTime);
+    this.addTime(name, getHiResTimestamp() - timer._startTime);
   }
 
   // Reset all timers
   reset() {
-    this.time = hiResTimestamp();
+    this.time = getHiResTimestamp();
     for (const key in this.counters) {
       const counter = this.counters[key];
       counter.count = 0;
@@ -70,11 +70,11 @@ export default class Stats {
   // ACCESSORS
 
   hasTimeElapsed(deltaTime = 1000) {
-    return hiResTimestamp() - this.time > 1000;
+    return getHiResTimestamp() - this.time > 1000;
   }
 
   getStats() {
-    const deltaTime = (hiResTimestamp() - this.time) / 1000;
+    const deltaTime = (getHiResTimestamp() - this.time) / 1000;
     const stats = {};
     for (const key in this.counters) {
       const counter = this.counters[key];
@@ -118,7 +118,7 @@ export default class Stats {
 
   getFPS(name) {
     const counter = this._getCounter(name);
-    const deltaTime = (hiResTimestamp() - this.time) / 1000;
+    const deltaTime = (getHiResTimestamp() - this.time) / 1000;
     return Math.round(counter.count / deltaTime);
   }
 
