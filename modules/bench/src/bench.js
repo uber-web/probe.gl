@@ -310,9 +310,9 @@ async function runBenchTestTimedAsync(test, minTime) {
       multiplier = (test.opts.time / elapsedMillis) * 1.25;
     }
     iterations *= multiplier;
-    const timeStart = timer();
+    const timeStart = getHiResTimestamp();
     await runBenchTestIterationsAsync(test, iterations);
-    elapsedMillis = timer() - timeStart;
+    elapsedMillis = getHiResTimestamp() - timeStart;
   }
 
   const time = elapsedMillis / 1000;
