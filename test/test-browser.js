@@ -26,9 +26,11 @@ const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
 let failed = false;
 test.onFailure(() => {
   failed = true;
-  window.browserTestDriver_fail();
+  if (window.browserTestDriver_fail) {
+    window.browserTestDriver_fail();
+  }
 });
-test.onFinish(window.browserTestDriver_finish);
+test.onFinish(window.browserTestDriver_finish || (() => {}));
 
 // tap-browser-color alternative
 enableDOMLogging({
