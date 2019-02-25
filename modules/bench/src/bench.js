@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 /* global setTimeout, console */
-import {global, assert, rightPad, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
+import {global, assert, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
+import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
 
 const noop = () => {};
 
@@ -46,7 +47,7 @@ export default class Bench {
     const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
-    const promise = runAsyncTests({tests, onBenchmarkComplete});
+    const promise = runTests({tests, onBenchmarkComplete});
 
     promise.then(() => {
       const elapsed = (getHiResTimestamp() - timeStart) / 1000;
@@ -127,6 +128,13 @@ export default class Bench {
 
 // Helper methods
 
+// Helper function to promisify setTimeout
+function addDelay(timeout, func) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), timeout);
+  });
+}
+
 function runCalibrationTests({tests}) {
   // Beat JIT - run each test once
   for (const id in tests) {
@@ -137,8 +145,15 @@ function runCalibrationTests({tests}) {
   }
 }
 
-// Run a list of bench test case async
-function runAsyncTests({tests, onBenchmarkComplete = noop}) {
+function logEntry(test, opts) {
+  const priority = (global.probe && global.probe.priority) | 10;
+  if ((opts.priority | 0) <= priority) {
+    test.opts.log(opts);
+  }
+}
+
+// Run a list of bench test case asynchronously (with short timeouts inbetween)
+function runTests({tests, onBenchmarkComplete = noop}) {
   // Run default warm up and calibration tests
   runCalibrationTests({tests, onBenchmarkComplete});
   let promise = Promise.resolve(true);
@@ -146,47 +161,45 @@ function runAsyncTests({tests, onBenchmarkComplete = noop}) {
   // Run the suite tests
   for (const id in tests) {
     const test = tests[id];
-    promise = promise.then(() => runAsyncTest({test, onBenchmarkComplete}));
+    promise = promise.then(() => runTest({test, onBenchmarkComplete}));
   }
   return promise;
 }
 
-function runAsyncTest({test, onBenchmarkComplete, silent = false}) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      try {
-        if (test.group) {
-          logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
-        } else {
-          const {iterationsPerSecond, time, iterations, error} = runBenchTest(test);
+function runTest({test, onBenchmarkComplete, silent = false}) {
+  // small delay between each test. System cools and DOM console updates...
+  return addDelay(test.opts.delay).then(() => {
+    try {
+      if (test.group) {
+        logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
+      } else {
+        const {iterationsPerSecond, time, iterations, error} = runBenchTest(test);
 
-          const itersPerSecond = formatSI(iterationsPerSecond);
-          if (!silent) {
-            logEntry(test, {
-              entry: LOG_ENTRY.TEST,
-              id: test.id,
-              priority: test.priority,
-              itersPerSecond,
-              time,
-              error,
-              message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
-            });
-          }
-
-          if (onBenchmarkComplete) {
-            onBenchmarkComplete({
-              id: test.id,
-              time,
-              iterations,
-              iterationsPerSecond,
-              itersPerSecond
-            });
-          }
+        const itersPerSecond = formatSI(iterationsPerSecond);
+        if (!silent) {
+          logEntry(test, {
+            entry: LOG_ENTRY.TEST,
+            id: test.id,
+            priority: test.priority,
+            itersPerSecond,
+            time,
+            error,
+            message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
+          });
         }
-      } finally {
-        resolve(true);
+
+        if (onBenchmarkComplete) {
+          onBenchmarkComplete({
+            id: test.id,
+            time,
+            iterations,
+            iterationsPerSecond,
+            itersPerSecond
+          });
+        }
       }
-    }, test.opts.delay); // small delay between each test. System cools and DOM console updates...
+      // eslint-disable-next-line
+    } catch (error) {}
   });
 }
 
@@ -196,7 +209,7 @@ function runBenchTest(test) {
   let totalIterations = 0;
 
   for (let i = 0; i < test.opts.minIterations; i++) {
-    const {time, iterations} = runBenchTestOnce(test);
+    const {time, iterations} = runBenchTestTimed(test);
     const iterationsPerSecond = iterations / time;
     results.push(iterationsPerSecond);
     totalTime += time;
@@ -212,7 +225,7 @@ function runBenchTest(test) {
 }
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
-function runBenchTestOnce(test) {
+function runBenchTestTimed(test) {
   let iterations = 1;
   let elapsedMillis = 0;
 
@@ -246,67 +259,5 @@ function runBenchTestIterations(test, iterations) {
     for (let i = 0; i < iterations; i++) {
       testFunc.call(context);
     }
-  }
-}
-
-function logEntry(test, opts) {
-  const priority = (global.probe && global.probe.priority) | 10;
-  if ((opts.priority | 0) <= priority) {
-    test.opts.log(opts);
-  }
-}
-
-export function logResultsAsMarkdownTable({entry, id, itersPerSecond, error, time}) {
-  const COL1 = 50;
-  const COL2 = 12;
-  switch (entry) {
-    case LOG_ENTRY.GROUP:
-      console.log('');
-      console.log(`| ${rightPad(id, COL1)} | iterations/s | error |`);
-      console.log(`| ${rightPad('---', COL1)} | ---          | --- |`);
-      break;
-    case LOG_ENTRY.TEST:
-      console.log(
-        `| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} | ±${(error * 100).toFixed(
-          2
-        )}% |`
-      );
-      break;
-    case LOG_ENTRY.COMPLETE:
-      console.log('');
-      console.log(`Completed benchmark in ${time}s`);
-      break;
-    default:
-  }
-}
-
-export function logResultsAsTree({entry, id, itersPerSecond, error, time}) {
-  switch (entry) {
-    case LOG_ENTRY.GROUP:
-      console.log('');
-      console.log(`${id}`);
-      break;
-    case LOG_ENTRY.TEST:
-      console.log(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
-      break;
-    case LOG_ENTRY.COMPLETE:
-      console.log('');
-      console.log(`Completed benchmark in ${time}s`);
-      break;
-    default:
-  }
-}
-
-export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, time}) {
-  switch (entry) {
-    case LOG_ENTRY.TEST:
-      console.log(
-        `├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}% (${time.toFixed(
-          2
-        )}s elapsed)`
-      );
-      break;
-    default:
-      logResultsAsTree({entry, id, itersPerSecond, time});
   }
 }
