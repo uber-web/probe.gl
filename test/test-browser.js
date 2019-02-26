@@ -26,9 +26,7 @@ const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
 let failed = false;
 test.onFailure(() => {
   failed = true;
-  if (window.browserTestDriver_fail) {
-    window.browserTestDriver_fail();
-  }
+  window.browserTestDriver_fail();
 });
 test.onFinish(window.browserTestDriver_finish || (() => {}));
 
