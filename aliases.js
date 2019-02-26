@@ -9,13 +9,4 @@ const ALIASES = {
   '@probe.gl/stats-widget': path.resolve(__dirname, './modules/stats-widget/src')
 };
 
-// Registers an alias for this module
-
-if (module.require) {
-  module.require('reify');
-
-  const moduleAlias = module.require('module-alias');
-  moduleAlias.addAliases(ALIASES);
-}
-
 module.exports = ALIASES;
