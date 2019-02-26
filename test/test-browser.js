@@ -28,7 +28,7 @@ test.onFailure(() => {
   failed = true;
   window.browserTestDriver_fail();
 });
-test.onFinish(window.browserTestDriver_finish);
+test.onFinish(window.browserTestDriver_finish || (() => {}));
 
 // tap-browser-color alternative
 enableDOMLogging({

@@ -44,6 +44,10 @@ Adds a test case. Supports multiple signatures
 * `initFunc` (Function, options) -
 * `testFunc` (Function, options) -
 
+## addAsync
+
+Adds an async test case. Use when `testFunc` returns a promise. Supports same signatures as `add`.
+
 ### run()
 
 `bench.run()`
