@@ -8,6 +8,6 @@ test('getHiResTimestamp', t => {
   t.equals(typeof getHiResTimestamp(), 'number', 'getHiResTimestamp returning time');
   const t2hr = getHiResTimestamp();
   const t2d = Date.now();
-  t.ok(Math.abs(t2hr - t1hr - (t2d - t1d)) < 1, 'getHiResTimestamp is reporting time');
+  t.ok(Math.abs(t2hr - t1hr - (t2d - t1d)) < 2, 'getHiResTimestamp is reporting time');
   t.end();
 });
