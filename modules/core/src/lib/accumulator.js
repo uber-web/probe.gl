@@ -1,6 +1,10 @@
+const DEFAULT_FORMATTER = accumulator => [`${accumulator.name} : ${accumulator.total}`];
+
 export default class Accumulator {
-  constructor() {
+  constructor(name, formatter) {
+    this.name = name;
     this.reset();
+    this._formatter = formatter || DEFAULT_FORMATTER;
   }
 
   // Call to bump a accumulator (+1)
@@ -15,5 +19,9 @@ export default class Accumulator {
 
   reset() {
     this.total = 0;
+  }
+
+  getLines() {
+    return this._formatter(this);
   }
 }

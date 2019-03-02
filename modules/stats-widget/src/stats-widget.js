@@ -31,7 +31,6 @@ export default class StatsWidget {
       this.lastUpdateTime = timestamp;
 
       const {context, devicePixelRatio, styles} = this;
-      const stats = this.instance.getStats();
       const textCursor = [
         styles.padding[0],
         styles.padding[1] + styles.headerSize + styles.lineSpacing
@@ -42,44 +41,20 @@ export default class StatsWidget {
       this._drawHeader();
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
-      for (const name in stats) {
-        const stat = stats[name];
+      this.instance.forEach(stat => {
+        const lines = stat.getLines();
+        const numLines = lines.length;
 
-        if (stat.type === 'accumulator') {
+        for (let i = 0; i < numLines; ++i) {
+          const tab = i === 0 ? 0 : 8;
           context.fillText(
-            `${name} : ${stat.total}`,
-            textCursor[0] * devicePixelRatio,
-            textCursor[1] * devicePixelRatio
-          );
-        } else if (stat.type === 'timer') {
-          context.fillText(
-            `${name}: `,
+            lines[i],
             textCursor[0] * devicePixelRatio,
             textCursor[1] * devicePixelRatio
           );
           textCursor[1] += styles.fontSize + styles.lineSpacing;
-          context.fillText(
-            `Total time: ${stat.time.toFixed(2)}ms`,
-            textCursor[0] * devicePixelRatio + TAB_SIZE,
-            textCursor[1] * devicePixelRatio
-          );
-          textCursor[1] += styles.fontSize + styles.lineSpacing;
-          context.fillText(
-            `Average time: ${stat.averageTime.toFixed(2)}ms`,
-            textCursor[0] * devicePixelRatio + TAB_SIZE,
-            textCursor[1] * devicePixelRatio
-          );
-          textCursor[1] += styles.fontSize + styles.lineSpacing;
-          context.fillText(
-            `Hz: ${stat.hz.toFixed(1)}`,
-            textCursor[0] * devicePixelRatio + TAB_SIZE,
-            textCursor[1] * devicePixelRatio
-          );
         }
-
-        // next line
-        textCursor[1] += styles.fontSize + styles.lineSpacing;
-      }
+      });
     }
   }
 
@@ -116,9 +91,11 @@ export default class StatsWidget {
 
   _clearTextArea() {
     const {context, devicePixelRatio, styles} = this;
-    const accumCount = this.instance.getAccumulatorNames().length;
-    const timerCount = this.instance.getTimerNames().length;
-    const statsCount = accumCount + timerCount * 4;
+    let statsCount = 0;
+
+    this.instance.forEach(stat => {
+      statsCount += stat.getLines().length;
+    });
 
     const width = styles.width;
     const height =

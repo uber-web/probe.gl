@@ -10,14 +10,14 @@ export default class Stats {
   }
 
   // Initialize a new accumulator
-  addAccumulator(name) {
-    this.accumulators[name] = new Accumulator();
+  addAccumulator(name, formatter) {
+    this.accumulators[name] = new Accumulator(name, formatter);
     return this.accumulators[name];
   }
 
   // Initialize a new timer
-  addTimer(name) {
-    this.timers[name] = new Timer();
+  addTimer(name, formatter) {
+    this.timers[name] = new Timer(name, formatter);
     return this.timers[name];
   }
 
@@ -44,38 +44,14 @@ export default class Stats {
     return this;
   }
 
-  getStats() {
-    const stats = {};
+  forEach(fn) {
     for (const key in this.accumulators) {
-      const accumulator = this.accumulators[key];
-      stats[key] = {
-        type: 'accumulator',
-        total: accumulator.total
-      };
+      fn(this.accumulators[key]);
     }
 
     for (const key in this.timers) {
-      const timer = this.timers[key];
-      stats[key] = {
-        type: 'timer',
-        time: timer.time,
-        count: timer.count,
-        averageTime: timer.getAverage(),
-        hz: timer.getHz()
-      };
+      fn(this.timers[key]);
     }
-    return stats;
-  }
-
-  // Return stats in a "table format" suitable for console.table() or Log.table()
-  getStatsTable() {
-    const stats = this.getStats();
-    for (const key in stats) {
-      if (stats[key].count === 0 || stats[key].total === 0) {
-        delete stats[key];
-      }
-    }
-    return stats;
   }
 
   // Returns the names of all registered accumulators, enables iteration
