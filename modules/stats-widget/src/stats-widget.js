@@ -59,19 +59,19 @@ export default class StatsWidget {
           );
           textCursor[1] += styles.fontSize + styles.lineSpacing;
           context.fillText(
-            `Total time: ${stat.time}`,
+            `Total time: ${stat.time.toFixed(2)}ms`,
             textCursor[0] * devicePixelRatio + TAB_SIZE,
             textCursor[1] * devicePixelRatio
           );
           textCursor[1] += styles.fontSize + styles.lineSpacing;
           context.fillText(
-            `Average time: ${stat.getAverage()}`,
+            `Average time: ${stat.averageTime.toFixed(2)}ms`,
             textCursor[0] * devicePixelRatio + TAB_SIZE,
             textCursor[1] * devicePixelRatio
           );
           textCursor[1] += styles.fontSize + styles.lineSpacing;
           context.fillText(
-            `Average Hz: ${stat.getHz()}`,
+            `Hz: ${stat.hz.toFixed(1)}`,
             textCursor[0] * devicePixelRatio + TAB_SIZE,
             textCursor[1] * devicePixelRatio
           );

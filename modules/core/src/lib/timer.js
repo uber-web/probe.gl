@@ -24,7 +24,7 @@ export default class Timer {
   }
 
   getHz() {
-    return this.count / this.time;
+    return this.count / (this.time / 1000);
   }
 
   reset() {
