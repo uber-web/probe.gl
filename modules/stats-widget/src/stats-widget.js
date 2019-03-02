@@ -14,6 +14,8 @@ const DEFAULT_STYLES = {
   headerSize: 16
 };
 
+const TAB_SIZE = 8;
+
 export default class StatsWidget {
   constructor(statsInstance, styles) {
     this.lastUpdateTime = 0;
@@ -36,14 +38,44 @@ export default class StatsWidget {
       ];
 
       // make sure that we clear the old text before drawing new text.
-      this._clearTextArea(Object.keys(stats).length);
+      this._clearTextArea();
       this._drawHeader();
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
       for (const name in stats) {
-        const value = stats[name].fps;
-        const str = `${name} : ${Math.round(100 * value) / 100} f/s`;
-        context.fillText(str, textCursor[0] * devicePixelRatio, textCursor[1] * devicePixelRatio);
+        const stat = stats[name];
+
+        if (stat.type === 'accumulator') {
+          context.fillText(
+            `${name} : ${stat.total}`,
+            textCursor[0] * devicePixelRatio,
+            textCursor[1] * devicePixelRatio
+          );
+        } else if (stat.type === 'timer') {
+          context.fillText(
+            `${name}: `,
+            textCursor[0] * devicePixelRatio,
+            textCursor[1] * devicePixelRatio
+          );
+          textCursor[1] += styles.fontSize + styles.lineSpacing;
+          context.fillText(
+            `Total time: ${stat.time}`,
+            textCursor[0] * devicePixelRatio + TAB_SIZE,
+            textCursor[1] * devicePixelRatio
+          );
+          textCursor[1] += styles.fontSize + styles.lineSpacing;
+          context.fillText(
+            `Average time: ${stat.getAverage()}`,
+            textCursor[0] * devicePixelRatio + TAB_SIZE,
+            textCursor[1] * devicePixelRatio
+          );
+          textCursor[1] += styles.fontSize + styles.lineSpacing;
+          context.fillText(
+            `Average Hz: ${stat.getHz()}`,
+            textCursor[0] * devicePixelRatio + TAB_SIZE,
+            textCursor[1] * devicePixelRatio
+          );
+        }
 
         // next line
         textCursor[1] += styles.fontSize + styles.lineSpacing;
@@ -82,8 +114,11 @@ export default class StatsWidget {
     );
   }
 
-  _clearTextArea(statsCount) {
+  _clearTextArea() {
     const {context, devicePixelRatio, styles} = this;
+    const accumCount = this.instance.getAccumulatorNames().length;
+    const timerCount = this.instance.getTimerNames().length;
+    const statsCount = accumCount + timerCount * 4;
 
     const width = styles.width;
     const height =

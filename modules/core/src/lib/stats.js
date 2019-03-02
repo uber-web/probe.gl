@@ -49,6 +49,7 @@ export default class Stats {
     for (const key in this.accumulators) {
       const accumulator = this.accumulators[key];
       stats[key] = {
+        type: 'accumulator',
         total: accumulator.total
       };
     }
@@ -56,6 +57,7 @@ export default class Stats {
     for (const key in this.timers) {
       const timer = this.timers[key];
       stats[key] = {
+        type: 'timer',
         time: timer.time,
         count: timer.count,
         averageTime: timer.getAverage(),
