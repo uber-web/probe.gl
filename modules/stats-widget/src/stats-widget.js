@@ -14,14 +14,24 @@ const DEFAULT_STYLES = {
   headerSize: 16
 };
 
-const TAB_SIZE = 8;
+const DEFAULT_FORMATTER = stat => `${stat.name} : ${stat.count}`;
 
 export default class StatsWidget {
   constructor(statsInstance, styles) {
     this.lastUpdateTime = 0;
     this.instance = statsInstance;
     this.styles = Object.assign({}, DEFAULT_STYLES, styles);
+    this._formatters = {};
     this._createDOM();
+  }
+
+  setFormatter(name, formatter) {
+    this._formatters[name] = formatter;
+  }
+
+  getLines(name) {
+    const formatter = this._formatters[name] || DEFAULT_FORMATTER;
+    return formatter(this.instance.get(name)).split('\n');
   }
 
   update() {
@@ -42,7 +52,7 @@ export default class StatsWidget {
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
       this.instance.forEach(stat => {
-        const lines = stat.getLines();
+        const lines = this.getLines(stat.name);
         const numLines = lines.length;
 
         for (let i = 0; i < numLines; ++i) {
@@ -94,7 +104,7 @@ export default class StatsWidget {
     let statsCount = 0;
 
     this.instance.forEach(stat => {
-      statsCount += stat.numLines;
+      statsCount += this.getLines(stat.name).length;
     });
 
     const width = styles.width;

@@ -4,8 +4,6 @@ export default class Stat {
   constructor(name, formatter) {
     this.name = name;
     this.reset();
-    this._formatter = formatter;
-    this.numLines = this.getLines().length;
   }
 
   // Call to bump a accumulator (+1)
@@ -36,10 +34,16 @@ export default class Stat {
 
   timeStart() {
     this._startTime = getHiResTimestamp();
+    this._timerPending = true;
   }
 
   timeEnd() {
+    if (!this._timerPending) {
+      return;
+    }
+
     this.addTime(getHiResTimestamp() - this._startTime);
+    this._timerPending = false;
   }
 
   getAverageTime() {
@@ -54,14 +58,6 @@ export default class Stat {
     this.time = 0;
     this.count = 0;
     this.lastTiming = 0;
-    this._startTime = 0;
-  }
-
-  toString() {
-    return this._formatter(this);
-  }
-
-  getLines() {
-    return this._formatter(this).split('\n');
+    this._timerPending = false;
   }
 }

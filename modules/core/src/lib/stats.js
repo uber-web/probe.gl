@@ -1,7 +1,5 @@
 import Stat from './stat';
 
-const DEFAULT_FORMATTER = stat => `${stat.name} : ${stat.count}`;
-
 export default class Stats {
   constructor({id}) {
     this.id = id;
@@ -10,8 +8,8 @@ export default class Stats {
   }
 
   // Initialize a new stat
-  create(name, formatter = DEFAULT_FORMATTER) {
-    this.stats[name] = new Stat(name, formatter);
+  create(name) {
+    this.stats[name] = new Stat(name);
     return this.stats[name];
   }
 
