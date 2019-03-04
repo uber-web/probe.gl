@@ -32,9 +32,4 @@ export default class Stats {
       fn(this.stats[key]);
     }
   }
-
-  // Returns the names of all registered stats, enables iteration
-  getNames() {
-    return Object.keys(this.stats);
-  }
 }

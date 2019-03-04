@@ -1,42 +1,45 @@
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 export default class Stat {
-  constructor(name, formatter) {
+  constructor(name) {
     this.name = name;
     this.reset();
   }
 
-  // Call to bump a accumulator (+1)
+  // Call to increment count (+1)
   incrementCount() {
     this.addCount(1);
   }
 
-  // Call to decrement a accumulator (-1)
+  // Call to decrement count (-1)
   decrementCount() {
     this.subtractCount(1);
   }
 
-  // Call to bump a accumulator
+  // Increase count
   addCount(value) {
     this.count += value;
   }
 
-  // Call to bump a accumulator
+  // Decrease count
   subtractCount(value) {
     this.count -= value;
   }
 
+  // Add an abritrary timing and bump the count
   addTime(time) {
     this.time += time;
     this.lastTiming = time;
     this.count++;
   }
 
+  // Start a timer
   timeStart() {
     this._startTime = getHiResTimestamp();
     this._timerPending = true;
   }
 
+  // End a timer. Adds to time and bumps the timing count.
   timeEnd() {
     if (!this._timerPending) {
       return;
@@ -46,10 +49,12 @@ export default class Stat {
     this._timerPending = false;
   }
 
+  // Calculate average time / count
   getAverageTime() {
     return this.time / this.count;
   }
 
+  // Calculate counts per second
   getHz() {
     return this.count / (this.time / 1000);
   }

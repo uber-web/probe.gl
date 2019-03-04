@@ -1,27 +1,18 @@
 # Stats
 
-A class for tracking performance over time, in terms of frames per second or operations per second, suitable for integration with stats widgets.
-
-* "counters" for discrete events
-* "timers" for counting processing of a specific category
-
+A collection of statistic for tracking time or magnitude metrics.
 
 ## Usage
 
-Just inform your `Stats` instance when something happens. Then query it and get the FPS averages.
+Just create Stat objects (see `Stat` documentation) for various metrics.
 ```js
-const stats = new Stats();
-for (let i = 0; i < 100; i++) {
-  stats.bump('fps')
-}
+const stats = new Stats({id: 'my-stats'});
+const memoryUsage = stats.create('Mem');
+const executionTime = stats.create('Time');
+memoryUsage.addCount(1024);
+executionTime.timeStart();
+executionTime.timeEnd();
 ```
-
-Get the counters from a stats instance. Don't forget to reset it!
-```js
-const counters stats.getCounters();
-stats.reset();
-```
-
 
 ## Methods
 
@@ -29,36 +20,43 @@ stats.reset();
 
 `new Stats({id})`
 
-* `id` (`String`) - the id of the counter.
+* `id` (`String`) - the id of the `Stats` object.
 
 
-### addCounter
+### create
+
+Create a new stat tracker.
+
+`stats.create(name)`
+
+* `name` (`String`, required) - the name of the stat tracker.
+
+Returns the newly-created `Stat` object.
 
 
-### bump
+### get
 
-Increments a counter. The counter will automatically be added and initialize to `0`, if not already initialized.
+Retrieve a stat tracker.
 
-`stats.bump(counter, count)`
+`stats.get(name)`
 
-* `counter` (`String`, required) - the name of the counter to bump.
-* `count`=`1` (`Number`) - the number to inc
+* `name` (`String`, required) - the name of the stat tracker.
 
-Retuns the `Stats` instance to allow chaining.
-
-
-### setCounter
-
-Sets a counter
+Returns the `Stat` object identified by `name`.
 
 
 ### reset
 
-Resets all counters, timers etc.
+Resets all stats etc.
 
 
-### getCounters
+### forEach
 
+Iterate over all stats.
+
+`stats.forEach(fn)`
+
+* `fn` (`Function`, required) - function to call on each `Stat` object.
 
 ### getTimers
 

@@ -17,9 +17,9 @@ const DEFAULT_STYLES = {
 const DEFAULT_FORMATTER = stat => `${stat.name} : ${stat.count}`;
 
 export default class StatsWidget {
-  constructor(statsInstance, styles) {
+  constructor(stats, styles) {
     this.lastUpdateTime = 0;
-    this.instance = statsInstance;
+    this.stats = stats;
     this.styles = Object.assign({}, DEFAULT_STYLES, styles);
     this._formatters = {};
     this._createDOM();
@@ -31,7 +31,7 @@ export default class StatsWidget {
 
   getLines(name) {
     const formatter = this._formatters[name] || DEFAULT_FORMATTER;
-    return formatter(this.instance.get(name)).split('\n');
+    return formatter(this.stats.get(name)).split('\n');
   }
 
   update() {
@@ -51,7 +51,7 @@ export default class StatsWidget {
       this._drawHeader();
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
-      this.instance.forEach(stat => {
+      this.stats.forEach(stat => {
         const lines = this.getLines(stat.name);
         const numLines = lines.length;
 
@@ -93,7 +93,7 @@ export default class StatsWidget {
     const {context, devicePixelRatio, styles} = this;
     context.font = `${styles.headerSize * devicePixelRatio}px ${styles.fontFamily}`;
     context.fillText(
-      this.instance.id,
+      this.stats.id,
       styles.padding[0] * devicePixelRatio,
       styles.padding[1] * devicePixelRatio
     );
@@ -103,7 +103,7 @@ export default class StatsWidget {
     const {context, devicePixelRatio, styles} = this;
     let statsCount = 0;
 
-    this.instance.forEach(stat => {
+    this.stats.forEach(stat => {
       statsCount += this.getLines(stat.name).length;
     });
 
