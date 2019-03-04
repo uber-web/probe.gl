@@ -11,7 +11,7 @@ export default class Stat {
     this.addCount(1);
   }
 
-  // Call to bump a accumulator (+1)
+  // Call to decrement a accumulator (-1)
   decrementCount() {
     this.subtractCount(1);
   }
