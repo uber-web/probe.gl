@@ -1,17 +1,31 @@
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
-const DEFAULT_FORMATTER = timer => [
-  `${timer.name}: `,
-  `    Total time: ${timer.time.toFixed(2)}ms`,
-  `    Average time: ${timer.getAverage().toFixed(2)}ms`,
-  `    Hz: ${timer.getHz().toFixed(1)}`
-];
-
-export default class Timer {
+export default class Stat {
   constructor(name, formatter) {
     this.name = name;
     this.reset();
-    this._formatter = formatter || DEFAULT_FORMATTER;
+    this._formatter = formatter;
+    this.numLines = this.getLines().length;
+  }
+
+  // Call to bump a accumulator (+1)
+  incrementCount() {
+    this.addCount(1);
+  }
+
+  // Call to bump a accumulator (+1)
+  decrementCount() {
+    this.subtractCount(1);
+  }
+
+  // Call to bump a accumulator
+  addCount(value) {
+    this.count += value;
+  }
+
+  // Call to bump a accumulator
+  subtractCount(value) {
+    this.count -= value;
   }
 
   addTime(time) {
@@ -28,7 +42,7 @@ export default class Timer {
     this.addTime(getHiResTimestamp() - this._startTime);
   }
 
-  getAverage() {
+  getAverageTime() {
     return this.time / this.count;
   }
 
@@ -43,7 +57,11 @@ export default class Timer {
     this._startTime = 0;
   }
 
-  getLines() {
+  toString() {
     return this._formatter(this);
+  }
+
+  getLines() {
+    return this._formatter(this).split('\n');
   }
 }

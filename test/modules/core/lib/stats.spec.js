@@ -7,43 +7,42 @@ test('Stats#import', t => {
   t.end();
 });
 
-test('Stats#accumulator', t => {
+test('Stats#counting', t => {
   const stats = new Stats({id: 'test'});
-  const accumulator = stats.addAccumulator('test');
-  t.doesNotThrow(() => accumulator.bump(), 'accumulator.bump works');
-  t.doesNotThrow(() => accumulator.bump(), 'accumulator.bump works');
-  t.doesNotThrow(() => accumulator.bump(), 'accumulator.bump works');
-  t.equals(accumulator.total, 3, 'accumulator accumulates');
-  t.doesNotThrow(() => accumulator.add(3), 'accumulator.add works');
-  t.equals(accumulator.total, 6, 'accumulator accumulates');
+  const counter = stats.create('test');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.equals(counter.count, 3, 'stat accumulates');
+  t.doesNotThrow(() => counter.addCount(3), 'stat.add works');
+  t.equals(counter.count, 6, 'stat accumulates');
   t.end();
 });
 
 test('Stats#timer()', t => {
   const stats = new Stats({id: 'test'});
-  const timer = stats.addTimer('test');
+  const timer = stats.create('test');
   t.doesNotThrow(() => timer.timeStart(), 'timer.timeStart works');
   t.doesNotThrow(() => timer.timeEnd(), 'timer.timeEnd works');
   t.doesNotThrow(() => timer.addTime(10), 'timer.addTime works');
-  t.doesNotThrow(() => timer.getAverage(), 'timer.getAverage works');
+  t.doesNotThrow(() => timer.getAverageTime(), 'timer.getAverageTime works');
   t.doesNotThrow(() => timer.getHz(), 'timer.getHz works');
   t.equals(timer.count, 2, 'timer counts');
   t.ok(timer.time > 0, 'timer times');
-  t.ok(timer.getAverage() > 0, 'timer averages');
+  t.ok(timer.getAverageTime() > 0, 'timer averages');
   t.ok(timer.getHz() > 0, 'timer calculates hz');
   t.end();
 });
 
 test('Stats#reset()', t => {
   const stats = new Stats({id: 'test'});
-  const accumulator = stats.addAccumulator('test');
-  const timer = stats.addTimer('test');
-  accumulator.bump();
-  timer.addTime(1);
-  t.equals(accumulator.total, 1, 'accumulator setup OK');
-  t.equals(timer.count, 1, 'timer setup OK');
+  const stat = stats.create('test');
+  stat.incrementCount();
+  stat.addTime(1);
+  t.equals(stat.count, 2, 'stat setup OK');
+  t.equals(stat.time, 1, 'stat setup OK');
   stats.reset();
-  t.equals(accumulator.total, 0, 'accumulator reset OK');
-  t.equals(timer.count, 0, 'timer reset OK');
+  t.equals(stat.count, 0, 'stat reset OK');
+  t.equals(stat.time, 0, 'stat reset OK');
   t.end();
 });

@@ -94,7 +94,7 @@ export default class StatsWidget {
     let statsCount = 0;
 
     this.instance.forEach(stat => {
-      statsCount += stat.getLines().length;
+      statsCount += stat.numLines;
     });
 
     const width = styles.width;
