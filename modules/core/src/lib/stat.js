@@ -63,6 +63,7 @@ export default class Stat {
     this.time = 0;
     this.count = 0;
     this.lastTiming = 0;
+    this._startTime = 0;
     this._timerPending = false;
   }
 }
