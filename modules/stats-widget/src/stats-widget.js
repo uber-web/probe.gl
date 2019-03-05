@@ -14,12 +14,19 @@ const DEFAULT_STYLES = {
   headerSize: 16
 };
 
+const DEFAULT_FORMATTER = stat => `${stat.name} : ${stat.count}`;
+
 export default class StatsWidget {
-  constructor(statsInstance, styles) {
+  constructor(stats, styles) {
     this.lastUpdateTime = 0;
-    this.instance = statsInstance;
+    this.stats = stats;
     this.styles = Object.assign({}, DEFAULT_STYLES, styles);
+    this._formatters = {};
     this._createDOM();
+  }
+
+  setFormatter(name, formatter) {
+    this._formatters[name] = formatter;
   }
 
   update() {
@@ -29,25 +36,30 @@ export default class StatsWidget {
       this.lastUpdateTime = timestamp;
 
       const {context, devicePixelRatio, styles} = this;
-      const stats = this.instance.getStats();
       const textCursor = [
         styles.padding[0],
         styles.padding[1] + styles.headerSize + styles.lineSpacing
       ];
 
       // make sure that we clear the old text before drawing new text.
-      this._clearTextArea(Object.keys(stats).length);
+      this._clearTextArea();
       this._drawHeader();
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
-      for (const name in stats) {
-        const value = stats[name].fps;
-        const str = `${name} : ${Math.round(100 * value) / 100} f/s`;
-        context.fillText(str, textCursor[0] * devicePixelRatio, textCursor[1] * devicePixelRatio);
+      this.stats.forEach(stat => {
+        const lines = this._getLines(stat.name);
+        const numLines = lines.length;
 
-        // next line
-        textCursor[1] += styles.fontSize + styles.lineSpacing;
-      }
+        for (let i = 0; i < numLines; ++i) {
+          const tab = i === 0 ? 0 : 8;
+          context.fillText(
+            lines[i],
+            textCursor[0] * devicePixelRatio,
+            textCursor[1] * devicePixelRatio
+          );
+          textCursor[1] += styles.fontSize + styles.lineSpacing;
+        }
+      });
     }
   }
 
@@ -76,14 +88,19 @@ export default class StatsWidget {
     const {context, devicePixelRatio, styles} = this;
     context.font = `${styles.headerSize * devicePixelRatio}px ${styles.fontFamily}`;
     context.fillText(
-      this.instance.id,
+      this.stats.id,
       styles.padding[0] * devicePixelRatio,
       styles.padding[1] * devicePixelRatio
     );
   }
 
-  _clearTextArea(statsCount) {
+  _clearTextArea() {
     const {context, devicePixelRatio, styles} = this;
+    let statsCount = 0;
+
+    this.stats.forEach(stat => {
+      statsCount += this._getLines(stat.name).length;
+    });
 
     const width = styles.width;
     const height =
@@ -101,5 +118,10 @@ export default class StatsWidget {
 
     context.fillStyle = styles.color;
     context.textBaseline = 'top';
+  }
+
+  _getLines(name) {
+    const formatter = this._formatters[name] || DEFAULT_FORMATTER;
+    return formatter(this.stats.get(name)).split('\n');
   }
 }

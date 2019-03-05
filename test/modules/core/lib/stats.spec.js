@@ -7,34 +7,42 @@ test('Stats#import', t => {
   t.end();
 });
 
-test('Stats#bump', t => {
+test('Stats#counting', t => {
   const stats = new Stats({id: 'test'});
-  t.ok(stats instanceof Stats, 'stats created successfully');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
+  const counter = stats.get('test');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
+  t.equals(counter.count, 3, 'stat accumulates');
+  t.doesNotThrow(() => counter.addCount(3), 'stat.add works');
+  t.equals(counter.count, 6, 'stat accumulates');
   t.end();
 });
 
-test('Stats#get()', t => {
+test('Stats#timer()', t => {
   const stats = new Stats({id: 'test'});
-  t.ok(stats instanceof Stats, 'stats created successfully');
-  t.equals(stats.get('test'), 0, 'stats bump OK');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
-  t.equals(stats.get('test'), 1, 'stats bump OK');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
-  t.equals(stats.get('test'), 2, 'stats bump OK');
-  t.doesNotThrow(() => stats.bump('test'), 'stats.bump works');
-  t.equals(stats.get('test'), 3, 'stats bump OK');
+  const timer = stats.get('test');
+  t.doesNotThrow(() => timer.timeStart(), 'timer.timeStart works');
+  t.doesNotThrow(() => timer.timeEnd(), 'timer.timeEnd works');
+  t.doesNotThrow(() => timer.addTime(10), 'timer.addTime works');
+  t.doesNotThrow(() => timer.getAverageTime(), 'timer.getAverageTime works');
+  t.doesNotThrow(() => timer.getHz(), 'timer.getHz works');
+  t.equals(timer.count, 2, 'timer counts');
+  t.ok(timer.time > 0, 'timer times');
+  t.ok(timer.getAverageTime() > 0, 'timer averages');
+  t.ok(timer.getHz() > 0, 'timer calculates hz');
   t.end();
 });
 
 test('Stats#reset()', t => {
   const stats = new Stats({id: 'test'});
-  t.ok(stats instanceof Stats, 'stats created successfully');
-  stats.bump('test');
-  t.equals(stats.get('test'), 1, 'stats.reset setup OK');
+  const stat = stats.get('test');
+  stat.incrementCount();
+  stat.addTime(1);
+  t.equals(stat.count, 2, 'stat setup OK');
+  t.equals(stat.time, 1, 'stat setup OK');
   stats.reset();
-  t.equals(stats.get('test'), 0, 'stats.reset OK');
+  t.equals(stat.count, 0, 'stat reset OK');
+  t.equals(stat.time, 0, 'stat reset OK');
   t.end();
 });
