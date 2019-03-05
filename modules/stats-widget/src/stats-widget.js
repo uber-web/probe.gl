@@ -29,11 +29,6 @@ export default class StatsWidget {
     this._formatters[name] = formatter;
   }
 
-  getLines(name) {
-    const formatter = this._formatters[name] || DEFAULT_FORMATTER;
-    return formatter(this.stats.get(name)).split('\n');
-  }
-
   update() {
     const timestamp = Date.now();
 
@@ -52,7 +47,7 @@ export default class StatsWidget {
       context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
 
       this.stats.forEach(stat => {
-        const lines = this.getLines(stat.name);
+        const lines = this._getLines(stat.name);
         const numLines = lines.length;
 
         for (let i = 0; i < numLines; ++i) {
@@ -104,7 +99,7 @@ export default class StatsWidget {
     let statsCount = 0;
 
     this.stats.forEach(stat => {
-      statsCount += this.getLines(stat.name).length;
+      statsCount += this._getLines(stat.name).length;
     });
 
     const width = styles.width;
@@ -123,5 +118,10 @@ export default class StatsWidget {
 
     context.fillStyle = styles.color;
     context.textBaseline = 'top';
+  }
+
+  _getLines(name) {
+    const formatter = this._formatters[name] || DEFAULT_FORMATTER;
+    return formatter(this.stats.get(name)).split('\n');
   }
 }

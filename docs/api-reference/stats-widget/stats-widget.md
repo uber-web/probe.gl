@@ -4,15 +4,19 @@ A widget that displays the state of a probe.gl [Stats](/docs/api-reference/log/s
 
 ## Usage
 
-Just inform your `Stats` instance when something happens. Then query it and get the FPS averages.
+Create a `StatsWidget` HTML element to display tracked `Stats`. Each `Stat` can
+be associated with a `formatter` that indicates how it should be displayed.
+
 ```js
 import StatsWidget from '@probe.gl/stats-widget';
 
 const stats = new Stats({id: 'My Stats'});
+const counter = stats.create('Counter');
 const statsWidget = new StatsWidget(stats);
+statsWidget.setFormatter('Counter', 'stat' => `Count: ${stat.count}`);
 
 for (let i = 0; i < 100; i++) {
-  stats.bump('fps');
+  stats.addCount(i);
 }
 statsWidget.update();
 ```
@@ -35,6 +39,16 @@ statsWidget.update();
   - `headerSize` (Number) - font size of the header
   - `fontSize` (Number) - font size of the body
   - `lineSpacing` (Number) - spacing between lines, in pixels
+
+### setFormatter
+
+Set the formatter associated with a given stat.
+
+`statsWidget.setFormatter(name, formatter)`
+
+* `name` (`String`, required) - the name of the stat to associate with a formatter.
+* `formatter` (`Function`, required) - function that takes a `Stat` object and returns a string.
+
 
 ### update
 
