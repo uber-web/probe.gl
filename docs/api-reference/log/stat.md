@@ -4,12 +4,12 @@ A tracker for a single statistic.
 
 ## Usage
 
-Create a `Stat` instance using `Stats.create`. There are two basic usage patterns, `timer` and `counter`.
+Create a `Stat` instance using `Stats.get`. There are two basic usage patterns, `timer` and `counter`.
 `Timer` usage involves the methods `timeStart`, `timeEnd`, `addTime`, `getHz`, and `getAverageTime`:
 
 ```js
 const stats = new Stats({id: 'my-stats'});
-const executionTime = stats.create('Time');
+const executionTime = stats.get('Time');
 executionTime.timeStart();
 executionTime.timeEnd();
 executionTime.addTime(16);
@@ -24,7 +24,7 @@ executionTime.getAverageTime();
 
 ```js
 const stats = new Stats({id: 'my-stats'});
-const memoryUsage = stats.create('Mem');
+const memoryUsage = stats.get('Mem');
 memoryUsage.incrementCount();
 memoryUsage.decrementCount();
 memoryUsage.addCount(1024);

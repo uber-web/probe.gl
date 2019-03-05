@@ -11,7 +11,7 @@ be associated with a `formatter` that indicates how it should be displayed.
 import StatsWidget from '@probe.gl/stats-widget';
 
 const stats = new Stats({id: 'My Stats'});
-const counter = stats.create('Counter');
+const counter = stats.get('Counter');
 const statsWidget = new StatsWidget(stats);
 statsWidget.setFormatter('Counter', 'stat' => `Count: ${stat.count}`);
 

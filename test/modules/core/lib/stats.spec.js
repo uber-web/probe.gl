@@ -9,7 +9,7 @@ test('Stats#import', t => {
 
 test('Stats#counting', t => {
   const stats = new Stats({id: 'test'});
-  const counter = stats.create('test');
+  const counter = stats.get('test');
   t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
   t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
   t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
@@ -21,7 +21,7 @@ test('Stats#counting', t => {
 
 test('Stats#timer()', t => {
   const stats = new Stats({id: 'test'});
-  const timer = stats.create('test');
+  const timer = stats.get('test');
   t.doesNotThrow(() => timer.timeStart(), 'timer.timeStart works');
   t.doesNotThrow(() => timer.timeEnd(), 'timer.timeEnd works');
   t.doesNotThrow(() => timer.addTime(10), 'timer.addTime works');
@@ -36,7 +36,7 @@ test('Stats#timer()', t => {
 
 test('Stats#reset()', t => {
   const stats = new Stats({id: 'test'});
-  const stat = stats.create('test');
+  const stat = stats.get('test');
   stat.incrementCount();
   stat.addTime(1);
   t.equals(stat.count, 2, 'stat setup OK');

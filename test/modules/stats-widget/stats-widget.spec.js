@@ -3,7 +3,7 @@ import {Stats} from 'probe.gl';
 import {StatsWidget} from '@probe.gl/stats-widget';
 
 const stats = new Stats({id: 'test-stats'});
-const accum = stats.create('test-accum');
+const accum = stats.get('test-accum');
 const statsWidget = new StatsWidget(stats, {
   containerStyle: 'position:fixed;bottom:0;right:0;z-index:1'
 });

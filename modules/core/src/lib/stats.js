@@ -7,14 +7,9 @@ export default class Stats {
     Object.seal(this);
   }
 
-  // Initialize a new stat
-  create(name) {
-    this.stats[name] = new Stat(name);
-    return this.stats[name];
-  }
-
-  // Get existing stat
+  // Acquire a stat. Create if it doesn't exist.
   get(name) {
+    this.stats[name] = this.stats[name] || new Stat(name);
     return this.stats[name];
   }
 
