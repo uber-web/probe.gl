@@ -27,4 +27,18 @@ export default class Stats {
       fn(this.stats[key]);
     }
   }
+
+  getTable() {
+    const table = {};
+    this.forEach(stat => {
+      table[stat.name] = {
+        time: stat.time || 0,
+        count: stat.count || 0,
+        average: stat.getAverageTime() || 0,
+        hz: stat.getHz() || 0
+      };
+    });
+
+    return table;
+  }
 }
