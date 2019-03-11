@@ -23,7 +23,8 @@ const DEFAULT_CSS = {
 
 const DEFAULT_FORMATTERS = {
   count: stat => `${stat.name}: ${stat.count}`,
-  time: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
   fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
   memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
 };
@@ -65,7 +66,7 @@ export default class StatsWidget {
       }
     }
 
-    this._createDOM();
+    this._createDOM(opts.container);
   }
 
   update() {
