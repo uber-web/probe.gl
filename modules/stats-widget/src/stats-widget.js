@@ -18,7 +18,7 @@ const DEFAULT_FORMATTERS = {
   count: stat => `${stat.name}: ${stat.count}`,
   time: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
   fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
-  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`,
+  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
 const KB = 1024;
@@ -28,10 +28,13 @@ const GB = 1024 * MB;
 export default class StatsWidget {
   constructor(stats, opts = {}) {
     this.title = opts.title || null;
-    this.lastUpdateTime = 0;
     this.stats = stats;
     this.styles = Object.assign({}, DEFAULT_STYLES, opts.styles);
+    this._counter = 0;
+    this._framesPerUpdate = Math.round(Math.max(opts.framesPerUpdate || 1, 1));
     this._formatters = {};
+    this._resetOnUpdate = {};
+
     if (opts.formatters) {
       for (const name in opts.formatters) {
         let fm = opts.formatters[name];
@@ -44,40 +47,48 @@ export default class StatsWidget {
       }
     }
 
+    if (opts.resetOnUpdate) {
+      for (const name in opts.resetOnUpdate) {
+        this._resetOnUpdate[name] = opts.resetOnUpdate[name];
+      }
+    }
+
     this._createDOM();
   }
 
   update() {
-    const timestamp = Date.now();
-
-    if (timestamp - this.lastUpdateTime > 1000) {
-      this.lastUpdateTime = timestamp;
-
-      const {context, devicePixelRatio, styles} = this;
-      const textCursor = [
-        styles.padding[0],
-        styles.padding[1] + styles.headerSize + styles.lineSpacing
-      ];
-
-      // make sure that we clear the old text before drawing new text.
-      this._clearTextArea();
-      this._drawHeader();
-      context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
-
-      this.stats.forEach(stat => {
-        const lines = this._getLines(stat.name);
-        const numLines = lines.length;
-
-        for (let i = 0; i < numLines; ++i) {
-          context.fillText(
-            lines[i],
-            textCursor[0] * devicePixelRatio,
-            textCursor[1] * devicePixelRatio
-          );
-          textCursor[1] += styles.fontSize + styles.lineSpacing;
-        }
-      });
+    if (this._counter++ % this._framesPerUpdate !== 0) {
+      return;
     }
+
+    const {context, devicePixelRatio, styles} = this;
+    const textCursor = [
+      styles.padding[0],
+      styles.padding[1] + styles.headerSize + styles.lineSpacing
+    ];
+
+    // make sure that we clear the old text before drawing new text.
+    this._clearTextArea();
+    this._drawHeader();
+    context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
+
+    this.stats.forEach(stat => {
+      const lines = this._getLines(stat.name);
+      const numLines = lines.length;
+
+      for (let i = 0; i < numLines; ++i) {
+        context.fillText(
+          lines[i],
+          textCursor[0] * devicePixelRatio,
+          textCursor[1] * devicePixelRatio
+        );
+        textCursor[1] += styles.fontSize + styles.lineSpacing;
+      }
+
+      if (this._resetOnUpdate[stat.name]) {
+        stat.reset();
+      }
+    });
   }
 
   _createDOM() {

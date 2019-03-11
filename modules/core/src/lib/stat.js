@@ -51,12 +51,12 @@ export default class Stat {
 
   // Calculate average time / count
   getAverageTime() {
-    return this.count > 0 ? (this.time / this.count) : 0;
+    return this.count > 0 ? this.time / this.count : 0;
   }
 
   // Calculate counts per second
   getHz() {
-    return this.time > 0 ? (this.count / (this.time / 1000)) : 0;
+    return this.time > 0 ? this.count / (this.time / 1000) : 0;
   }
 
   reset() {
