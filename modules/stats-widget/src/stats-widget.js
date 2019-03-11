@@ -14,19 +14,37 @@ const DEFAULT_STYLES = {
   headerSize: 16
 };
 
-const DEFAULT_FORMATTER = stat => `${stat.name} : ${stat.count}`;
+const DEFAULT_FORMATTERS = {
+  count: stat => `${stat.name}: ${stat.count}`,
+  time: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
+  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`,
+};
+
+const KB = 1024;
+const MB = 1024 * KB;
+const GB = 1024 * MB;
 
 export default class StatsWidget {
-  constructor(stats, styles) {
+  constructor(stats, opts = {}) {
+    this.title = opts.title || null;
     this.lastUpdateTime = 0;
     this.stats = stats;
-    this.styles = Object.assign({}, DEFAULT_STYLES, styles);
+    this.styles = Object.assign({}, DEFAULT_STYLES, opts.styles);
     this._formatters = {};
-    this._createDOM();
-  }
+    if (opts.formatters) {
+      for (const name in opts.formatters) {
+        let fm = opts.formatters[name];
 
-  setFormatter(name, formatter) {
-    this._formatters[name] = formatter;
+        if (typeof fm === 'string') {
+          fm = DEFAULT_FORMATTERS[fm];
+        }
+
+        this._formatters[name] = fm;
+      }
+    }
+
+    this._createDOM();
   }
 
   update() {
@@ -51,7 +69,6 @@ export default class StatsWidget {
         const numLines = lines.length;
 
         for (let i = 0; i < numLines; ++i) {
-          const tab = i === 0 ? 0 : 8;
           context.fillText(
             lines[i],
             textCursor[0] * devicePixelRatio,
@@ -88,7 +105,7 @@ export default class StatsWidget {
     const {context, devicePixelRatio, styles} = this;
     context.font = `${styles.headerSize * devicePixelRatio}px ${styles.fontFamily}`;
     context.fillText(
-      this.stats.id,
+      this.title || this.stats.id,
       styles.padding[0] * devicePixelRatio,
       styles.padding[1] * devicePixelRatio
     );
@@ -121,7 +138,51 @@ export default class StatsWidget {
   }
 
   _getLines(name) {
-    const formatter = this._formatters[name] || DEFAULT_FORMATTER;
+    const formatter = this._formatters[name] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(name)).split('\n');
   }
+}
+
+// t in milliseconds
+function formatTime(t) {
+  let value, unit, precision;
+  if (t < 1) {
+    value = t * 1000;
+    unit = '\u03BCs';
+    precision = 0;
+  } else if (t < 1000) {
+    value = t;
+    unit = 'ms';
+    precision = 2;
+  } else {
+    value = t / 1000;
+    unit = 's';
+    precision = 2;
+  }
+
+  return `${value.toFixed(precision)}${unit}`;
+}
+
+// b in bytes
+function formatMemory(b) {
+  let value, unit, precision;
+  if (b < KB) {
+    value = b;
+    unit = ' bytes';
+    precision = 0;
+  } else if (t < MB) {
+    value = b / KB;
+    unit = 'kB';
+    precision = 2;
+  } else if (t < GB) {
+    value = b / MB;
+    unit = 'MB';
+    precision = 2;
+  } else {
+    value = b / GB;
+    unit = 'GB';
+    precision = 2;
+  }
+
+  return `${value.toFixed(precision)}${unit}`;
 }
