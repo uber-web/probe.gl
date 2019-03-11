@@ -13,7 +13,8 @@
     "prettier/prettier": "error",
     "guard-for-in": 0,
     "no-inline-comments": 0,
-    "camelcase": 0
+    "camelcase": 0,
+    "sort-vars": 0
   },
   "globals": {
     "performance": true,

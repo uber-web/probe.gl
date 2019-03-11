@@ -1,17 +1,24 @@
 // Built on https://github.com/Erkaman/regl-stats-widget (MIT license)
-/* eslint-disable */
 // widget styling constants.
+/* global document */
 
-const DEFAULT_STYLES = {
-  containerStyle: 'position:fixed;z-index:10000;',
-  width: 160,
-  color: '#ccc',
-  background: '#000',
-  padding: [8, 8],
-  fontFamily: 'Helvetica,Arial,sans-serif',
-  fontSize: 12,
-  lineSpacing: 6,
-  headerSize: 16
+const DEFAULT_CSS = {
+  css: {
+    position: 'fixed',
+    zIndex: 10000,
+    color: '#ccc',
+    background: '#000',
+    fontFamily: 'Helvetica,Arial,sans-serif',
+    padding: '8px',
+    fontSize: '12px',
+    lineSpacing: 6
+  },
+  headerCss: {
+    fontSize: '16px'
+  },
+  itemCss: {
+    paddingLeft: '8px'
+  }
 };
 
 const DEFAULT_FORMATTERS = {
@@ -29,7 +36,12 @@ export default class StatsWidget {
   constructor(stats, opts = {}) {
     this.title = opts.title || null;
     this.stats = stats;
-    this.styles = Object.assign({}, DEFAULT_STYLES, opts.styles);
+    this._css = Object.assign({}, DEFAULT_CSS.css, opts.css);
+    this._headerCss = Object.assign({}, DEFAULT_CSS.headerCss, opts.headerCss);
+    this._itemCss = Object.assign({}, DEFAULT_CSS.itemCss, opts.itemCss);
+    this._container = null;
+    this._header = null;
+    this._items = {};
     this._counter = 0;
     this._framesPerUpdate = Math.round(Math.max(opts.framesPerUpdate || 1, 1));
     this._formatters = {};
@@ -61,29 +73,9 @@ export default class StatsWidget {
       return;
     }
 
-    const {context, devicePixelRatio, styles} = this;
-    const textCursor = [
-      styles.padding[0],
-      styles.padding[1] + styles.headerSize + styles.lineSpacing
-    ];
-
     // make sure that we clear the old text before drawing new text.
-    this._clearTextArea();
-    this._drawHeader();
-    context.font = `${styles.fontSize * devicePixelRatio}px ${styles.fontFamily}`;
-
     this.stats.forEach(stat => {
-      const lines = this._getLines(stat.name);
-      const numLines = lines.length;
-
-      for (let i = 0; i < numLines; ++i) {
-        context.fillText(
-          lines[i],
-          textCursor[0] * devicePixelRatio,
-          textCursor[1] * devicePixelRatio
-        );
-        textCursor[1] += styles.fontSize + styles.lineSpacing;
-      }
+      this._items[stat.name].innerHTML = this._getLines(stat.name).join('<BR>');
 
       if (this._resetOnUpdate[stat.name]) {
         stat.reset();
@@ -91,61 +83,32 @@ export default class StatsWidget {
     });
   }
 
-  _createDOM() {
-    let {container} = this.styles;
-    const pr = Math.round(window.devicePixelRatio || 1);
+  _createDOM(container) {
+    this._container = container;
 
     // the widget is contained in a <div>
-    if (!container) {
-      container = document.createElement('div');
-      container.style.cssText = this.styles.containerStyle;
-      document.body.appendChild(container);
+    if (!this._container) {
+      this._container = document.createElement('div');
+      for (const name in this._css) {
+        this._container.style[name] = this._css[name];
+      }
+      document.body.appendChild(this._container);
     }
 
-    // we draw the widget on a canvas.
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    container.appendChild(canvas);
-
-    this.context = context;
-    this.devicePixelRatio = Math.round(window.devicePixelRatio || 1);
-  }
-
-  _drawHeader() {
-    const {context, devicePixelRatio, styles} = this;
-    context.font = `${styles.headerSize * devicePixelRatio}px ${styles.fontFamily}`;
-    context.fillText(
-      this.title || this.stats.id,
-      styles.padding[0] * devicePixelRatio,
-      styles.padding[1] * devicePixelRatio
-    );
-  }
-
-  _clearTextArea() {
-    const {context, devicePixelRatio, styles} = this;
-    let statsCount = 0;
+    this._header = document.createElement('div');
+    this._header.innerText = this.title || this.stats.id;
+    for (const name in this._headerCss) {
+      this._header.style[name] = this._headerCss[name];
+    }
+    this._container.appendChild(this._header);
 
     this.stats.forEach(stat => {
-      statsCount += this._getLines(stat.name).length;
+      this._items[stat.name] = document.createElement('div');
+      for (const name in this._itemCss) {
+        this._items[stat.name].style[name] = this._itemCss[name];
+      }
+      this._container.appendChild(this._items[stat.name]);
     });
-
-    const width = styles.width;
-    const height =
-      styles.headerSize +
-      statsCount * (styles.fontSize + styles.lineSpacing) +
-      styles.padding[1] * 2;
-    context.canvas.width = width * devicePixelRatio;
-    context.canvas.height = height * devicePixelRatio;
-    context.canvas.style.width = `${width}px`;
-    context.canvas.style.height = `${height}px`;
-
-    // draw background
-    context.fillStyle = styles.background;
-    context.fillRect(0, 0, width * devicePixelRatio, height * devicePixelRatio);
-
-    context.fillStyle = styles.color;
-    context.textBaseline = 'top';
   }
 
   _getLines(name) {
@@ -156,7 +119,10 @@ export default class StatsWidget {
 
 // t in milliseconds
 function formatTime(t) {
-  let value, unit, precision;
+  let value;
+  let unit;
+  let precision;
+
   if (t < 1) {
     value = t * 1000;
     unit = '\u03BCs';
@@ -176,16 +142,19 @@ function formatTime(t) {
 
 // b in bytes
 function formatMemory(b) {
-  let value, unit, precision;
+  let value;
+  let unit;
+  let precision;
+
   if (b < KB) {
     value = b;
     unit = ' bytes';
     precision = 0;
-  } else if (t < MB) {
+  } else if (b < MB) {
     value = b / KB;
     unit = 'kB';
     precision = 2;
-  } else if (t < GB) {
+  } else if (b < GB) {
     value = b / MB;
     unit = 'MB';
     precision = 2;
