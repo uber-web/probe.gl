@@ -41,7 +41,7 @@ statsWidget.update();
     + `averageTime`: Display average time.
     + `totalTime`: Display total time.
     + `fps`: Display Hz as a frame rate.
-    + `memory`: Display count a memory measurement.
+    + `memory`: Display count as a memory measurement.
   - `resetOnUpdate` (`Object`) - whether the a stat should be reset each time the widget is re-rendered. Keyed by the stat's `id`.
 
 ### setFormatter
