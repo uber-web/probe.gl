@@ -13,10 +13,10 @@ const DEFAULT_CSS = {
     fontSize: '12px',
     lineSpacing: 6
   },
-  headerCss: {
+  headerCSS: {
     fontSize: '16px'
   },
-  itemCss: {
+  itemCSS: {
     paddingLeft: '8px'
   }
 };
@@ -38,8 +38,8 @@ export default class StatsWidget {
     this.title = opts.title || null;
     this.stats = stats;
     this._css = Object.assign({}, DEFAULT_CSS.css, opts.css);
-    this._headerCss = Object.assign({}, DEFAULT_CSS.headerCss, opts.headerCss);
-    this._itemCss = Object.assign({}, DEFAULT_CSS.itemCss, opts.itemCss);
+    this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, opts.headerCSS);
+    this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, opts.itemCSS);
     this._container = null;
     this._header = null;
     this._items = {};
@@ -98,15 +98,15 @@ export default class StatsWidget {
 
     this._header = document.createElement('div');
     this._header.innerText = this.title || this.stats.id;
-    for (const name in this._headerCss) {
-      this._header.style[name] = this._headerCss[name];
+    for (const name in this._headerCSS) {
+      this._header.style[name] = this._headerCSS[name];
     }
     this._container.appendChild(this._header);
 
     this.stats.forEach(stat => {
       this._items[stat.name] = document.createElement('div');
-      for (const name in this._itemCss) {
-        this._items[stat.name].style[name] = this._itemCss[name];
+      for (const name in this._itemCSS) {
+        this._items[stat.name].style[name] = this._itemCSS[name];
       }
       this._container.appendChild(this._items[stat.name]);
     });
