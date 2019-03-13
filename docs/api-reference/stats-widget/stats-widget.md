@@ -32,9 +32,10 @@ statsWidget.update();
   - `framesPerUpdate` (`Number`) - number of times `update` must be called before the widget is re-rendered. Allows the application
     to call `update` each frame with re-renders occuring at a slower rate.
   - `container` (DOMElement) - DOM element to use as container for the widget. Will be created internally if not provided.
-  - `css` (`Object`) - css properties to apply to the container `div` of the widget.
-  - `headerCSS` (`Object`) - css properties to apply to the header `div` of the widget.
-  - `itemCSS` (`Object`) - css properties to apply to the individual item `div`s for each stat displayed in the widget.
+  - `css` (`Object`) - css properties to apply to the container `div` of the widget. Two special keys can be used to modify the
+    style of nested elements:
+    + `header` (`Object`) - css properties to apply to the header `div` of the widget.
+    + `item` (`Object`) - css properties to apply to the individual item `div`s for each stat displayed in the widget.
   - `formatters` (`Object`) - text formatters to use to display a stat. Keys are the stat's `id`. Value can either be
     a function that takes a single `stat` object as argument, or one of the following strings:
     + `count`: Display as a simple count.

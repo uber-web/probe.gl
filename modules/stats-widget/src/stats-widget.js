@@ -38,8 +38,12 @@ export default class StatsWidget {
     this.title = opts.title || null;
     this.stats = stats;
     this._css = Object.assign({}, DEFAULT_CSS.css, opts.css);
-    this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, opts.headerCSS);
-    this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, opts.itemCSS);
+    this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
+    this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
+
+    delete this._css.header;
+    delete this._css.item;
+
     this._container = null;
     this._header = null;
     this._items = {};
