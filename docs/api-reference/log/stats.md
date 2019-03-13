@@ -36,7 +36,9 @@ Returns the `Stat` object identified by `name`.
 
 ### reset
 
-Resets all stats etc.
+Resets all stats.
+
+`stats.reset()`
 
 
 ### forEach
@@ -47,6 +49,8 @@ Iterate over all stats.
 
 * `fn` (`Function`, required) - function to call on each `Stat` object.
 
-### getTimers
+### getTable
 
-`stats.getTimers
+Return stats in a format suitable for `console.table`
+
+`stats.getTable()`
