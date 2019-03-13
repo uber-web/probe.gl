@@ -1,5 +1,9 @@
 CHANGELOG
 
+v3.0.0-alpha.7
+* Simplified StatsWidget API
+* `Stats.getTable` method to format stats in a way suitable for `console.table`
+
 v2.2.0-beta.1 - Jan 30, 2019
 - Browser test tools
 
@@ -53,7 +57,7 @@ v1.0.0-alpha.9
 
 v1.0.0-alpha.8
 - default log export
-- `Log.probe` 
+- `Log.probe`
 - `Stats` class improvements
 
 v1.0.0-alpha.7
