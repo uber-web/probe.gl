@@ -80,6 +80,7 @@ export default class StatsWidget {
 
     // make sure that we clear the old text before drawing new text.
     this.stats.forEach(stat => {
+      this._createDOMItem(stat.name);
       this._items[stat.name].innerHTML = this._getLines(stat.name).join('<BR>');
 
       if (this._resetOnUpdate[stat.name]) {
@@ -108,12 +109,20 @@ export default class StatsWidget {
     this._container.appendChild(this._header);
 
     this.stats.forEach(stat => {
-      this._items[stat.name] = document.createElement('div');
-      for (const name in this._itemCSS) {
-        this._items[stat.name].style[name] = this._itemCSS[name];
-      }
-      this._container.appendChild(this._items[stat.name]);
+      this._createDOMItem(stat.name);
     });
+  }
+
+  _createDOMItem(statName) {
+    if (this._items[statName]) {
+      return;
+    }
+
+    this._items[statName] = document.createElement('div');
+    for (const name in this._itemCSS) {
+      this._items[statName].style[name] = this._itemCSS[name];
+    }
+    this._container.appendChild(this._items[statName]);
   }
 
   _getLines(name) {
