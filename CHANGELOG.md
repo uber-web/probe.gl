@@ -1,5 +1,8 @@
 CHANGELOG
 
+v3.0.0-alpha.8
+* Fix dynamic dom creation
+
 v3.0.0-alpha.7
 * Simplified StatsWidget API
 * `Stats.getTable` method to format stats in a way suitable for `console.table`
