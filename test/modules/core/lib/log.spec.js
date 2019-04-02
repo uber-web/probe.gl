@@ -1,7 +1,6 @@
 /* eslint-disable max-statements */
 import Probe, {Log} from 'probe.gl';
 import test from 'tape-catch';
-import {version} from 'probe.gl/../package.json';
 
 const makeOpts = (priority, message, ...args) => ({priority, message, args});
 
@@ -32,7 +31,7 @@ test('Log#import', t => {
   t.equals(typeof Log, 'function', 'Log imported OK');
   t.equals(typeof Probe, 'object', 'default (Probe) imported OK');
   t.ok(
-    Probe.VERSION === version || Probe.VERSION === 'untranspiled source',
+    Probe.VERSION.match(/\d+\.\d+\.\d+/) || Probe.VERSION === 'untranspiled source',
     'Probe.VERSION imported OK'
   );
   t.end();

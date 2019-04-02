@@ -2,12 +2,12 @@
 // so this scripts does some "raw" logging to check that things work.
 /* global console */
 /* eslint-disable no-console */
-const path = require('path');
 const {Log, COLOR} = require('probe.gl');
-const image =
-  typeof window !== 'undefined'
-    ? require('../../../data/image.jpg')
-    : module.require('fs').readFileSync(path.join(__dirname, '../../data/image.jpg'));
+// const path = require('path');
+// const image =
+//   typeof window !== 'undefined'
+//     ? require('../../../data/image.jpg')
+//     : module.require('fs').readFileSync(path.join(__dirname, '../../data/image.jpg'));
 
 const log = new Log({id: 'test'});
 log.priority = 5;
@@ -69,4 +69,4 @@ log.log(1, 'log outside group')();
 log.table(0, {a: {c: 1}, b: {c: 2}})();
 log.table(0, {a: {c: 1}, b: {c: 2}})();
 
-log.image({image})();
+// log.image({image})();

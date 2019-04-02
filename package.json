@@ -44,7 +44,7 @@
     "lerna": "^2.9.1",
     "module-alias": "^2.0.0",
     "nyc": "^10.2.0",
-    "ocular-dev-tools": "0.0.7",
+    "ocular-dev-tools": "0.0.19",
     "pre-commit": "^1.2.2",
     "prettier": "^1.16.0",
     "reify": "^0.18.1",
