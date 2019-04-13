@@ -1,10 +1,9 @@
 # BrowserDriver (Test Automation Class)
 
 <p class="badges">
-  <img src="https://img.shields.io/badge/Node.js-v8.0-blue.svg?style=flat-square" alt="Node" />
+  <img src="https://img.shields.io/badge/Node.js-v8.0+-blue.svg?style=flat-square" alt="Node" />
+  <img src="https://img.shields.io/badge/Chrome-v64+-blue.svg?style=flat-square" alt="Node" />
 </p>
-
-> Note: Requires Chrome version 64 or higher
 
 A Chrome Browser test automation driver class (based on the [Chrome `DevTools` protocol](https://chromedevtools.github.io/devtools-protocol/) via the [`puppeteer`](https://github.com/GoogleChrome/puppeteer) module. The `BrowserDriver` class is primarily intended for automating browser based applications from shell scripts.
 
