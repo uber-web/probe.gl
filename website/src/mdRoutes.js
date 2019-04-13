@@ -53,12 +53,24 @@ export default [{
     children: [{
       name: 'Log',
       markdown: require('../../docs/api-reference/log/log.md')
+    }, {
+      name: 'Stat',
+      markdown: require('../../docs/api-reference/log/stat.md')
+    }, {
+      name: 'Stats',
+      markdown: require('../../docs/api-reference/log/stats.md')
     }]
   }, {
     name: 'API Reference - Benchmarking',
     children: [{
       name: 'Bench',
       markdown: require('../../docs/api-reference/bench/bench.md')
+    }]
+  }, {
+    name: 'API Reference - Widgets',
+    children: [{
+      name: 'StatsWidget',
+      markdown: require('../../docs/api-reference/stats-widget/stats-widget.md')
     }]
   }, {
     name: 'API Reference - Testing',
@@ -71,6 +83,9 @@ export default [{
     }, {
       name: 'makeSpy',
       markdown: require('../../docs/api-reference/test-utils/make-spy.md')
+    }, {
+      name: 'enableDOMLogging',
+      markdown: require('../../docs/api-reference/test-utils/log-to-dom.md')
     }]
   }]
 }];

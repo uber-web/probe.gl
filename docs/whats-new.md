@@ -1,16 +1,17 @@
 # What's New
 
-## v3.0-alpha
+## v3.0
 
-Target Release Date: Q1, 2019
+Release Date: Apr, 2019
 
 ## Module split
 
 The subfile import scheme has been replaced with proper npm modules:
 
-* `probe.gl` - Log Class
-* `@probe.gl/bench`
-* `@probe.gl/test-utils`
+* **probe.gl** - Log Class
+* **@probe.gl/bench** - Benchmark utilities
+* **@probe.gl/stats-widget** - UI widgets for profiling
+* **@probe.gl/test-utils** - Integration test utilities
 
 ## Bench class
 
