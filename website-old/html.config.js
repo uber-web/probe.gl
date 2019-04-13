@@ -20,16 +20,11 @@
 
 module.exports = {
 
-  title: 'math.gl',
+  title: 'probe.gl',
 
   meta: [{
     name: 'description',
-    content: 'ES6 Math classes optimized for WebGL applications'
-  }],
-
-  scripts: [
-  	// Adds Mathjax support
-    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=MML_HTMLorMML'
-  ]
+    content: 'JavaScript Instrumentation for Node and Browser'
+  }]
 
 };

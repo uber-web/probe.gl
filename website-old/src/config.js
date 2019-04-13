@@ -19,10 +19,12 @@
 // THE SOFTWARE.
 
 export const PROJECT_TYPE = 'github';
-export const PROJECT_NAME = 'math.gl';
+
+export const PROJECT_NAME = 'probe.gl';
 export const PROJECT_ORG = 'uber-web';
 export const PROJECT_URL = `https://github.com/${PROJECT_ORG}/${PROJECT_NAME}`;
-export const PROJECT_DESC = 'Array-based 3D Math Classes optimized for WebGL applications';
+export const PROJECT_DESC =
+  'JavaScript Console Instrumentation and Benchmarking for Browser and Node';
 
 export const PROJECTS = {
   'deck.gl': 'https://uber.github.io/deck.gl',
@@ -31,29 +33,24 @@ export const PROJECTS = {
   'vis.gl': 'https://uber-web.github.io/vis.gl'
 };
 
-export const HOME_HEADING =
-  'A JavaScript 3D math library optimized for WebGL applications.';
+export const HOME_HEADING = 'Logging and Benchmarking for JS';
 
 /* eslint-disable quotes */
 export const HOME_BULLETS = [{
-  text: 'A modern Array-based JavaScript math library',
-  desc: `math.gl leverages modern JavaScript to derive its 'Vector' and 'Matrix' classes \
-from the built-in 'Array' class, enabling a more natural and composable API.`,
+  text: 'Console-Focused Logging',
+  desc: `probe.gl focuses on debug logs and instrumentation in the console\
+rather than e.g. production logging to servers.`,
   img: 'images/icon-layers.svg'
 }, {
-  text: 'Optimized for WebGL and 3D Programming',
-  desc: `A selection of classes for typical 3D programming tasks, \
-optimized for use with WebGL where it makes sense.`,
+  text: 'Benchmarking and Regression Testing Support',
+  desc: `Benchmarking API makes it trivial to build a benchmarking suites, \
+and supports comparison of test across runs.`,
   img: 'images/icon-layers.svg'
 }, {
-  text: 'Strong Documentation and Debug Support',
-  desc: `math.gl offers both reference documentation and articles, \
-as well as facilities for quicklydetecting errors and debugging math code.`,
-  img: 'images/icon-layers.svg'
-}, {
-  text: 'Built on Strong Foundations',
-  desc: `math.gl incorporates techniques from some of the most used JavaScript 3D math libraries, \
-like gl-matrix and the math classes from THREE.js`,
+  text: 'Optimized Chrome Debugging Experience',
+  desc: `Enables a clean debug experience, with full control over logs, \
+allowing you to tap into Chrome's advanced console APIs when available. \
+Provides fallbacks on other browsers, including Node.js.`,
   img: 'images/icon-layers.svg'
 }];
 

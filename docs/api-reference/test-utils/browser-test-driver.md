@@ -2,9 +2,8 @@
 
 <p class="badges">
   <img src="https://img.shields.io/badge/Node.js-v8.0-blue.svg?style=flat-square" alt="Node" />
+  <img src="https://img.shields.io/badge/Chrome-v64+-blue.svg?style=flat-square" alt="Node" />
 </p>
-
-> Note: Requires Chrome version 64 or higher
 
 A higher level helper class that inherits the [`BrowserDriver`](./docs/api-reference/test/browser-task-status). Primarily intended for automating browser tests from Node.js shell scripts.
 
