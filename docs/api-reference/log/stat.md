@@ -144,27 +144,40 @@ Increase `time` by `value` and increment `count` by `1`.
 
 ### getHz
 
-Calculate the average number of timing events per second (i.e. `count / (time * 1000)`.
+Calculate the average number of timing events per second (i.e. `samples / (time * 1000)`.
 
 `stat.getHz()`
 
 
 ### getAverageTime
 
-Calculate the average amount of time take per timing event in milliseconds (i.e. `time / count`).
+Calculate the average amount of time take per timing event in milliseconds (i.e. `time / samples`).
 
 `stat.getAverageTime()`
 
+### getAverageCount
+
+Calculate the average count per sampling (i.e. `count / samples`).
+
+`stat.getAverageCount()`
+
 ### getSampleHz
 
-Calculate the average number of timing events per second (i.e. `count / (time * 1000)` for the last completed set of samples.
+Calculate the average number of timing events per second (i.e. `samples / (time * 1000)` for the last completed set of samples.
 
 `stat.getHz()`
 
 
 ### getSampleAverageTime
 
-Calculate the average amount of time take per timing event in milliseconds (i.e. `time / count`) for the last completed set of samples.
+Calculate the average amount of time take per timing event in milliseconds (i.e. `time / samples`) for the last completed set of samples.
+
+`stat.getAverageTime()`
+
+
+### getSampleAverageCount
+
+Calculate the average count per sampling (i.e. `count / samples`) for the last completed set of samples.
 
 `stat.getAverageTime()`
 
