@@ -30,6 +30,7 @@ export default class Stat {
   // Increase count
   addCount(value) {
     this._count += value;
+    this._samples++;
     this._checkSampling();
 
     return this;
@@ -38,6 +39,7 @@ export default class Stat {
   // Decrease count
   subtractCount(value) {
     this._count -= value;
+    this._samples++;
     this._checkSampling();
 
     return this;
@@ -47,7 +49,7 @@ export default class Stat {
   addTime(time) {
     this._time += time;
     this._lastTiming = time;
-    this._count++;
+    this._samples++;
     this._checkSampling();
 
     return this;
@@ -74,32 +76,44 @@ export default class Stat {
     return this;
   }
 
+  getSampleAverageCount() {
+    return this.sampleSize > 0 ? this.lastSampleCount / this.sampleSize : 0;
+  }
+
   // Calculate average time / count for the previous window
   getSampleAverageTime() {
-    return this.lastSampleCount > 0 ? this.lastSampleTime / this.lastSampleCount : 0;
+    return this.sampleSize > 0 ? this.lastSampleTime / this.sampleSize : 0;
   }
 
   // Calculate counts per second for the previous window
   getSampleHz() {
-    return this.lastSampleTime > 0 ? this.lastSampleCount / (this.lastSampleTime / 1000) : 0;
+    return this.lastSampleTime > 0 ? this.sampleSize / (this.lastSampleTime / 1000) : 0;
+  }
+
+  getAverageCount() {
+    return this.samples > 0 ? this.count / this.samples : 0;
   }
 
   // Calculate average time / count
   getAverageTime() {
-    return this.count > 0 ? this.time / this.count : 0;
+    return this.samples > 0 ? this.time / this.samples : 0;
   }
 
   // Calculate counts per second
   getHz() {
-    return this.time > 0 ? this.count / (this.time / 1000) : 0;
+    return this.time > 0 ? this.samples / (this.time / 1000) : 0;
   }
 
   reset() {
     this.time = 0;
     this.count = 0;
+    this.samples = 0;
     this.lastTiming = 0;
-    this._time = 0;
+    this.lastSampleTime = 0;
+    this.lastSampleCount = 0;
     this._count = 0;
+    this._time = 0;
+    this._samples = 0;
     this._startTime = 0;
     this._timerPending = false;
 
@@ -107,13 +121,15 @@ export default class Stat {
   }
 
   _checkSampling() {
-    if (this._count === this.sampleSize) {
-      this.lastSampleCount = this._count;
+    if (this._samples === this.sampleSize) {
       this.lastSampleTime = this._time;
+      this.lastSampleCount = this._count;
       this.count += this._count;
       this.time += this._time;
+      this.samples += this._samples;
       this._time = 0;
       this._count = 0;
+      this._samples = 0;
     }
   }
 }
