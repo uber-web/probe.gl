@@ -31,19 +31,19 @@ memoryUsage.addCount(1024);
 memoryUsage.subtractCount(512);
 ```
 
-For time statistics, the `Stat` object can also define a sample window, to only update `count` and `time` after a given number of samples are taken:
+For time statistics, the `Stat` object can also define a sample window, to only update `count` or `time` after a given number of samples are taken:
 
 ```js
 const stats = new Stats({id: 'my-stats'});
 const executionTime = stats.get('Time').setSampleSize(3);
 executionTime.addTime(1);
 executionTime.addTime(2);
-// `count` and `time` are still 0 at this point
+// `time` is still 0 at this point
 executionTime.getHz();          // => 0
 executionTime.getAverageTime(); // => 0
 
 executionTime.addTime(3);
-// Now `count` = 3 and `time` = 6
+// Now `time` = 6
 executionTime.getAverageTime(); // => 2
 executionTime.addTime(1);
 executionTime.addTime(1);
