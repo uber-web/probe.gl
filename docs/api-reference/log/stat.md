@@ -31,6 +31,27 @@ memoryUsage.addCount(1024);
 memoryUsage.subtractCount(512);
 ```
 
+For time statistics, the `Stat` object can also define a sample window, to only update `count` or `time` after a given number of samples are taken:
+
+```js
+const stats = new Stats({id: 'my-stats'});
+const executionTime = stats.get('Time').setSampleSize(3);
+executionTime.addTime(1);
+executionTime.addTime(2);
+// `time` is still 0 at this point
+executionTime.getHz();          // => 0
+executionTime.getAverageTime(); // => 0
+
+executionTime.addTime(3);
+// Now `time` = 6
+executionTime.getAverageTime(); // => 2
+executionTime.addTime(1);
+executionTime.addTime(1);
+executionTime.addTime(1);
+executionTime.getAverageTime();       // => 1.5
+executionTime.getSampleAverageTime(); // => 1 (only from the last sample set)
+```
+
 ## Properties
 
 ### name : String
@@ -47,10 +68,13 @@ Accumulated count or number of timings.
 
 Accumulated time from all timings.
 
-
 ### lastTiming : Number
 
 Last timing taken.
+
+### lastSampleTime : Number
+
+Timing of the last completed set of samples.
 
 
 ## Methods
@@ -120,14 +144,40 @@ Increase `time` by `value` and increment `count` by `1`.
 
 ### getHz
 
-Calculate the average number of timing events per second (i.e. `count / (time * 1000)`.
+Calculate the average number of timing events per second (i.e. `samples / (time * 1000)`.
 
 `stat.getHz()`
 
 
 ### getAverageTime
 
-Calculate the average amount of time take per timing event in milliseconds (i.e. `time / count`.
+Calculate the average amount of time take per timing event in milliseconds (i.e. `time / samples`).
+
+`stat.getAverageTime()`
+
+### getAverageCount
+
+Calculate the average count per sampling (i.e. `count / samples`).
+
+`stat.getAverageCount()`
+
+### getSampleHz
+
+Calculate the average number of timing events per second (i.e. `samples / (time * 1000)` for the last completed set of samples.
+
+`stat.getHz()`
+
+
+### getSampleAverageTime
+
+Calculate the average amount of time take per timing event in milliseconds (i.e. `time / samples`) for the last completed set of samples.
+
+`stat.getAverageTime()`
+
+
+### getSampleAverageCount
+
+Calculate the average count per sampling (i.e. `count / samples`) for the last completed set of samples.
 
 `stat.getAverageTime()`
 
