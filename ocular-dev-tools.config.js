@@ -4,7 +4,7 @@ const config = {
     extensions: ['js']
   },
 
-  entries: {
+  entry: {
     test: 'test/modules/index.js',
     'test-browser': 'test/browser.js',
     bench: 'test/bench/index.js',
