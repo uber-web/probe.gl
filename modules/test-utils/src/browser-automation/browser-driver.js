@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* global process, setTimeout */
+/* global process, setTimeout, clearTimeout */
 import puppeteer from 'puppeteer';
 import ChildProcess from 'child_process';
 
@@ -143,16 +143,16 @@ export default class BrowserDriver {
           }
 
           const server = ChildProcess.spawn(config.command, args, config.options);
-          server.on('error', error => {
-            reject(error);
-          });
+
+          server.stderr.on('data', onError);
+          server.on('error', onError);
           server.on('close', () => () => {
             this.server = null;
           });
           this.server = server;
           this.port = port;
 
-          setTimeout(() => {
+          const successTimer = setTimeout(() => {
             const url = `http://localhost:${this.port}`;
 
             this.logger.log({
@@ -162,6 +162,11 @@ export default class BrowserDriver {
 
             resolve(url);
           }, config.wait);
+
+          function onError(error) {
+            clearTimeout(successTimer);
+            reject(error);
+          }
         })
     );
   }
