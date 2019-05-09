@@ -52,7 +52,7 @@ test('Stats#timing sampleSize', t => {
   const stat = stats.get('test').setSampleSize(3);
   stat.addTime(1);
   stat.addTime(1);
-  t.equals(stat.time, 0, 'don\'t update time before sampling done');
+  t.equals(stat.time, 0, "don't update time before sampling done");
   stat.addTime(1);
   t.equals(stat.time, 3, 'update time after sampling done');
   stat.addTime(1);
@@ -68,7 +68,7 @@ test('Stats#timing sampleSize', t => {
   const stat = stats.get('test').setSampleSize(3);
   stat.incrementCount();
   stat.incrementCount();
-  t.equals(stat.count, 0, 'don\'t update count before sampling done');
+  t.equals(stat.count, 0, "don't update count before sampling done");
   stat.incrementCount();
   t.equals(stat.count, 3, 'update count after sampling done');
   stat.incrementCount();
