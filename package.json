@@ -23,6 +23,7 @@
     "lint": "ocular-lint",
     "publish": "ocular-publish",
     "test": "ocular-test",
+    "test-fast": "ocular-test fast",
     "version": "ocular-build core"
   },
   "devDependencies": {
@@ -33,5 +34,8 @@
     "pre-commit": "^1.2.2",
     "reify": "^0.18.1",
     "url-loader": "^1.0.1"
-  }
+  },
+  "pre-commit": [
+    "test-fast"
+  ]
 }
