@@ -8,8 +8,8 @@
   <a href="https://npmjs.org/package/probe.gl">
     <img src="https://img.shields.io/npm/dm/probe.gl.svg?style=flat-square" alt="downloads" />
   </a>
-  <a href="http://starveller.sigsev.io/uber-web/probe.gl">
-    <img src="http://starveller.sigsev.io/api/repos/uber-web/probe.gl/badge" alt="stars" />
+  <a href='https://coveralls.io/github/uber-web/probe.gl?branch=master'>
+    <img src='https://img.shields.io/coveralls/uber-web/probe.gl.svg?style=flat-square' alt='Coverage Status' />
   </a>
 </p>
 
