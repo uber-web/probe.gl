@@ -2,8 +2,8 @@
   <a href="https://npmjs.org/package/probe.gl">
     <img src="https://img.shields.io/npm/v/probe.gl.svg?style=flat-square" alt="version" />
   </a>
-  <a href="https://travis-ci.org/uber/probe.gl">
-    <img src="https://img.shields.io/travis/uber-web/probe.gl/master.svg?style=flat-square" alt="build" />
+  <a href="https://travis-ci.com/uber-web/probe.gl">
+    <img src="https://api.travis-ci.com/uber-web/probe.gl.svg?branch=master" alt="build" />
   </a>
   <a href="https://npmjs.org/package/probe.gl">
     <img src="https://img.shields.io/npm/dm/probe.gl.svg?style=flat-square" alt="downloads" />
