@@ -60,9 +60,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
-            browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts),
-            // Capture any uncaught errors
-            onerror: reject
+            browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts)
           });
 
           // Puppeteer can only inject functions, not values, into the global scope
