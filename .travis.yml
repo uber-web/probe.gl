@@ -5,6 +5,8 @@ dist: trusty
 addons:
 node_js:
   - '10'
+install:
+  - yarn bootstrap
 before_script:
   - npm run build
 script:
