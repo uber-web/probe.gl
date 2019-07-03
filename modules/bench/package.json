@@ -2,7 +2,7 @@
   "name": "@probe.gl/bench",
   "description": "JavaScript benchmarking utility",
   "license": "MIT",
-  "version": "3.1.0-alpha.4",
+  "version": "3.1.0-alpha.5",
   "keywords": [
     "benchmarking"
   ],
@@ -19,6 +19,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "probe.gl": "3.1.0-alpha.4"
-  }
+    "probe.gl": "3.1.0-alpha.5"
+  },
+  "gitHead": "4fe07fa846b5f3a27d108e154aca63a46a746d99"
 }
