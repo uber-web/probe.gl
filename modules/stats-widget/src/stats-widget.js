@@ -90,7 +90,7 @@ export default class StatsWidget {
   }
 
   _createDOM(container) {
-    if (!global.document) {
+    if (!document) {
       return;
     }
     this._container = container;
@@ -117,7 +117,7 @@ export default class StatsWidget {
   }
 
   _createDOMItem(statName) {
-    if (!global.document) {
+    if (!document) {
       return;
     }
 
@@ -125,7 +125,6 @@ export default class StatsWidget {
       return;
     }
 
-    const document = global.document;
     this._items[statName] = document.createElement('div');
     for (const name in this._itemCSS) {
       this._items[statName].style[name] = this._itemCSS[name];
