@@ -90,6 +90,10 @@ export default class StatsWidget {
   }
 
   _createDOM(container) {
+    if (typeof document !== 'undefined' || !document) {
+      return;
+    }
+
     this._container = container;
 
     // the widget is contained in a <div>
@@ -114,6 +118,10 @@ export default class StatsWidget {
   }
 
   _createDOMItem(statName) {
+    if (typeof document !== 'undefined' || !document) {
+      return;
+    }
+
     if (this._items[statName]) {
       return;
     }
