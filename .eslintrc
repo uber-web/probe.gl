@@ -15,5 +15,9 @@
   "globals": {
     "performance": true,
     "process": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
   }
 }

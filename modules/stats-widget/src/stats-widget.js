@@ -90,6 +90,9 @@ export default class StatsWidget {
   }
 
   _createDOM(container) {
+    if (!global.document) {
+      return;
+    }
     this._container = container;
 
     // the widget is contained in a <div>
@@ -114,10 +117,15 @@ export default class StatsWidget {
   }
 
   _createDOMItem(statName) {
+    if (!global.document) {
+      return;
+    }
+
     if (this._items[statName]) {
       return;
     }
 
+    const document = global.document;
     this._items[statName] = document.createElement('div');
     for (const name in this._itemCSS) {
       this._items[statName].style[name] = this._itemCSS[name];
