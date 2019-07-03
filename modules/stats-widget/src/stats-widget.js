@@ -90,7 +90,7 @@ export default class StatsWidget {
   }
 
   _createDOM(container) {
-    if (typeof document !== 'undefined' || !document) {
+    if (typeof document === 'undefined' || !document) {
       return;
     }
 
@@ -118,7 +118,7 @@ export default class StatsWidget {
   }
 
   _createDOMItem(statName) {
-    if (typeof document !== 'undefined' || !document) {
+    if (typeof document === 'undefined' || !document) {
       return;
     }
 
