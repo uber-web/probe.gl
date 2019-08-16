@@ -138,3 +138,69 @@ Returns: a `Promise` that resolves to an object with the following fields:
 * `matchPercentage` (String) - `match` formatted in percentage form.
 * `diffImage` (Uint8Array) - image data that highlight the mismatched pixels. Only if `createDiffImage: true`.
 * `error` (String) - error message if any.
+
+
+### browserTestDriver_emulateInput(event: Object)
+
+```js
+window.browserTestDriver_emulateInput({
+  type: 'keypress',
+  key: 's',
+  ctrlKey: true
+}).then(result => {
+  // ctrl + S is pressed! do something
+});
+```
+
+Dispatch an emulated user input to the page. The following event types are supported:
+
+#### keypress
+
+Press a key on the keyboard.
+
+- `type: 'keypress'`
+- `key` (String) - see https://github.com/GoogleChrome/puppeteer/blob/master/lib/USKeyboardLayout.js
+- `delay` (Number) - the time between keydown and keyup. Default `0`.
+- `shiftKey` (Boolean) - whether to press the key with the shift key down. Default `false`.
+- `ctrlKey` (Boolean) - whether to press the key with the control key down. Default `false`.
+- `metaKey` (Boolean) - whether to press the key with the meta key down. Default `false`.
+
+
+#### click
+
+Click the mouse at a given screen coordinate.
+
+- `type: 'click'`
+- `x` (Number) - the screen x of the click.
+- `y` (Number) - the screen y of the click.
+- `button` (String) - `'left'`, `'right'` or `'middle'`.
+- `delay` (Number) - the time between mousedown and mouseup. Default `0`.
+- `shiftKey` (Boolean) - whether to click with the shift key down. Default `false`.
+- `ctrlKey` (Boolean) - whether to click with the control key down. Default `false`.
+- `metaKey` (Boolean) - whether to click with the meta key down. Default `false`.
+
+
+#### mousemove
+
+Move the mouse to a given screen coordinate.
+
+- `type: 'mousemove'`
+- `x` (Number) - the screen x to move the pointer to.
+- `y` (Number) - the screen y to move the pointer to.
+- `steps` (Number) - how many intermediate mousemove events to generate, default `1`.
+
+
+#### drag
+
+Drag the mouse from a given screen coordinate to another.
+
+- `type: 'drag'`
+- `startX` (Number) - the screen x to drag from.
+- `startY` (Number) - the screen y to drag from.
+- `endX` (Number) - the screen x to drag to.
+- `endY` (Number) - the screen y to drag to.
+- `button` (String) - `'left'`, `'right'` or `'middle'`.
+- `steps` (Number) - how many intermediate mousemove events to generate, default `1`.
+- `shiftKey` (Boolean) - whether to drag with the shift key down. Default `false`.
+- `ctrlKey` (Boolean) - whether to drag with the control key down. Default `false`.
+- `metaKey` (Boolean) - whether to drag with the meta key down. Default `false`.

@@ -21,6 +21,7 @@
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from 'probe.gl';
 import diffImages from '../utils/diff-images';
+import * as eventDispatchers from '../utils/puppeteer-events';
 import fs from 'fs';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
@@ -60,6 +61,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
+            browserTestDriver_emulateInput: event => this._emulateInput(event),
             browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts)
           });
 
@@ -163,6 +165,13 @@ export default class BrowserTestDriver extends BrowserDriver {
     if (this.headless) {
       this.exit(1);
     }
+  }
+
+  _emulateInput(event) {
+    if (eventDispatchers[event.type]) {
+      return eventDispatchers[event.type](this.page, event);
+    }
+    throw new Error(`Unknown event: ${event.type}`);
   }
 
   _captureAndDiff(opts) {
