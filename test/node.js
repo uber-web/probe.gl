@@ -19,4 +19,14 @@
 // THE SOFTWARE.
 require('reify');
 
+// Polyfill with JSDOM
+const {JSDOM} = require('jsdom');
+const dom = new JSDOM(`<!DOCTYPE html>`);
+// These globals are required by @jupyter-widgets/base
+/* global global */
+global.window = dom.window;
+global.document = dom.window.document;
+global.Element = dom.window.Element;
+global.__JSDOM__ = true;
+
 require('./test-index');

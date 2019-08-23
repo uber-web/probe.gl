@@ -16,6 +16,9 @@
   "workspaces": [
     "modules/*"
   ],
+  "browser": {
+    "jsdom": false
+  },
   "scripts": {
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
     "clean": "ocular-clean",
@@ -37,6 +40,7 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.10",
     "ocular-dev-tools": "0.0.27",
+    "jsdom": "^15.1.1",
     "pre-commit": "^1.2.2",
     "reify": "^0.18.1",
     "url-loader": "^1.0.1"

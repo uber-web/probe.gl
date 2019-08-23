@@ -21,11 +21,9 @@ const DEFAULT_CSS = {
   }
 };
 
-const KB = 1024;
-const MB = 1024 * KB;
-const GB = 1024 * MB;
+import {formatMemory, formatTime} from './format-utils';
 
-const DEFAULT_FORMATTERS = {
+export const DEFAULT_FORMATTERS = {
   count: stat => `${stat.name}: ${stat.count}`,
   averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
   totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
@@ -36,7 +34,7 @@ const DEFAULT_FORMATTERS = {
 export default class StatsWidget {
   constructor(stats, options = {}) {
     this.stats = stats;
-    this.title = options.title || null;
+    this.title = options.title;
 
     this._framesPerUpdate = Math.round(Math.max(options.framesPerUpdate || 1, 1));
     this._formatters = DEFAULT_FORMATTERS;
@@ -180,54 +178,4 @@ export default class StatsWidget {
     const formatter = this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(stat.name)).split('\n');
   }
-}
-
-// t in milliseconds
-function formatTime(t) {
-  let value;
-  let unit;
-  let precision;
-
-  if (t < 1) {
-    value = t * 1000;
-    unit = '\u03BCs';
-    precision = 0;
-  } else if (t < 1000) {
-    value = t;
-    unit = 'ms';
-    precision = 2;
-  } else {
-    value = t / 1000;
-    unit = 's';
-    precision = 2;
-  }
-
-  return `${value.toFixed(precision)}${unit}`;
-}
-
-// b in bytes
-function formatMemory(b) {
-  let value;
-  let unit;
-  let precision;
-
-  if (b < KB) {
-    value = b;
-    unit = ' bytes';
-    precision = 0;
-  } else if (b < MB) {
-    value = b / KB;
-    unit = 'kB';
-    precision = 2;
-  } else if (b < GB) {
-    value = b / MB;
-    unit = 'MB';
-    precision = 2;
-  } else {
-    value = b / GB;
-    unit = 'GB';
-    precision = 2;
-  }
-
-  return `${value.toFixed(precision)}${unit}`;
 }

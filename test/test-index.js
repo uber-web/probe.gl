@@ -21,3 +21,4 @@
 import './modules/bench';
 import './modules/core';
 import './modules/test-utils';
+import './modules/stats-widget';
