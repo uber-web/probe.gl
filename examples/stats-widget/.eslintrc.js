@@ -10,9 +10,13 @@ module.exports = {
       'import/no-extraneous-dependencies': 0
     }
   },
+  "settings": {
+    "import/resolver": "webpack"
+  },
   rules: {
     'guard-for-in': 0,
     'no-inline-comments': 0,
+    'import/no-unresolved': 0,
     camelcase: 0,
     'import/no-extraneous-dependencies': ['error', {devDependencies: false, peerDependencies: true}]
   },
