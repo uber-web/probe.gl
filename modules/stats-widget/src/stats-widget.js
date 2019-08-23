@@ -101,7 +101,7 @@ export default class StatsWidget {
         let formatter = options.formatters[name];
 
         if (typeof formatter === 'string') {
-          formatter = DEFAULT_FORMATTERS[formatter];
+          formatter = this._formatters[formatter];
         }
 
         this._formatters[name] = formatter;
@@ -178,7 +178,8 @@ export default class StatsWidget {
   }
 
   _getLines(stat) {
-    const formatter = this._formatters[stat.type || stat.name] || DEFAULT_FORMATTERS.count;
+    const formatter =
+      this._formatters[stat.name] || this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(stat.name)).split('\n');
   }
 }
