@@ -69,7 +69,8 @@ export default class StatsWidget {
   }
 
   update() {
-    if (!this.stats.size) {
+    // compatible with the old API
+    if (!this.stats.size || Object.keys(this.stats).length === 0) {
       return;
     }
 
