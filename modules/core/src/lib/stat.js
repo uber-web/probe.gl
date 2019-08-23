@@ -1,8 +1,17 @@
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
+export const STAT_TYPES = {
+  count: 'count',
+  averageTime: 'averageTime',
+  totalTime: 'totalTime',
+  fps: 'fps',
+  memory: 'memory'
+};
+
 export default class Stat {
-  constructor(name, samples) {
+  constructor(name, type) {
     this.name = name;
+    this.type = type;
     this.sampleSize = 1;
     this.reset();
   }

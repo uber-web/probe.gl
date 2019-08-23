@@ -1,4 +1,4 @@
-import Stat from './stat';
+import Stat, {STAT_TYPES} from './stat';
 
 export default class Stats {
   constructor({id}) {
@@ -8,9 +8,13 @@ export default class Stats {
   }
 
   // Acquire a stat. Create if it doesn't exist.
-  get(name) {
-    this.stats[name] = this.stats[name] || new Stat(name);
+  get(name, type = STAT_TYPES.count) {
+    this.stats[name] = this.stats[name] || new Stat(name, type);
     return this.stats[name];
+  }
+
+  size() {
+    return Object.keys(this.stats).length;
   }
 
   // Reset all stats

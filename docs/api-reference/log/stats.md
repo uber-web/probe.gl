@@ -27,9 +27,12 @@ executionTime.timeEnd();
 
 Retrieve a stat tracker. Create it if it doesn't already exist.
 
-`stats.get(name)`
+`stats.get(name, type)`
 
 * `name` (`String`, required) - the name of the stat tracker.
+* `type` (`String`, optional) - the type of the stat tracker. Default is `count`.
+
+Supported types are described in [Stat](/docs/api-reference/log/stat.md)
 
 Returns the `Stat` object identified by `name`.
 
