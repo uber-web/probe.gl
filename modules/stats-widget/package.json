@@ -2,7 +2,7 @@
   "name": "@probe.gl/stats-widget",
   "description": "DOM widgets for testing and profiling",
   "license": "MIT",
-  "version": "3.1.0-alpha.8",
+  "version": "3.1.0-alpha.9",
   "keywords": [
     "javascript",
     "profiling",
