@@ -70,7 +70,9 @@ export default class StatsWidget {
 
   update() {
     // compatible with the old API
-    if (!this.stats.size || Object.keys(this.stats).length === 0) {
+    // TODO should call stats.size
+    const stats = this.stats && this.stats.stats;
+    if (!stats || Object.keys(stats).length === 0) {
       return;
     }
 
@@ -176,7 +178,7 @@ export default class StatsWidget {
   }
 
   _getLines(stat) {
-    const formatter = this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
+    const formatter = this._formatters[stat.type || stat.name] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(stat.name)).split('\n');
   }
 }
