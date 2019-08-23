@@ -5,8 +5,7 @@
 const resolve = require('path').resolve;
 
 const BABEL_CONFIG = {
-  presets: ['@babel/env', '@babel/react'],
-  plugins: ['@babel/proposal-class-properties']
+  presets: ['@babel/env', '@babel/react']
 };
 
 const config = {

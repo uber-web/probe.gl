@@ -18,12 +18,12 @@ class App extends Component {
       container: this._container
     });
 
-    this.setState({intervalId: setInterval(this._update, 300)});
+    this._intervalId = setInterval(this._update, 300);
   }
 
   componentWillUnmount() {
     // use intervalId from the state to clear the interval
-    clearInterval(this.state.intervalId);
+    clearInterval(this._intervalId);
   }
 
   _initialize() {
@@ -49,7 +49,7 @@ class App extends Component {
     }
 
     if (stat.count >= 10) {
-      clearInterval(this._stats.reset());
+      this._stats.reset();
     }
 
     this._updateStats();

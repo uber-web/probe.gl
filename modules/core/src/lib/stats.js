@@ -1,4 +1,4 @@
-import Stat, {STAT_TYPES} from './stat';
+import Stat from './stat';
 
 export default class Stats {
   constructor({id}) {
@@ -8,7 +8,7 @@ export default class Stats {
   }
 
   // Acquire a stat. Create if it doesn't exist.
-  get(name, type = STAT_TYPES.count) {
+  get(name, type = 'count') {
     this.stats[name] = this.stats[name] || new Stat(name, type);
     return this.stats[name];
   }

@@ -2,8 +2,6 @@
 // widget styling constants.
 /* global document */
 
-import {STAT_TYPES} from 'probe.gl';
-
 const DEFAULT_CSS = {
   css: {
     position: 'fixed',
@@ -28,29 +26,29 @@ const MB = 1024 * KB;
 const GB = 1024 * MB;
 
 const DEFAULT_FORMATTERS = {
-  [STAT_TYPES.count]: stat => `${stat.name}: ${stat.count}`,
-  [STAT_TYPES.averageTime]: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
-  [STAT_TYPES.totalTime]: stat => `${stat.name}: ${formatTime(stat.time)}`,
-  [STAT_TYPES.fps]: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
-  [STAT_TYPES.memory]: stat => `${stat.name}: ${formatMemory(stat.count)}`
+  count: stat => `${stat.name}: ${stat.count}`,
+  averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
+  fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
+  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
 export default class StatsWidget {
-  constructor(props = {}) {
-    this.stats = props.stats;
-    this.title = props.title || null;
+  constructor(stats, options = {}) {
+    this.stats = stats;
+    this.title = options.title || null;
 
-    this._framesPerUpdate = Math.round(Math.max(props.framesPerUpdate || 1, 1));
+    this._framesPerUpdate = Math.round(Math.max(options.framesPerUpdate || 1, 1));
     this._formatters = DEFAULT_FORMATTERS;
     this._resetOnUpdate = {};
 
     this._counter = 0;
 
-    this._initializeFormatters(props);
-    this._initializeUpdateConfigs(props);
+    this._initializeFormatters(options);
+    this._initializeUpdateConfigs(options);
 
     // UI
-    this._css = Object.assign({}, DEFAULT_CSS.css, props.css);
+    this._css = Object.assign({}, DEFAULT_CSS.css, options.css);
     this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
     this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
 
@@ -61,12 +59,15 @@ export default class StatsWidget {
     this._header = null;
     this._items = {};
 
-    this._createDOM(props.container);
+    this._createDOM(options.container);
+    this._createDOMHeader();
+    this._createDOMStats();
   }
 
   setStats(stats) {
     this.stats = stats;
-    this._createDOM(this._container);
+    this._createDOMStats(this._container);
+    this._setHeaderContent(stats.id);
   }
 
   update() {
@@ -93,10 +94,10 @@ export default class StatsWidget {
     });
   }
 
-  _initializeFormatters(props) {
-    if (props.formatters) {
-      for (const name in props.formatters) {
-        let formatter = props.formatters[name];
+  _initializeFormatters(options) {
+    if (options.formatters) {
+      for (const name in options.formatters) {
+        let formatter = options.formatters[name];
 
         if (typeof formatter === 'string') {
           formatter = DEFAULT_FORMATTERS[formatter];
@@ -107,20 +108,16 @@ export default class StatsWidget {
     }
   }
 
-  _initializeUpdateConfigs(props) {
-    if (props.resetOnUpdate) {
-      for (const name in props.resetOnUpdate) {
-        this._resetOnUpdate[name] = props.resetOnUpdate[name];
+  _initializeUpdateConfigs(options) {
+    if (options.resetOnUpdate) {
+      for (const name in options.resetOnUpdate) {
+        this._resetOnUpdate[name] = options.resetOnUpdate[name];
       }
     }
   }
 
   _createDOM(container) {
     if (typeof document === 'undefined' || !document) {
-      return;
-    }
-
-    if (!this.stats || !this.stats.size) {
       return;
     }
 
@@ -134,9 +131,6 @@ export default class StatsWidget {
       }
       document.body.appendChild(this._container);
     }
-
-    this._createDOMHeader();
-    this._createDOMStats();
   }
 
   _createDOMHeader() {
@@ -148,13 +142,22 @@ export default class StatsWidget {
       }
       this._container.appendChild(this._header);
     }
-    this._header.innerText = this.title || (this.stats && this.stats.id);
+
+    this._setHeaderContent();
+  }
+
+  _setHeaderContent(title) {
+    if (this._header) {
+      this._header.innerText = title || this.title || (this.stats && this.stats.id) || '';
+    }
   }
 
   _createDOMStats() {
-    this.stats.forEach(stat => {
-      this._createDOMItem(stat.name);
-    });
+    if (this.stats && this.stats.size) {
+      this.stats.forEach(stat => {
+        this._createDOMItem(stat.name);
+      });
+    }
   }
 
   _createDOMItem(statName) {
@@ -174,7 +177,7 @@ export default class StatsWidget {
   }
 
   _getLines(stat) {
-    const formatter = this._formatters[stat.type] || DEFAULT_FORMATTERS[STAT_TYPES.COUNT];
+    const formatter = this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(stat.name)).split('\n');
   }
 }

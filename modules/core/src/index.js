@@ -13,7 +13,6 @@ export {default as assert} from './utils/assert';
 
 // STATS (PERFORMANCE PROFILING)
 export {default as Stats} from './lib/stats';
-export {STAT_TYPES} from './lib/stat';
 
 // LOGGING
 export {default as Log} from './lib/log';
