@@ -14,7 +14,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this._statsWidget = new StatsWidget({
+    this._statsWidget = new StatsWidget(null, {
       container: this._container
     });
 
@@ -57,7 +57,7 @@ class App extends Component {
   }
 
   render() {
-    return <div ref={_ => (this._container = _)} />;
+    return <div id="stats-demo" ref={_ => (this._container = _)} />;
   }
 }
 
