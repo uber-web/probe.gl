@@ -81,10 +81,17 @@ Timing of the last completed set of samples.
 
 ### constructor
 
-`new Stat(name)`
+`new Stat(name, type)`
 
 * `name` (`String`) - the name of the stat.
+* `type` (`String`) - the type of the stat.
 
+Supported options:
+- `count` 
+- `averageTime`
+- `totalTime`
+- `fps`
+- `memory`
 
 ### incrementCount
 

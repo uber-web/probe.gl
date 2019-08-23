@@ -5,7 +5,7 @@ const config = {
   },
 
   entry: {
-    test: 'test/index.js',
+    test: 'test/node.js',
     'test-browser': 'test/browser.js',
     bench: 'test/bench/index.js',
     'bench-browser': 'test/bench/browser.js',

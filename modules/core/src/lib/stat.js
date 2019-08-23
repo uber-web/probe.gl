@@ -1,8 +1,9 @@
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 export default class Stat {
-  constructor(name, samples) {
+  constructor(name, type) {
     this.name = name;
+    this.type = type;
     this.sampleSize = 1;
     this.reset();
   }

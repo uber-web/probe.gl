@@ -21,7 +21,9 @@ const DEFAULT_CSS = {
   }
 };
 
-const DEFAULT_FORMATTERS = {
+import {formatMemory, formatTime} from './format-utils';
+
+export const DEFAULT_FORMATTERS = {
   count: stat => `${stat.name}: ${stat.count}`,
   averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
   totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
@@ -29,15 +31,22 @@ const DEFAULT_FORMATTERS = {
   memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
-const KB = 1024;
-const MB = 1024 * KB;
-const GB = 1024 * MB;
-
 export default class StatsWidget {
-  constructor(stats, opts = {}) {
-    this.title = opts.title || null;
+  constructor(stats, options = {}) {
     this.stats = stats;
-    this._css = Object.assign({}, DEFAULT_CSS.css, opts.css);
+    this.title = options.title;
+
+    this._framesPerUpdate = Math.round(Math.max(options.framesPerUpdate || 1, 1));
+    this._formatters = DEFAULT_FORMATTERS;
+    this._resetOnUpdate = {};
+
+    this._counter = 0;
+
+    this._initializeFormatters(options);
+    this._initializeUpdateConfigs(options);
+
+    // UI
+    this._css = Object.assign({}, DEFAULT_CSS.css, options.css);
     this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
     this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
 
@@ -47,46 +56,62 @@ export default class StatsWidget {
     this._container = null;
     this._header = null;
     this._items = {};
-    this._counter = 0;
-    this._framesPerUpdate = Math.round(Math.max(opts.framesPerUpdate || 1, 1));
-    this._formatters = {};
-    this._resetOnUpdate = {};
 
-    if (opts.formatters) {
-      for (const name in opts.formatters) {
-        let fm = opts.formatters[name];
+    this._createDOM(options.container);
+    this._createDOMHeader();
+    this._createDOMStats();
+  }
 
-        if (typeof fm === 'string') {
-          fm = DEFAULT_FORMATTERS[fm];
-        }
-
-        this._formatters[name] = fm;
-      }
-    }
-
-    if (opts.resetOnUpdate) {
-      for (const name in opts.resetOnUpdate) {
-        this._resetOnUpdate[name] = opts.resetOnUpdate[name];
-      }
-    }
-
-    this._createDOM(opts.container);
+  setStats(stats) {
+    this.stats = stats;
+    this._createDOMStats(this._container);
+    this._setHeaderContent(stats.id);
   }
 
   update() {
+    if (!this.stats.size) {
+      return;
+    }
+
     if (this._counter++ % this._framesPerUpdate !== 0) {
       return;
     }
 
+    this._update();
+  }
+
+  _update() {
     // make sure that we clear the old text before drawing new text.
     this.stats.forEach(stat => {
       this._createDOMItem(stat.name);
-      this._items[stat.name].innerHTML = this._getLines(stat.name).join('<BR>');
+      this._items[stat.name].innerHTML = this._getLines(stat).join('<BR>');
 
       if (this._resetOnUpdate[stat.name]) {
         stat.reset();
       }
     });
+  }
+
+  _initializeFormatters(options) {
+    if (options.formatters) {
+      for (const name in options.formatters) {
+        let formatter = options.formatters[name];
+
+        if (typeof formatter === 'string') {
+          formatter = DEFAULT_FORMATTERS[formatter];
+        }
+
+        this._formatters[name] = formatter;
+      }
+    }
+  }
+
+  _initializeUpdateConfigs(options) {
+    if (options.resetOnUpdate) {
+      for (const name in options.resetOnUpdate) {
+        this._resetOnUpdate[name] = options.resetOnUpdate[name];
+      }
+    }
   }
 
   _createDOM(container) {
@@ -104,21 +129,37 @@ export default class StatsWidget {
       }
       document.body.appendChild(this._container);
     }
+  }
 
-    this._header = document.createElement('div');
-    this._header.innerText = this.title || this.stats.id;
-    for (const name in this._headerCSS) {
-      this._header.style[name] = this._headerCSS[name];
+  _createDOMHeader() {
+    // header
+    if (!this._header) {
+      this._header = document.createElement('div');
+      for (const name in this._headerCSS) {
+        this._header.style[name] = this._headerCSS[name];
+      }
+      this._container.appendChild(this._header);
     }
-    this._container.appendChild(this._header);
 
-    this.stats.forEach(stat => {
-      this._createDOMItem(stat.name);
-    });
+    this._setHeaderContent();
+  }
+
+  _setHeaderContent(title) {
+    if (this._header) {
+      this._header.innerText = title || this.title || (this.stats && this.stats.id) || '';
+    }
+  }
+
+  _createDOMStats() {
+    if (this.stats && this.stats.size) {
+      this.stats.forEach(stat => {
+        this._createDOMItem(stat.name);
+      });
+    }
   }
 
   _createDOMItem(statName) {
-    if (typeof document === 'undefined' || !document) {
+    if (!this._container) {
       return;
     }
 
@@ -133,58 +174,8 @@ export default class StatsWidget {
     this._container.appendChild(this._items[statName]);
   }
 
-  _getLines(name) {
-    const formatter = this._formatters[name] || DEFAULT_FORMATTERS.count;
-    return formatter(this.stats.get(name)).split('\n');
+  _getLines(stat) {
+    const formatter = this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
+    return formatter(this.stats.get(stat.name)).split('\n');
   }
-}
-
-// t in milliseconds
-function formatTime(t) {
-  let value;
-  let unit;
-  let precision;
-
-  if (t < 1) {
-    value = t * 1000;
-    unit = '\u03BCs';
-    precision = 0;
-  } else if (t < 1000) {
-    value = t;
-    unit = 'ms';
-    precision = 2;
-  } else {
-    value = t / 1000;
-    unit = 's';
-    precision = 2;
-  }
-
-  return `${value.toFixed(precision)}${unit}`;
-}
-
-// b in bytes
-function formatMemory(b) {
-  let value;
-  let unit;
-  let precision;
-
-  if (b < KB) {
-    value = b;
-    unit = ' bytes';
-    precision = 0;
-  } else if (b < MB) {
-    value = b / KB;
-    unit = 'kB';
-    precision = 2;
-  } else if (b < GB) {
-    value = b / MB;
-    unit = 'MB';
-    precision = 2;
-  } else {
-    value = b / GB;
-    unit = 'GB';
-    precision = 2;
-  }
-
-  return `${value.toFixed(precision)}${unit}`;
 }
