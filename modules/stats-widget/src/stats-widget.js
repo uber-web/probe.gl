@@ -101,7 +101,7 @@ export default class StatsWidget {
         let formatter = options.formatters[name];
 
         if (typeof formatter === 'string') {
-          formatter = this._formatters[formatter];
+          formatter = DEFAULT_FORMATTERS[formatter];
         }
 
         this._formatters[name] = formatter;
