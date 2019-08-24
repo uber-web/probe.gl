@@ -6,6 +6,9 @@ A collection of statistic for tracking time or magnitude metrics.
 
 Just create Stat objects (see `Stat` documentation) for various metrics.
 ```js
+
+// setup stats 
+// option 1: 
 const stats = new Stats({id: 'my-stats'});
 const memoryUsage = stats.get('Mem');
 const executionTime = stats.get('Time');
@@ -18,9 +21,10 @@ executionTime.timeEnd();
 
 ### constructor
 
-`new Stats({id})`
+`new Stats({id, stats})`
 
 * `id` (`String`) - the id of the `Stats` object.
+* `stats` (`String`) - the list of stats. Each element in the stats could be either`Stat` object or `{id, type}` (type is optional, default is `count`);
 
 
 ### get

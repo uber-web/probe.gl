@@ -1,5 +1,5 @@
 /* eslint-disable max-statements */
-import {Stats} from 'probe.gl';
+import {Stats, Stat} from 'probe.gl';
 import test from 'tape-catch';
 
 test('Stats#import', t => {
@@ -76,5 +76,38 @@ test('Stats#timing sampleSize', t => {
   stat.incrementCount();
   t.equals(stat.lastSampleCount, 3, 'lastSampleCount only tracks last sampling');
   t.equals(stat.count, 6, 'count tracks entire history');
+  t.end();
+});
+
+test('Stats#constructore with stats', t => {
+  const statsContent = new Stats({
+    id: 'test',
+    stats: [
+      new Stat('stat-1'),
+      {
+        name: 'stat-2',
+        type: 'memory'
+      },
+      {
+        id: 'stat-3'
+      },
+      {
+        name: 'stat-2',
+        type: 'fps'
+      }
+    ]
+  });
+
+  const stats = new Stats({id: 'test', stats: statsContent});
+
+  t.equals(stats.size, 2, 'Should dedupe and ignore stat without name.');
+
+  let stat = stats.get('stat-1');
+  t.equals(stat.name, 'stat-1', 'Should correctly set stat-1 name.');
+
+  stat = stats.get('stat-2');
+  t.equals(stat.name, 'stat-2', 'Should correctly set stat-2 name.');
+  t.equals(stat.type, 'memory', 'Should correctly set stat-2 type.');
+
   t.end();
 });
