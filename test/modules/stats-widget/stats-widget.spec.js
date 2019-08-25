@@ -60,11 +60,13 @@ test('StatsWidget#setStats', t => {
   const stats = getStatsObject();
 
   t.equals(Object.keys(statsWidget._items).length, 0, 'Should have no items when no stats.');
+
   statsWidget.setStats(stats);
+
   t.equals(Object.keys(statsWidget._items).length, 3, 'Should have 3 items.');
   t.equals(statsWidget._container.childNodes.length, 4, 'Should have 4 child nodes.');
+  t.equals(statsWidget._counter, 1, 'Should call update() and increase _counter.');
 
-  stats.reset();
   t.end();
 });
 
@@ -112,11 +114,39 @@ test('StatsWidget#formatters', t => {
   statsWidget.setStats(stats);
 
   stats.get('Count').addCount(1000);
-  stats.get('Memory').addCount(1500);
+  stats.get('GPU Memory').addCount(1500);
   statsWidget.update();
 
   t.equals(statsWidget._items.Count.innerHTML, 'Count: 1.0k', 'Should use customized formatter.');
-  t.equals(statsWidget._items.Memory.innerHTML, 'Memory: 1500', 'Should use customized formatter.');
+  t.equals(
+    statsWidget._items['GPU Memory'].innerHTML,
+    'GPU Memory: 1500',
+    'Should use customized formatter.'
+  );
+
+  statsWidget.setStats(new Stats({id: 'test-stats-2'}));
+  t.equals(statsWidget._header.innerText, 'test-stats-2', "Should use the new stats' header.");
+
+  t.end();
+});
+
+test('StatsWidget#resetOnUpdate', t => {
+  const container = _global.document.createElement('div');
+  container.id = 'test-stats-widget-container';
+  const statsWidget = new StatsWidget(null, {
+    container,
+    resetOnUpdate: {Count: true}
+  });
+  const stats = getStatsObject();
+
+  statsWidget.setStats(stats);
+
+  stats.get('Count').addCount(1000);
+  stats.get('GPU Memory').addCount(1500);
+  statsWidget.update();
+
+  t.equals(stats.get('Count').count, 0, 'Should reset count.');
+  t.equals(stats.get('GPU Memory').count, 1500, 'Should not reset memory.');
 
   t.end();
 });
