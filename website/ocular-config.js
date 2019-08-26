@@ -1,30 +1,38 @@
+const resolve = require('path').resolve;
+
 const DOCS = require('../docs/table-of-contents.json');
+
+const DEPENDENCIES = require('./package.json').dependencies;
+// eslint-disable-next-line import/no-extraneous-dependencies
+const ALIASES = require('ocular-dev-tools/config/ocular.config')({
+  root: resolve(__dirname, '..')
+}).aliases;
+
+// When duplicating example dependencies in website, autogenerate
+// aliases to ensure the website version is picked up
+// NOTE: module dependencies are automatically injected
+// TODO - should this be automatically done by ocular-gatsby?
+const dependencyAliases = {};
+for (const dependency in DEPENDENCIES) {
+  dependencyAliases[dependency] = `${__dirname}/node_modules/${dependency}`;
+}
 
 module.exports = {
   logLevel: 3,
+
+  PATH_PREFIX: '/probe.gl',
 
   DOC_FOLDER: '../docs/',
   ROOT_FOLDER: '..',
   DIR_NAME: __dirname,
 
-  EXAMPLES: [],
   DOCS,
-
-  PROJECTS: [
-    /*
-    'deck.gl': 'https://uber.github.io/deck.gl',
-    'luma.gl': 'https://uber.github.io/luma.gl',
-    'react-map-gl': 'https://uber.github.io/react-map-gl',
-    'vis.gl': 'https://uber-web.github.io/vis.gl'
-    */
-  ], // Other linked projects
 
   PROJECT_TYPE: 'github',
   PROJECT_NAME: 'probe.gl',
   PROJECT_ORG: 'uber-web',
   PROJECT_URL: 'https://github.com/uber-web/probe.gl',
   PROJECT_DESC: 'JavaScript Console Logging, Instrumentation, Benchmarking and Test Utilities',
-  WEBSITE_PATH: '/website/',
 
   FOOTER_LOGO: '',
 
@@ -55,16 +63,38 @@ module.exports = {
     }
   ],
 
+  PROJECTS: [
+    /*
+    'deck.gl': 'https://uber.github.io/deck.gl',
+    'luma.gl': 'https://uber.github.io/luma.gl',
+    'react-map-gl': 'https://uber.github.io/react-map-gl',
+    'vis.gl': 'https://uber-web.github.io/vis.gl'
+    */
+  ], 
+  
+  EXAMPLES: [
+    // TODO: Currently crashes when imported
+    // {
+    //  title: 'StatsWidget',
+    //  // image: 'images/stats-widget.png',
+    //  componentUrl: resolve(__dirname, '../examples/stats-widget/app.js'),
+    //  path: 'examples/stats-widget'
+    // }
+  ],
+
   ADDITIONAL_LINKS: [],
 
   GA_TRACKING: null,
 
-  // For showing star counts and contributors.
-  // Should be like btoa('YourUsername:YourKey') and should be readonly.
-  GITHUB_KEY: null,
 
-  // TODO - from gatsby starter, remove once ocular is updated
-  siteUrl: "https://probe.gl", // Domain of your website without pathPrefix.
-  pathPrefix: "/probe.gl/", // Prefixes all links. For cases when deployed to example.github.io/gatsby-advanced-starter/.
-  siteRss: "/rss.xml" // Path to the RSS file.
+  // Ocular adds this to gatsby's webpack config
+  webpack: {
+    resolve: {
+      alias: Object.assign({}, ALIASES, dependencyAliases, {
+        // Do not build big dependencies from source
+        // '@loaders.gl/las': '/Users/ib/Documents/loaders.gl/modules/las',
+        // '@loaders.gl/draco': '/Users/ib/Documents/loaders.gl/modules/draco',
+      })
+    }
+  }
 };
