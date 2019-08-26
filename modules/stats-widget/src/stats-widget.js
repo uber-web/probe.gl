@@ -1,6 +1,8 @@
 // Built on https://github.com/Erkaman/regl-stats-widget (MIT license)
 // widget styling constants.
 /* global document */
+import {formatMemory, formatTime} from './format-utils';
+import {Stats} from 'probe.gl';
 
 const DEFAULT_CSS = {
   css: {
@@ -20,8 +22,6 @@ const DEFAULT_CSS = {
     paddingLeft: '8px'
   }
 };
-
-import {formatMemory, formatTime} from './format-utils';
 
 export const DEFAULT_FORMATTERS = {
   count: stat => `${stat.name}: ${stat.count}`,
@@ -156,7 +156,7 @@ export default class StatsWidget {
   }
 
   _createDOMStats() {
-    if (this.stats && this.stats.size) {
+    if (this.stats instanceof Stats) {
       this.stats.forEach(stat => {
         this._createDOMItem(stat.name);
       });
