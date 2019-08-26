@@ -22,7 +22,7 @@ executionTime.timeEnd();
 `new Stats({id, stats})`
 
 * `id` (`String`) - the id of the `Stats` object.
-* `stats` (`String`) - the list of stats. Each element in the stats could be either`Stat` object or `{id, type}` (type is optional, default is `count`);
+* `stats` (`Stat[] || Object[]`) - the list of stats. Each element in the stats could be either`Stat` object or `{name, type}` (type is optional, default is `count`);
 
 
 ### get
