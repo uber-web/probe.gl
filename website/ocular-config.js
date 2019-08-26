@@ -73,7 +73,7 @@ module.exports = {
   ], 
   
   EXAMPLES: [
-    // TODO: Currently crashes when imported
+    // TODO: This app is currently more a test app than an example + crashes when imported
     // {
     //  title: 'StatsWidget',
     //  // image: 'images/stats-widget.png',
@@ -90,11 +90,7 @@ module.exports = {
   // Ocular adds this to gatsby's webpack config
   webpack: {
     resolve: {
-      alias: Object.assign({}, ALIASES, dependencyAliases, {
-        // Do not build big dependencies from source
-        // '@loaders.gl/las': '/Users/ib/Documents/loaders.gl/modules/las',
-        // '@loaders.gl/draco': '/Users/ib/Documents/loaders.gl/modules/draco',
-      })
+      alias: Object.assign({}, ALIASES, dependencyAliases)
     }
   }
 };
