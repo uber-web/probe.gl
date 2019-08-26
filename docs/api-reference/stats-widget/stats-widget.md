@@ -60,14 +60,14 @@ class App extends Component {
    style of nested elements:
     + `header` (`Object`) - css properties to apply to the header `div` of the widget.
     + `item` (`Object`) - css properties to apply to the individual item `div`s for each stat displayed in the widget.
-  - `formatters` (`Object`) - text formatters to use to display a stat. Keys are the stat's `id`. Value can either be
+  - `formatters` (`Object`) - text formatters to use to display a stat. Keys are the stat's `name`. Value can either be
    a function that takes a single `stat` object as argument, or one of the following strings:
     + `count`: Display as a simple count.
     + `averageTime`: Display average time.
     + `totalTime`: Display total time.
     + `fps`: Display Hz as a frame rate.
     + `memory`: Display count as a memory measurement.
-    `resetOnUpdate` (`Object`) - whether the a stat should be reset each time the widget is re-rendered. Keyed by the stat's `id`.
+    `resetOnUpdate` (`Object`) - whether the a stat should be reset each time the widget is re-rendered. Keyed by the stat's `name`.
 
 ### setStats
 
