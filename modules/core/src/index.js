@@ -1,4 +1,5 @@
 import './init';
+import {default as Log} from './lib/log';
 
 export {VERSION} from './utils/globals';
 
@@ -20,7 +21,6 @@ export {default as Log} from './lib/log';
 export {COLOR} from './utils/color';
 
 // DEFAULT EXPORT IS A LOG INSTANCE
-import {default as Log} from './lib/log';
 export default new Log({id: 'probe.gl'});
 
 // UTILITIES
