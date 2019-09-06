@@ -1,4 +1,4 @@
-# probe.gl
+# Introduction
 
 A collection of JavaScript front-end debugging tools
 

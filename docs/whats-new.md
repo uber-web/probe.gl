@@ -1,5 +1,19 @@
 # What's New
 
+## v3.1
+
+Release Date: TBD, Sep 2019 (Beta Release Available)
+
+### **probe.gl**
+
+- `Stats` - Stats objects can now be constructed with a type hint for each stat. This is used to select default formatters for the stats.
+- `StatsWidget` - Can now be created without a stats object, and the stats object can be replaced and unset.
+
+### **@probe.gl/test-utils**
+
+- Input event emulation API
+
+
 ## v3.0
 
 Release Date: Apr, 2019

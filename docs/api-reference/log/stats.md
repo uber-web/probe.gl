@@ -5,8 +5,8 @@ A collection of statistic for tracking time or magnitude metrics.
 ## Usage
 
 Just create Stat objects (see `Stat` documentation) for various metrics.
-```js
 
+```js
 const stats = new Stats({id: 'my-stats'});
 const memoryUsage = stats.get('Mem');
 const executionTime = stats.get('Time');
