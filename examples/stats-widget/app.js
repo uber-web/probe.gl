@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {StatsWidget} from '@probe.gl/stats-widget';
-import {Stats} from 'probe.gl';
+import {Stats} from '@probe.gl/stats';
 
 class App extends Component {
   constructor(props) {
