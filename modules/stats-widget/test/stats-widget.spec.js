@@ -1,6 +1,6 @@
 /* global global, window */
 import test from 'tape-catch';
-import {Stats} from 'probe.gl';
+import {Stats} from '@probe.gl/stats';
 import {StatsWidget} from '@probe.gl/stats-widget';
 
 const _global = typeof global === 'undefined' ? window : global;
