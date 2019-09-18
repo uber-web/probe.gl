@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import './modules/bench';
-import './modules/core';
-import './modules/test-utils';
-import './modules/stats-widget';
+import 'probe.gl/test';
+import '@probe.gl/bench/test';
+import '@probe.gl/test-utils/test';
+import '@probe.gl/stats-widget/test';

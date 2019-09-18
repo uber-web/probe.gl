@@ -36,5 +36,5 @@ enableDOMLogging({
 });
 
 require('./test-index');
-require('./modules/core/lib/raw-logging');
-require('./modules/stats-widget');
+require('probe.gl/test/lib/raw-logging');
+require('@probe.gl/stats-widget/test');
