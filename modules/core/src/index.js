@@ -29,4 +29,3 @@ export {default as getHiResTimestamp} from './utils/hi-res-timestamp';
 // DEPRECATED (Should be imported directly from @probe.gl/stats)
 // TODO - Uncomment as soon as new module is published...
 // export {Stats, Stat} from '@probe.gl/stats';
-
