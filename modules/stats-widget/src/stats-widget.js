@@ -2,7 +2,7 @@
 // widget styling constants.
 /* global document */
 import {formatMemory, formatTime} from './format-utils';
-import {Stats} from 'probe.gl';
+import {Stats} from '@probe.gl/stats';
 
 const DEFAULT_CSS = {
   css: {

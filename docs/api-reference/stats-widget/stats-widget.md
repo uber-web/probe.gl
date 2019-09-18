@@ -9,7 +9,7 @@ be associated with a `formatter` that indicates how it should be displayed.
 
 ```js
 import React, {Component} from 'react';
-import {Stats} from 'probe.gl';
+import {Stats} from '@probe.gl/stats';
 import StatsWidget from '@probe.gl/stats-widget';
 
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
     this._stats = new Stats({
       id: 'My Stats'
     });
-    
+
     this._statsWidget = new StatsWidget(this._stats, {
       container: this._containerRef
     });
@@ -34,7 +34,7 @@ class App extends Component {
     // create a stat with name and type
     const counter = this._stats.get('Counter', 'count');
     counter.incrementCount();
-    this._statsWidget.update();  
+    this._statsWidget.update();
   }
 
   render() {
