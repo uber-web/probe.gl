@@ -12,10 +12,6 @@ export {default as isElectron} from './env/is-electron';
 // ENVIRONMENT'S ASSERT IS 5-15KB, SO WE PROVIDE OUR OWN
 export {default as assert} from './utils/assert';
 
-// STATS (PERFORMANCE PROFILING)
-export {default as Stats} from './lib/stats';
-export {default as Stat} from './lib/stat';
-
 // LOGGING
 export {default as Log} from './lib/log';
 export {COLOR} from './utils/color';
@@ -29,3 +25,6 @@ export {leftPad, rightPad} from './utils/formatters';
 export {autobind} from './utils/autobind';
 export {default as LocalStorage} from './utils/local-storage';
 export {default as getHiResTimestamp} from './utils/hi-res-timestamp';
+
+// DEPRECATED (Should be imported directly from @probe.gl/stats)
+export {Stats, Stat} from '@probe.gl/stats';

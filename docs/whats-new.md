@@ -13,6 +13,10 @@ Release Date: TBD, Sep 2019 (Beta Release Available)
 
 - Input event emulation API
 
+### **@probe.gl/stats**
+
+- New module exporting only the `Stats` and `Stat` objects.
+
 
 ## v3.0
 
