@@ -41,25 +41,31 @@ test('Stats#reset()', t => {
   stat.addTime(1);
   t.equals(stat.count, 1, 'stat setup OK');
   t.equals(stat.time, 1, 'stat setup OK');
+  t.equals(stat.lastTiming, 1, 'stat setup OK');
   stats.reset();
   t.equals(stat.count, 0, 'stat reset OK');
   t.equals(stat.time, 0, 'stat reset OK');
+  t.equals(stat.lastTiming, 0, 'stat setup OK');
   t.end();
 });
 
 test('Stats#timing sampleSize', t => {
   const stats = new Stats({id: 'test'});
   const stat = stats.get('test').setSampleSize(3);
-  stat.addTime(1);
-  stat.addTime(1);
+  stat.addTime(0);
+  stat.addTime(2);
   t.equals(stat.time, 0, "don't update time before sampling done");
+  t.equals(stat.lastTiming, 2, 'always update lastTiming');
   stat.addTime(1);
   t.equals(stat.time, 3, 'update time after sampling done');
+  t.equals(stat.lastTiming, 1, 'always aupdate lastTiming');
   stat.addTime(1);
-  stat.addTime(1);
-  stat.addTime(1);
+  stat.addTime(0);
+  stat.addTime(2);
+
   t.equals(stat.lastSampleTime, 3, 'lastSampleTime only tracks last sampling');
   t.equals(stat.time, 6, 'time tracks entire history');
+  t.equals(stat.lastTiming, 2, 'always aupdate lastTiming');
   t.end();
 });
 
