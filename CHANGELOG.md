@@ -1,10 +1,82 @@
 CHANGELOG
 
-v3.0.0-alpha.8
+v3.1.1 - Sep 19, 2019
+
+- Fix stat object - update lastTiming (#102)
+
+v3.1.0 - Sep 13, 2019
+
+- bump version for examples
+
+v3.1.0-beta.3 - Sep 6, 2019
+
+v3.1.0-beta.2 - Sep 6, 2019
+
+v3.1.0-beta.1 - Sep 6, 2019
+
+- Bump mixin-deep from 1.3.1 to 1.3.2 (#96)
+- Update to latest ocular-gatsby (#95)
+
+v3.1.0-alpha.11
+
+- Make Stats class accept stats in constructor (#92)
+- Update widget when setStats (#93)
+
+v3.1.0-alpha.10 - Aug 24, 2019
+
+- Fix StatsWidget tracking compatible with old Stats class (#91)
+- Compatible with old Stats (#90)
+- Bump lodash.template from 4.4.0 to 4.5.0 (#81)
+- Bump lodash from 4.17.11 to 4.17.15 (#89)
+
+v3.1.0-alpha.9 Aug 23, 2019
+
+v3.1.0-alpha.8 Aug 23, 2019
+
+- refactor stats widget - simply the constructor API (#88)
+- expose input event API (#83)
+
+v3.1.0-alpha.7 - Jul 12, 2019
+
+- Fix the document checking (#80)
+-  Fix document crash in node (#79)
+
+v3.1.0-alpha.6 - Jul 11, 2019
+
+v3.1.0-alpha.5 - Jul 3, 2019
+ 
+v3.1.0-alpha.4 - Jul 3, 2019
+ 
+v3.1.0-alpha.3 - Jul 3, 2019
+
+- Fix the document checking (#80)
+- Fix document crash in node (#79)
+
+v3.1.0-alpha.2 - May 30, 2019
+
+- Bump ocular-dev-tools to publish LICENSE (#77)
+
+v3.1.0-alpha.1 - May 24, 2019
+
+- Upgrade ocular-dev-tools (#75)
+- fix crash on newer chromium versions (#74)
+- Improve BrowserDriver error handling (#71)
+- Sample window (#70)
+- Add gatsby website (#69)
+
+v3.0.1 - Apr 2, 2019
+
+- Bump ocular-dev-tools@0.0.19 (#66)
+
+v3.0.0-alpha.9 - Apr 1, 2019
+
+- Merge branch 'fix-dynamic-widget'
+
+v3.0.0-alpha.8 - Apr 1, 2019
 
 - Fix dynamic dom creation
 
-v3.0.0-alpha.7
+v3.0.0-alpha.7 - Mar 13, 2019
 
 - Simplified StatsWidget API
 - `Stats.getTable` method to format stats in a way suitable for `console.table`
@@ -44,7 +116,7 @@ v1.1.0-alpha.1 - Aug 1, 2018
 - `asciify-image` again a dependency (since it has cleaned up their dependencies).
 - "browser" field in package.json used to ensure latest webpack doesn't bundle `asciify-image`.
 
-v1.0.2
+v1.0.2 - May 23, 2018
 
 - Log.probe now only logs same string once, as intended
 - Remove asciify-image dependency (to avoid recursive npm dep)
