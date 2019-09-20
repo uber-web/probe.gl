@@ -1,5 +1,72 @@
 CHANGELOG
 
+v3.1.1
+
+- Fix stat object - update lastTiming (#102)
+
+v3.1.0
+
+- bump version for examples
+
+v3.1.0-beta.3
+
+v3.1.0-beta.2
+
+v3.1.0-beta.1
+
+- Bump mixin-deep from 1.3.1 to 1.3.2 (#96)
+- Update to latest ocular-gatsby (#95)
+
+v3.1.0-alpha.11
+
+- Make Stats class accept stats in constructor (#92)
+- Update widget when setStats (#93)
+
+v3.1.0-alpha.10
+
+- Fix StatsWidget tracking compatible with old Stats class (#91)
+- Compatible with old Stats (#90)
+- Bump lodash.template from 4.4.0 to 4.5.0 (#81)
+- Bump lodash from 4.17.11 to 4.17.15 (#89)
+
+v3.1.0-alpha.9
+
+v3.1.0-alpha.8
+
+- refactor stats widget - simply the constructor API (#88)
+- expose input event API (#83)
+
+v3.1.0-alpha.7
+
+- Fix the document checking (#80)
+-  Fix document crash in node (#79)
+
+v3.1.0-alpha.6
+
+v3.1.0-alpha.5
+
+v3.1.0-alpha.4
+
+v3.1.0-alpha.3
+
+v3.1.0-alpha.2
+
+- Bump ocular-dev-tools to publish LICENSE (#77)
+
+v3.1.0-alpha.1
+
+- Upgrade ocular-dev-tools (#75)
+- fix crash on newer chromium versions (#74)
+- Improve BrowserDriver error handling (#71)
+- Sample window (#70)
+- Add gatsby website (#69)
+
+v3.0.1
+
+- Bump ocular-dev-tools@0.0.19 (#66)
+- Merge branch 'fix-dynamic-widget'
+- Fix dynamic dom creation (#65)
+
 v3.0.0-alpha.8
 
 - Fix dynamic dom creation
