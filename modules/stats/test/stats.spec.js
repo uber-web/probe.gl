@@ -1,5 +1,5 @@
 /* eslint-disable max-statements */
-import {Stats, Stat} from 'probe.gl';
+import {Stats, Stat} from '@probe.gl/stats';
 import test from 'tape-catch';
 
 test('Stats#import', t => {

@@ -18,8 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'probe.gl/test';
-import '@probe.gl/stats/test';
-import '@probe.gl/stats-widget/test';
-import '@probe.gl/bench/test';
-import '@probe.gl/test-utils/test';
+export default function getHiResTimestamp() {
+  let timestamp;
+  // Get best timer available.
+  if (typeof window !== 'undefined' && window.performance) {
+    timestamp = window.performance.now();
+  } else if (typeof process !== 'undefined' && process.hrtime) {
+    const timeParts = process.hrtime();
+    timestamp = timeParts[0] * 1000 + timeParts[1] / 1e6;
+  } else {
+    timestamp = Date.now();
+  }
+
+  return timestamp;
+}
