@@ -8,6 +8,8 @@ Create a `Stat` instance using `Stats.get`. There are two basic usage patterns, 
 `Timer` usage involves the methods `timeStart`, `timeEnd`, `addTime`, `getHz`, and `getAverageTime`:
 
 ```js
+import {Stats} from '@probe.gl/stats';
+
 const stats = new Stats({id: 'my-stats'});
 const executionTime = stats.get('Time');
 executionTime.timeStart();
@@ -87,7 +89,7 @@ Timing of the last completed set of samples.
 * `type` (`String`) - the type of the stat.
 
 Supported options:
-- `count` 
+- `count`
 - `averageTime`
 - `totalTime`
 - `fps`

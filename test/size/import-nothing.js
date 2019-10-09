@@ -1,3 +1,3 @@
-import {VERSION} from 'probe.gl';
+import {Stats, Stat} from '@probe.gl/stats';
 
-console.log(VERSION); // eslint-disable-line
+console.log(Stats, Stat); // eslint-disable-line
