@@ -39,13 +39,16 @@
     "eslint-import-resolver-webpack": "^0.11.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.10",
-    "ocular-dev-tools": "0.0.27",
     "jsdom": "^15.1.1",
+    "ocular-dev-tools": "0.0.27",
     "pre-commit": "^1.2.2",
     "reify": "^0.18.1",
     "url-loader": "^1.0.1"
   },
   "pre-commit": [
     "test-fast"
-  ]
+  ],
+  "dependencies": {
+    "@probe.gl/test-utils": "^3.1.1"
+  }
 }
