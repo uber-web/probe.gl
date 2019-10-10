@@ -1,4 +1,4 @@
-import getHiResTimestamp from '../utils/hi-res-timestamp';
+import getHiResTimestamp from '../../../core/src/utils/hi-res-timestamp';
 
 export default class Stat {
   constructor(name, type) {
@@ -46,10 +46,10 @@ export default class Stat {
     return this;
   }
 
-  // Add an abritrary timing and bump the count
+  // Add an arbitrary timing and bump the count
   addTime(time) {
     this._time += time;
-    this._lastTiming = time;
+    this.lastTiming = time;
     this._samples++;
     this._checkSampling();
 
