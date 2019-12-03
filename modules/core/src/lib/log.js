@@ -48,6 +48,7 @@ const DEFAULT_SETTINGS = {
 function noop() {}
 
 const cache = {};
+const ONCE = {once: true};
 
 /*
 function throttle(tag, timeout) {
@@ -156,17 +157,12 @@ export default class Log {
 
   // Warn, but only once, no console flooding
   warn(message, ...args) {
-    return this._getLogFunction({
-      message,
-      args,
-      method: originalConsole.warn,
-      once: true
-    });
+    return this._getLogFunction(0, message, originalConsole.warn, args, ONCE);
   }
 
   // Print an error
   error(message, ...args) {
-    return this._getLogFunction({message, args, method: originalConsole.error});
+    return this._getLogFunction(0, message, originalConsole.error, args);
   }
 
   deprecated(oldUsage, newUsage) {
@@ -182,11 +178,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log to a group
   probe(priority, message, ...args) {
-    return this._getLogFunction({
-      priority,
-      message,
-      args,
-      method: originalConsole.log,
+    return this._getLogFunction(priority, message, originalConsole.log, args, {
       time: true,
       once: true
     });
@@ -194,45 +186,30 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log a debug message
   log(priority, message, ...args) {
-    return this._getLogFunction({
-      priority,
-      message,
-      args,
-      method: originalConsole.debug
-    });
+    return this._getLogFunction(priority, message, originalConsole.debug, args);
   }
 
   // Log a normal message
   info(priority, message, ...args) {
-    return this._getLogFunction({
-      priority,
-      message,
-      args,
-      method: console.info
-    });
+    return this._getLogFunction(priority, message, console.info, args);
   }
 
   // Log a normal message, but only once, no console flooding
   once(priority, message, ...args) {
-    return this._getLogFunction({
+    return this._getLogFunction(
       priority,
       message,
+      originalConsole.debug || originalConsole.info,
       args,
-      method: originalConsole.debug || originalConsole.info,
-      once: true
-    });
+      ONCE
+    );
   }
 
   // Logs an object as a table
   table(priority, table, columns) {
     if (table) {
-      const tag = getTableHeader(table);
-      return this._getLogFunction({
-        priority,
-        message: table,
-        args: columns && [columns],
-        tag,
-        method: console.table || noop
+      return this._getLogFunction(priority, table, console.table || noop, columns && [columns], {
+        tag: getTableHeader(table)
       });
     }
     return noop;
@@ -240,12 +217,12 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // logs an image under Chrome
   image({priority, image, message = '', scale = 1}) {
-    if (priority > this.getPriority()) {
+    if (!this._shouldLog(priority)) {
       return noop;
     }
     return isBrowser
-      ? this._logImageInBrowser({image, message, scale})
-      : this._logImageInNode({image, message, scale});
+      ? logImageInBrowser({image, message, scale})
+      : logImageInNode({image, message, scale});
   }
 
   // Logs the current settings as a table
@@ -267,81 +244,28 @@ in a later version. Use \`${newUsage}\` instead`);
     this._storage.updateConfiguration({[setting]: value});
   }
 
-  // Use the asciify module to log an image under node.js
-  _logImageInNode({image, message = '', scale = 1}) {
-    // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
-    let asciify = null;
-    try {
-      asciify = module.require('asciify-image');
-    } catch (error) {
-      // asciify not installed, silently ignore
-    }
-    if (asciify) {
-      return () =>
-        asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then(data =>
-          console.log(data)
-        );
-    }
-    return noop;
-  }
-
-  _logImageInBrowser({image, message = '', scale = 1}) {
-    if (typeof image === 'string') {
-      const img = new Image();
-      img.onload = () => {
-        const args = formatImage(img, message, scale);
-        console.log(...args);
-      };
-      img.src = image;
-      return noop;
-    }
-    const element = image.nodeName || '';
-    if (element.toLowerCase() === 'img') {
-      console.log(...formatImage(image, message, scale));
-      return noop;
-    }
-    if (element.toLowerCase() === 'canvas') {
-      const img = new Image();
-      img.onload = () => console.log(...formatImage(img, message, scale));
-      img.src = image.toDataURL();
-      return noop;
-    }
-    return noop;
-  }
-
   time(priority, message) {
-    return this._getLogFunction({
-      priority,
-      message,
-      method: console.time ? console.time : console.info
-    });
+    return this._getLogFunction(priority, message, console.time ? console.time : console.info);
   }
 
   timeEnd(priority, message) {
-    return this._getLogFunction({
+    return this._getLogFunction(
       priority,
       message,
-      method: console.timeEnd ? console.timeEnd : console.info
-    });
+      console.timeEnd ? console.timeEnd : console.info
+    );
   }
 
   timeStamp(priority, message) {
-    return this._getLogFunction({
-      priority,
-      message,
-      method: console.timeStamp || noop
-    });
+    return this._getLogFunction(priority, message, console.timeStamp || noop);
   }
 
   group(priority, message, opts = {collapsed: false}) {
-    opts = this._normalizeArguments({priority, message, opts});
+    opts = normalizeArguments({priority, message, opts});
     const {collapsed} = opts;
-    return this._getLogFunction({
-      priority,
-      message,
-      opts,
-      method: (collapsed ? console.groupCollapsed : console.group) || console.info
-    });
+    opts.method = (collapsed ? console.groupCollapsed : console.group) || console.info;
+
+    return this._getLogFunction(opts);
   }
 
   groupCollapsed(priority, message, opts = {}) {
@@ -349,27 +273,18 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   groupEnd(priority) {
-    return this._getLogFunction({
-      priority,
-      message: '',
-      method: console.groupEnd || noop
-    });
+    return this._getLogFunction(priority, '', console.groupEnd || noop);
   }
 
   // EXPERIMENTAL
 
   withGroup(priority, message, func) {
-    const opts = this._normalizeArguments({
-      priority,
-      message
-    });
-
-    this.group(opts);
+    this.group(priority, message)();
 
     try {
       func();
     } finally {
-      this.groupEnd(opts.message);
+      this.groupEnd(priority)();
     }
   }
 
@@ -382,27 +297,22 @@ in a later version. Use \`${newUsage}\` instead`);
   // PRIVATE METHODS
 
   _shouldLog(priority) {
-    priority = this._normalizePriority(priority);
+    priority = normalizePriority(priority);
     return priority === 0 || (this.isEnabled() && this.getPriority() >= priority);
   }
 
-  _getElapsedTime() {
-    const total = this.getTotal();
-    const delta = this.getDelta();
-    // reset delta timer
-    this._deltaTs = getHiResTimestamp();
-    return {total, delta};
-  }
-
-  _getLogFunction(opts) {
-    if (this._shouldLog(opts.priority)) {
-      const {method} = opts;
-
-      opts = this._parseArguments(opts);
-
+  _getLogFunction(priority, message, method, args = [], opts) {
+    if (this._shouldLog(priority)) {
+      // normalized opts + timings
+      opts = normalizeArguments({priority, message, args, opts});
+      method = method || opts.method;
       assert(method);
 
-      let {message} = opts;
+      opts.total = this.getTotal();
+      opts.delta = this.getDelta();
+      // reset delta timer
+      this._deltaTs = getHiResTimestamp();
+
       const tag = opts.tag || opts.message;
 
       if (opts.once) {
@@ -418,104 +328,130 @@ in a later version. Use \`${newUsage}\` instead`);
       //   return noop;
       // }
 
-      message = this._decorateMessage(message, opts);
+      message = decorateMessage(this.id, opts.message, opts);
 
       // Bind console function so that it can be called after being returned
       return method.bind(console, message, ...opts.args);
     }
-
     return noop;
-  }
-
-  _parseArguments(options) {
-    const normOpts = this._normalizeArguments(options);
-
-    const {delta, total} = this._getElapsedTime();
-
-    // normalized opts + timings
-    return Object.assign(options, normOpts, {
-      delta,
-      total
-    });
-  }
-
-  // Get priority from first argument:
-  // - log(priority, message, args) => priority
-  // - log(message, args) => 0
-  // - log({priority, ...}, message, args) => priority
-  // - log({priority, message, args}) => priority
-  _normalizePriority(priority) {
-    let resolvedPriority;
-
-    switch (typeof priority) {
-      case 'number':
-        resolvedPriority = priority;
-        break;
-
-      case 'object':
-        resolvedPriority = priority.priority || 0;
-        break;
-
-      default:
-        resolvedPriority = 0;
-    }
-    // 'log priority must be a number'
-    assert(Number.isFinite(resolvedPriority) && resolvedPriority >= 0);
-
-    return resolvedPriority;
-  }
-
-  // "Normalizes" the various argument patterns into an object with known types
-  // - log(priority, message, args) => {priority, message, args}
-  // - log(message, args) => {priority: 0, message, args}
-  // - log({priority, ...}, message, args) => {priority, message, args}
-  // - log({priority, message, args}) => {priority, message, args}
-  _normalizeArguments({priority, message, args = [], opts}) {
-    const newOpts = {
-      priority: this._normalizePriority(priority),
-      message,
-      args
-    };
-
-    switch (typeof priority) {
-      case 'string':
-      case 'function':
-        if (message !== undefined) {
-          args.unshift(message);
-        }
-        Object.assign(newOpts, {message: priority});
-        break;
-
-      case 'object':
-        Object.assign(newOpts, priority);
-        break;
-
-      default:
-    }
-
-    // Resolve functions into strings by calling them
-    if (typeof newOpts.message === 'function') {
-      newOpts.message = this._shouldLog(newOpts.priority) ? newOpts.message() : '';
-    }
-    // 'log message must be a string' or object
-    assert(typeof newOpts.message === 'string' || typeof newOpts.message === 'object');
-
-    // original opts + normalized opts + opts arg + fixed up message
-    return Object.assign(newOpts, opts);
-  }
-
-  _decorateMessage(message, opts) {
-    if (typeof message === 'string') {
-      let time = '';
-      if (opts.time) {
-        const {total} = this._getElapsedTime();
-        time = leftPad(formatTime(total));
-      }
-      message = opts.time ? `${this.id}: ${time}  ${message}` : `${this.id}: ${message}`;
-      message = addColor(message, opts.color, opts.background);
-    }
-    return message;
   }
 }
 
 Log.VERSION = VERSION;
+
+// Get priority from first argument:
+// - log(priority, message, args) => priority
+// - log(message, args) => 0
+// - log({priority, ...}, message, args) => priority
+// - log({priority, message, args}) => priority
+function normalizePriority(priority) {
+  let resolvedPriority;
+
+  switch (typeof priority) {
+    case 'number':
+      resolvedPriority = priority;
+      break;
+
+    case 'object':
+      resolvedPriority = priority.priority || 0;
+      break;
+
+    default:
+      resolvedPriority = 0;
+  }
+  // 'log priority must be a number'
+  assert(Number.isFinite(resolvedPriority) && resolvedPriority >= 0);
+
+  return resolvedPriority;
+}
+
+// "Normalizes" the various argument patterns into an object with known types
+// - log(priority, message, args) => {priority, message, args}
+// - log(message, args) => {priority: 0, message, args}
+// - log({priority, ...}, message, args) => {priority, message, args}
+// - log({priority, message, args}) => {priority, message, args}
+export function normalizeArguments(opts) {
+  const {priority, message} = opts;
+  opts.priority = normalizePriority(priority);
+
+  const args = opts.args || [];
+  opts.args = args;
+
+  switch (typeof priority) {
+    case 'string':
+    case 'function':
+      if (message !== undefined) {
+        args.unshift(message);
+      }
+      opts.message = priority;
+      break;
+
+    case 'object':
+      Object.assign(opts, priority);
+      break;
+
+    default:
+  }
+
+  // Resolve functions into strings by calling them
+  if (typeof opts.message === 'function') {
+    opts.message = opts.message();
+  }
+  const messageType = typeof opts.message;
+  // 'log message must be a string' or object
+  assert(messageType === 'string' || messageType === 'object');
+
+  // original opts + normalized opts + opts arg + fixed up message
+  return Object.assign(opts, opts.opts);
+}
+
+function decorateMessage(id, message, opts) {
+  if (typeof message === 'string') {
+    const time = opts.time ? leftPad(formatTime(opts.total)) : '';
+    message = opts.time ? `${id}: ${time}  ${message}` : `${id}: ${message}`;
+    message = addColor(message, opts.color, opts.background);
+  }
+  return message;
+}
+
+// Use the asciify module to log an image under node.js
+function logImageInNode({image, message = '', scale = 1}) {
+  // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
+  let asciify = null;
+  try {
+    asciify = module.require('asciify-image');
+  } catch (error) {
+    // asciify not installed, silently ignore
+  }
+  if (asciify) {
+    return () =>
+      asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then(data =>
+        console.log(data)
+      );
+  }
+  return noop;
+}
+
+function logImageInBrowser({image, message = '', scale = 1}) {
+  if (typeof image === 'string') {
+    const img = new Image();
+    img.onload = () => {
+      const args = formatImage(img, message, scale);
+      console.log(...args);
+    };
+    img.src = image;
+    return noop;
+  }
+  const element = image.nodeName || '';
+  if (element.toLowerCase() === 'img') {
+    console.log(...formatImage(image, message, scale));
+    return noop;
+  }
+  if (element.toLowerCase() === 'canvas') {
+    const img = new Image();
+    img.onload = () => console.log(...formatImage(img, message, scale));
+    img.src = image.toDataURL();
+    return noop;
+  }
+  return noop;
+}
