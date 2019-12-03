@@ -9,7 +9,10 @@ const config = {
     'test-browser': 'test/browser.js',
     bench: 'test/bench/index.js',
     'bench-browser': 'test/bench/browser.js',
-    size: 'test/size/import-nothing.js'
+    size: {
+      log: 'test/size/log.js',
+      stat: 'test/size/stat.js'
+    }
   }
 };
 

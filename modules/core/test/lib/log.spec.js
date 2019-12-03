@@ -1,5 +1,6 @@
 /* eslint-disable max-statements */
 import Probe, {Log} from 'probe.gl';
+import {normalizeArguments} from 'probe.gl/lib/log';
 import test from 'tape-catch';
 
 const makeOpts = (priority, message, ...args) => ({priority, message, args});
@@ -37,10 +38,10 @@ test('Log#import', t => {
   t.end();
 });
 
-test('Log#_normalizeArguments', t => {
-  const log = new Log({id: 'test'});
+test('Log#normalizeArguments', t => {
   for (const tc of NORMALIZE_ARGUMENTS_TEST_CASES) {
-    const opts = log._normalizeArguments(tc.args);
+    const opts = normalizeArguments({...tc.args});
+
     t.deepEqual(
       opts,
       tc.opts,
