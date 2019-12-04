@@ -224,6 +224,37 @@ Updates the value of setting
 
 ## Experimental APIs
 
+### setEventHandlers
+
+Register handlers for certain log events.
+
+`log.setEventHandlers(handlers)`
+
+`handlers` is a map from event types to functions.
+
+The event system allows the user to separate logging from the application logic. For example, different event loggers may be used in different builds: a verbose version in the dev environment, a concise version in the production environment, languages, etc.
+
+### event
+
+Emit an event.
+
+`log.event(eventType, ...args)`
+
+The event is only handled if:
+
+- Logging is enabled via `log.enable()`
+- An event handler has been registered via `log.setEventHandlers()`
+
+```js
+log.setEventHandlers({
+  'data_load': (timeMs) => log.log(`The data was loaded in ${timeMs}ms`)();
+});
+
+const loadStart = Date.now();
+loadData().then(() => {
+  log.event('data_load', Date.now() - loadStart);
+});
+```
 
 ### withGroup
 

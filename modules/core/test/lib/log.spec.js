@@ -158,3 +158,24 @@ test('Log#settings', t => {
   t.doesNotThrow(() => log.settings(), 'log.settings() works');
   t.end();
 });
+
+test('Log#event', t => {
+  const log = new Log({id: 'test'});
+
+  const eventHandlerCalled = [];
+  log.setEventHandlers({
+    'test-event': x => eventHandlerCalled.push(x)
+  });
+
+  log.event('test-event', 0);
+  t.deepEqual(eventHandlerCalled, [], 'event handler should not be called if log is disabled');
+
+  log.enable();
+  log.event('test-event', 1);
+  t.deepEqual(eventHandlerCalled, [1], 'event handler should be called when log is enabled');
+
+  log.event('other-event', 2);
+  t.deepEqual(eventHandlerCalled, [1], 'event handler should not be called for another event');
+
+  t.end();
+});

@@ -98,6 +98,7 @@ export default class Log {
     // TODO - fix support from throttling groups
     this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
     this._storage = new LocalStorage(`__probe-${this.id}__`, DEFAULT_SETTINGS);
+    this._eventHandlers = {};
     this.userData = {};
 
     this.timeStamp(`${this.id} started`);
@@ -277,6 +278,19 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // EXPERIMENTAL
+
+  // Register event handlers
+  setEventHandlers(handlers) {
+    this._eventHandlers = handlers;
+  }
+
+  // Emit an event
+  // Defer to pre-registered event handlers for actual logging
+  event(type) {
+    if (this.isEnabled() && this._eventHandlers[type]) {
+      this._eventHandlers[type].call(...arguments);
+    }
+  }
 
   withGroup(priority, message, func) {
     this.group(priority, message)();
