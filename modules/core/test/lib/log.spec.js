@@ -3,7 +3,9 @@ import Probe, {Log} from 'probe.gl';
 import {normalizeArguments} from 'probe.gl/lib/log';
 import test from 'tape-catch';
 
-const makeOpts = (priority, message, ...args) => ({priority, message, args});
+function makeOpts(priority, message) {
+  return {priority, message, args: arguments};
+}
 
 const NORMALIZE_ARGUMENTS_TEST_CASES = [
   {
@@ -69,8 +71,8 @@ test('Probe#getTotal()', t => {
 test('Log#log', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.log('test'), 'log.log works');
-  t.doesNotThrow(() => log.log(0, 'test'), 'log.log works');
+  t.doesNotThrow(() => log.log('test')(), 'log.log works');
+  t.doesNotThrow(() => log.log(0, 'test')(), 'log.log works');
   t.end();
 });
 
