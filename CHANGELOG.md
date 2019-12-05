@@ -1,5 +1,9 @@
 CHANGELOG
 
+v3.2.0-beta.3 - Dec 5, 2019
+
+- fix transpilation (#117)
+
 v3.2.0-beta.1 - Dec 5, 2019
 
 - @probe.gl/stats: New module for Stats object (#101)
