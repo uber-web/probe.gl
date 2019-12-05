@@ -2,7 +2,7 @@
   "name": "@probe.gl/stats",
   "description": "Stats object for reporting performance statistics",
   "license": "MIT",
-  "version": "3.1.0-beta.3",
+  "version": "3.2.0-beta.1",
   "keywords": [
     "javascript",
     "profiling",
