@@ -373,10 +373,14 @@ function normalizePriority(priority) {
 export function normalizeArguments(opts) {
   const {priority, message} = opts;
   opts.priority = normalizePriority(priority);
-  // args should only contain arguments that appear after `message`
-  // not using rest parameters (...args) syntax to defeat perf hit in transpiled code
+  // We use `arguments` instead of rest parameters (...args) because IE
+  // does not support the syntax. Rest parameters is transpiled to code with
+  // perf impact. Doing it here instead avoids constructing args when logging is
+  // disabled.
+  // TODO - remove when/if IE support is dropped
   const args = opts.args ? Array.from(opts.args) : [];
   /* eslint-disable no-empty */
+  // args should only contain arguments that appear after `message`
   while (args.length && args.shift() !== message) {}
   /* eslint-enable no-empty */
   opts.args = args;
