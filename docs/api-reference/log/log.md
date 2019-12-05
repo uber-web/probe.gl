@@ -82,7 +82,7 @@ Creates a new `Log` instance.
 
 `log.enable(false)`
 
-Accepts one argument `true` or `false`.
+Accepts one argument `true` or `false`. When disabled, calling log methods do not print anything to the console.
 
 ### getLevel
 
