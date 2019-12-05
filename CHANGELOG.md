@@ -1,5 +1,15 @@
 CHANGELOG
 
+v3.2.0-beta.1 - Dec 5, 2019
+
+- @probe.gl/stats: New module for Stats object (#101)
+- Move seer to probe.gl (#104)
+- improve log perf (#107)
+- Remove rest parameters from Log class (#109)
+- Rename `log.priority` to `log.level` (#114)
+- Change default `enabled` behavior of Log class (#115)
+- fix stat (#116)
+
 v3.1.1 - Sep 19, 2019
 
 - Fix stat object - update lastTiming (#102)
