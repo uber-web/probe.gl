@@ -41,7 +41,7 @@ const originalConsole = {
 };
 
 const DEFAULT_SETTINGS = {
-  enabled: false,
+  enabled: true,
   level: 0
 };
 
@@ -305,8 +305,7 @@ in a later version. Use \`${newUsage}\` instead`);
   // PRIVATE METHODS
 
   _shouldLog(logLevel) {
-    logLevel = normalizeLogLevel(logLevel);
-    return logLevel === 0 || (this.isEnabled() && this.getLevel() >= logLevel);
+    return this.isEnabled() && this.getLevel() >= normalizeLogLevel(logLevel);
   }
 
   _getLogFunction(logLevel, message, method, args = [], opts) {
