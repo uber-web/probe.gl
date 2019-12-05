@@ -156,13 +156,13 @@ export default class Log {
   }
 
   // Warn, but only once, no console flooding
-  warn(message, ...args) {
-    return this._getLogFunction(0, message, originalConsole.warn, args, ONCE);
+  warn(message) {
+    return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
   }
 
   // Print an error
-  error(message, ...args) {
-    return this._getLogFunction(0, message, originalConsole.error, args);
+  error(message) {
+    return this._getLogFunction(0, message, originalConsole.error, arguments);
   }
 
   deprecated(oldUsage, newUsage) {
@@ -177,30 +177,30 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   // Log to a group
-  probe(priority, message, ...args) {
-    return this._getLogFunction(priority, message, originalConsole.log, args, {
+  probe(priority, message) {
+    return this._getLogFunction(priority, message, originalConsole.log, arguments, {
       time: true,
       once: true
     });
   }
 
   // Log a debug message
-  log(priority, message, ...args) {
-    return this._getLogFunction(priority, message, originalConsole.debug, args);
+  log(priority, message) {
+    return this._getLogFunction(priority, message, originalConsole.debug, arguments);
   }
 
   // Log a normal message
-  info(priority, message, ...args) {
-    return this._getLogFunction(priority, message, console.info, args);
+  info(priority, message) {
+    return this._getLogFunction(priority, message, console.info, arguments);
   }
 
   // Log a normal message, but only once, no console flooding
-  once(priority, message, ...args) {
+  once(priority, message) {
     return this._getLogFunction(
       priority,
       message,
       originalConsole.debug || originalConsole.info,
-      args,
+      arguments,
       ONCE
     );
   }
@@ -373,8 +373,16 @@ function normalizePriority(priority) {
 export function normalizeArguments(opts) {
   const {priority, message} = opts;
   opts.priority = normalizePriority(priority);
-
-  const args = opts.args || [];
+  // We use `arguments` instead of rest parameters (...args) because IE
+  // does not support the syntax. Rest parameters is transpiled to code with
+  // perf impact. Doing it here instead avoids constructing args when logging is
+  // disabled.
+  // TODO - remove when/if IE support is dropped
+  const args = opts.args ? Array.from(opts.args) : [];
+  /* eslint-disable no-empty */
+  // args should only contain arguments that appear after `message`
+  while (args.length && args.shift() !== message) {}
+  /* eslint-enable no-empty */
   opts.args = args;
 
   switch (typeof priority) {
