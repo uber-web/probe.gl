@@ -30,3 +30,4 @@ global.Element = dom.window.Element;
 global.__JSDOM__ = true;
 
 require('./test-index');
+require('dev-modules/babel-plugin-probe-gl/test');
