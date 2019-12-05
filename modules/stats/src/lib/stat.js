@@ -1,4 +1,4 @@
-import getHiResTimestamp from '../../../core/src/utils/hi-res-timestamp';
+import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 export default class Stat {
   constructor(name, type) {
