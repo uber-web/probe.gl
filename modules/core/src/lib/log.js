@@ -42,7 +42,7 @@ const originalConsole = {
 
 const DEFAULT_SETTINGS = {
   enabled: false,
-  priority: 0
+  level: 0
 };
 
 function noop() {}
@@ -106,25 +106,20 @@ export default class Log {
     Object.seal(this);
   }
 
-  set priority(newPriority) {
-    this._storage.updateConfiguration({priority: newPriority});
-    return this;
+  set level(newLevel) {
+    this.setLevel(newLevel);
   }
 
-  get priority() {
-    return this._storage.config.priority;
+  get level() {
+    return this.getLevel();
   }
 
   isEnabled() {
     return this._storage.config.enabled;
   }
 
-  getPriority() {
-    return this._storage.config.priority;
-  }
-
   getLevel() {
-    return this._storage.config.priority;
+    return this._storage.config.level;
   }
 
   // @return {Number} milliseconds, with fractions
@@ -137,6 +132,19 @@ export default class Log {
     return Number((getHiResTimestamp() - this._deltaTs).toPrecision(10));
   }
 
+  // Deprecated
+  set priority(newPriority) {
+    this.level = newPriority;
+  }
+
+  get priority() {
+    return this.level;
+  }
+
+  getPriority() {
+    return this.level;
+  }
+
   // Configure
 
   enable(enabled = true) {
@@ -145,7 +153,7 @@ export default class Log {
   }
 
   setLevel(level) {
-    this._storage.updateConfiguration({priority: level});
+    this._storage.updateConfiguration({level});
     return this;
   }
 
@@ -177,27 +185,27 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   // Log to a group
-  probe(priority, message) {
-    return this._getLogFunction(priority, message, originalConsole.log, arguments, {
+  probe(logLevel, message) {
+    return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
       time: true,
       once: true
     });
   }
 
   // Log a debug message
-  log(priority, message) {
-    return this._getLogFunction(priority, message, originalConsole.debug, arguments);
+  log(logLevel, message) {
+    return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
   }
 
   // Log a normal message
-  info(priority, message) {
-    return this._getLogFunction(priority, message, console.info, arguments);
+  info(logLevel, message) {
+    return this._getLogFunction(logLevel, message, console.info, arguments);
   }
 
   // Log a normal message, but only once, no console flooding
-  once(priority, message) {
+  once(logLevel, message) {
     return this._getLogFunction(
-      priority,
+      logLevel,
       message,
       originalConsole.debug || originalConsole.info,
       arguments,
@@ -206,9 +214,9 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // Logs an object as a table
-  table(priority, table, columns) {
+  table(logLevel, table, columns) {
     if (table) {
-      return this._getLogFunction(priority, table, console.table || noop, columns && [columns], {
+      return this._getLogFunction(logLevel, table, console.table || noop, columns && [columns], {
         tag: getTableHeader(table)
       });
     }
@@ -216,8 +224,8 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // logs an image under Chrome
-  image({priority, image, message = '', scale = 1}) {
-    if (!this._shouldLog(priority)) {
+  image({logLevel, priority, image, message = '', scale = 1}) {
+    if (!this._shouldLog(logLevel || priority)) {
       return noop;
     }
     return isBrowser
@@ -244,47 +252,47 @@ in a later version. Use \`${newUsage}\` instead`);
     this._storage.updateConfiguration({[setting]: value});
   }
 
-  time(priority, message) {
-    return this._getLogFunction(priority, message, console.time ? console.time : console.info);
+  time(logLevel, message) {
+    return this._getLogFunction(logLevel, message, console.time ? console.time : console.info);
   }
 
-  timeEnd(priority, message) {
+  timeEnd(logLevel, message) {
     return this._getLogFunction(
-      priority,
+      logLevel,
       message,
       console.timeEnd ? console.timeEnd : console.info
     );
   }
 
-  timeStamp(priority, message) {
-    return this._getLogFunction(priority, message, console.timeStamp || noop);
+  timeStamp(logLevel, message) {
+    return this._getLogFunction(logLevel, message, console.timeStamp || noop);
   }
 
-  group(priority, message, opts = {collapsed: false}) {
-    opts = normalizeArguments({priority, message, opts});
+  group(logLevel, message, opts = {collapsed: false}) {
+    opts = normalizeArguments({logLevel, message, opts});
     const {collapsed} = opts;
     opts.method = (collapsed ? console.groupCollapsed : console.group) || console.info;
 
     return this._getLogFunction(opts);
   }
 
-  groupCollapsed(priority, message, opts = {}) {
-    return this.group(priority, message, Object.assign({}, opts, {collapsed: true}));
+  groupCollapsed(logLevel, message, opts = {}) {
+    return this.group(logLevel, message, Object.assign({}, opts, {collapsed: true}));
   }
 
-  groupEnd(priority) {
-    return this._getLogFunction(priority, '', console.groupEnd || noop);
+  groupEnd(logLevel) {
+    return this._getLogFunction(logLevel, '', console.groupEnd || noop);
   }
 
   // EXPERIMENTAL
 
-  withGroup(priority, message, func) {
-    this.group(priority, message)();
+  withGroup(logLevel, message, func) {
+    this.group(logLevel, message)();
 
     try {
       func();
     } finally {
-      this.groupEnd(priority)();
+      this.groupEnd(logLevel)();
     }
   }
 
@@ -296,15 +304,15 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // PRIVATE METHODS
 
-  _shouldLog(priority) {
-    priority = normalizePriority(priority);
-    return priority === 0 || (this.isEnabled() && this.getPriority() >= priority);
+  _shouldLog(logLevel) {
+    logLevel = normalizeLogLevel(logLevel);
+    return logLevel === 0 || (this.isEnabled() && this.getLevel() >= logLevel);
   }
 
-  _getLogFunction(priority, message, method, args = [], opts) {
-    if (this._shouldLog(priority)) {
+  _getLogFunction(logLevel, message, method, args = [], opts) {
+    if (this._shouldLog(logLevel)) {
       // normalized opts + timings
-      opts = normalizeArguments({priority, message, args, opts});
+      opts = normalizeArguments({logLevel, message, args, opts});
       method = method || opts.method;
       assert(method);
 
@@ -339,40 +347,45 @@ in a later version. Use \`${newUsage}\` instead`);
 
 Log.VERSION = VERSION;
 
-// Get priority from first argument:
-// - log(priority, message, args) => priority
+// Get logLevel from first argument:
+// - log(logLevel, message, args) => logLevel
 // - log(message, args) => 0
-// - log({priority, ...}, message, args) => priority
-// - log({priority, message, args}) => priority
-function normalizePriority(priority) {
-  let resolvedPriority;
+// - log({logLevel, ...}, message, args) => logLevel
+// - log({logLevel, message, args}) => logLevel
+function normalizeLogLevel(logLevel) {
+  if (!logLevel) {
+    return 0;
+  }
+  let resolvedLevel;
 
-  switch (typeof priority) {
+  switch (typeof logLevel) {
     case 'number':
-      resolvedPriority = priority;
+      resolvedLevel = logLevel;
       break;
 
     case 'object':
-      resolvedPriority = priority.priority || 0;
+      // Backward compatibility
+      // TODO - deprecate `priority`
+      resolvedLevel = logLevel.logLevel || logLevel.priority || 0;
       break;
 
     default:
-      resolvedPriority = 0;
+      return 0;
   }
-  // 'log priority must be a number'
-  assert(Number.isFinite(resolvedPriority) && resolvedPriority >= 0);
+  // 'log level must be a number'
+  assert(Number.isFinite(resolvedLevel) && resolvedLevel >= 0);
 
-  return resolvedPriority;
+  return resolvedLevel;
 }
 
 // "Normalizes" the various argument patterns into an object with known types
-// - log(priority, message, args) => {priority, message, args}
-// - log(message, args) => {priority: 0, message, args}
-// - log({priority, ...}, message, args) => {priority, message, args}
-// - log({priority, message, args}) => {priority, message, args}
+// - log(logLevel, message, args) => {logLevel, message, args}
+// - log(message, args) => {logLevel: 0, message, args}
+// - log({logLevel, ...}, message, args) => {logLevel, message, args}
+// - log({logLevel, message, args}) => {logLevel, message, args}
 export function normalizeArguments(opts) {
-  const {priority, message} = opts;
-  opts.priority = normalizePriority(priority);
+  const {logLevel, message} = opts;
+  opts.logLevel = normalizeLogLevel(logLevel);
   // We use `arguments` instead of rest parameters (...args) because IE
   // does not support the syntax. Rest parameters is transpiled to code with
   // perf impact. Doing it here instead avoids constructing args when logging is
@@ -385,17 +398,17 @@ export function normalizeArguments(opts) {
   /* eslint-enable no-empty */
   opts.args = args;
 
-  switch (typeof priority) {
+  switch (typeof logLevel) {
     case 'string':
     case 'function':
       if (message !== undefined) {
         args.unshift(message);
       }
-      opts.message = priority;
+      opts.message = logLevel;
       break;
 
     case 'object':
-      Object.assign(opts, priority);
+      Object.assign(opts, logLevel);
       break;
 
     default:
