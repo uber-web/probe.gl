@@ -27,5 +27,4 @@ export {default as LocalStorage} from './utils/local-storage';
 export {default as getHiResTimestamp} from './utils/hi-res-timestamp';
 
 // DEPRECATED (Should be imported directly from @probe.gl/stats)
-// TODO - Uncomment as soon as new module is published...
-// export {Stats, Stat} from '@probe.gl/stats';
+export {Stats, Stat} from '@probe.gl/stats';
