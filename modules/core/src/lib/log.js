@@ -224,8 +224,8 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // logs an image under Chrome
-  image({logLevel, image, message = '', scale = 1}) {
-    if (!this._shouldLog(logLevel)) {
+  image({logLevel, priority, image, message = '', scale = 1}) {
+    if (!this._shouldLog(logLevel || priority)) {
       return noop;
     }
     return isBrowser
@@ -353,6 +353,9 @@ Log.VERSION = VERSION;
 // - log({logLevel, ...}, message, args) => logLevel
 // - log({logLevel, message, args}) => logLevel
 function normalizeLogLevel(logLevel) {
+  if (!logLevel) {
+    return 0;
+  }
   let resolvedLevel;
 
   switch (typeof logLevel) {
@@ -367,7 +370,7 @@ function normalizeLogLevel(logLevel) {
       break;
 
     default:
-      resolvedLevel = 0;
+      return 0;
   }
   // 'log level must be a number'
   assert(Number.isFinite(resolvedLevel) && resolvedLevel >= 0);
