@@ -3,30 +3,30 @@ import Probe, {Log} from 'probe.gl';
 import {normalizeArguments} from 'probe.gl/lib/log';
 import test from 'tape-catch';
 
-function makeOpts(logLevel, message) {
-  return {logLevel, message, args: arguments};
+function makeOpts(priority, message) {
+  return {priority, message, args: arguments};
 }
 
 const NORMALIZE_ARGUMENTS_TEST_CASES = [
   {
     args: makeOpts(1, 'Hi', 0, 1),
-    opts: {logLevel: 1, message: 'Hi', args: [0, 1]}
+    opts: {priority: 1, message: 'Hi', args: [0, 1]}
   },
   {
     args: makeOpts('Hi', 0, 1),
-    opts: {logLevel: 0, message: 'Hi', args: [0, 1]}
+    opts: {priority: 0, message: 'Hi', args: [0, 1]}
   },
   {
     args: makeOpts({}, 'Hi', 0, 1),
-    opts: {logLevel: 0, message: 'Hi', args: [0, 1]}
+    opts: {priority: 0, message: 'Hi', args: [0, 1]}
   },
   {
-    args: makeOpts({logLevel: 3, color: 'green'}, 'Hi', 0, 1),
-    opts: {logLevel: 3, color: 'green', message: 'Hi', args: [0, 1]}
+    args: makeOpts({priority: 3, color: 'green'}, 'Hi', 0, 1),
+    opts: {priority: 3, color: 'green', message: 'Hi', args: [0, 1]}
   },
   {
-    args: makeOpts({logLevel: 3, color: 'green', message: 'Hi', args: [0, 1]}),
-    opts: {logLevel: 3, color: 'green', message: 'Hi', args: [0, 1]}
+    args: makeOpts({priority: 3, color: 'green', message: 'Hi', args: [0, 1]}),
+    opts: {priority: 3, color: 'green', message: 'Hi', args: [0, 1]}
   }
 ];
 
@@ -143,14 +143,14 @@ test('Log#table', t => {
 test('Log#get', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.get('level'), "log.get('level') works");
+  t.doesNotThrow(() => log.get('priority'), "log.get('priority') works");
   t.end();
 });
 
 test('Log#set', t => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
-  t.doesNotThrow(() => log.set('level', 1), "log.set('level', 1) works");
+  t.doesNotThrow(() => log.set('priority', 1), "log.set('priority', 1) works");
   t.end();
 });
 

@@ -35,10 +35,10 @@ log.log(2, () => `${expensiveFunction()}`)();
 ### Log Function Parameters
 
 Log functions can be called with different parameter combinations
-- `log.log(message, ...args)` - logLevel defaults to 0
-- `log.log(logLevel, message, ...args)` - sets logLevel
-- `log.log({message, ...options})` - additional options can be set, logLevel is zero
-- `log.log({logLevel, message, args, ...options})` - additional options can be set
+- `log.log(message, ...args)` - priority defaults to 0
+- `log.log(priority, message, ...args)` - sets priority
+- `log.log({message, ...options})` - additional options can be set, priority is zero
+- `log.log({priority, message, args, ...options})` - additional options can be set
 
 
 ### Log Function Options
@@ -47,7 +47,7 @@ When using named parameters (passing an object as first parameter), the followin
 
 | Option       | Type          | Description |
 | ---          | ---           | ---         |
-| `logLevel`   | `Number`      | This probe will only "fire" if the log's current logLevel is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level. |
+| `priority`   | `Number`      | This probe will only "fire" if the log's current priority is greater than or equal to this value.defaults to `0`, which means that the probe is executed / printed regardless of log level. |
 | `time`       | `Boolean`     | Add a timer since page load (default for `Log.probe`) |
 | `once`       | `Boolean`     | Logs this message only once (default for `Log.warn`, `Log.once` |
 | `tag`        | `String`      | Optional tag |
@@ -78,19 +78,10 @@ Creates a new `Log` instance.
 
 `new Log({id})`
 
-### enable
 
-`log.enable(false)`
+### getPriority
 
-Accepts one argument `true` or `false`.
-
-### getLevel
-
-`log.getLevel()`
-
-### setLevel
-
-`log.setLevel(newLevel)`
+`log.getPriority()`
 
 
 ### log
@@ -98,8 +89,8 @@ Accepts one argument `true` or `false`.
 Log a debug level message (uses `console.debug` if available)
 
 `log.log(message, ...args)`
-`log.log(logLevel, message, ...args)`
-`log.log({logLevel, message, args, ....options})`
+`log.log(priority, message, ...args)`
+`log.log({priority, message, args, ....options})`
 
 Returns: a function closure that should be called immediately.
 
@@ -109,8 +100,8 @@ Returns: a function closure that should be called immediately.
 Log a normal message (uses `console.info` if available)
 
 `log.info(message, ...args)`
-`log.info(logLevel, message, ...args)`
-`log.info({logLevel, message, args, ....options})`
+`log.info(priority, message, ...args)`
+`log.info({priority, message, args, ....options})`
 
 Returns: a function closure that should be called immediately.
 
@@ -119,7 +110,7 @@ Returns: a function closure that should be called immediately.
 
 Log a normal message, but only once, no console flooding
 
-`once(logLevel|opts, arg, ...args)`
+`once(priority|opts, arg, ...args)`
 
 Returns: a function closure that should be called immediately.
 
@@ -129,8 +120,8 @@ Returns: a function closure that should be called immediately.
 Log a message with time since page load
 
 `log.probe(message, ...args)`
-`log.probe(logLevel, message, ...args)`
-`log.probe({logLevel, message, args, ....options})`
+`log.probe(priority, message, ...args)`
+`log.probe({priority, message, args, ....options})`
 
 Returns: a function closure that should be called immediately.
 
@@ -176,7 +167,7 @@ Returns: a function closure that should be called immediately.
 
 Logs a table (using `console.table` if available).
 
-`log.table(logLevel|opts, table)`
+`log.table(priority|opts, table)`
 
 Returns: a function closure that should be called immediately.
 
@@ -185,7 +176,7 @@ Returns: a function closure that should be called immediately.
 
 Logs an image (under Chrome)
 
-`log.image({logLevel, image, message = '', scale = 1})`
+`log.image({priority, image, message = '', scale = 1})`
 
 
 ### settings
@@ -198,37 +189,37 @@ Logs the current settings as a table
 
 Returns the current value of setting
 
-`log.get('logLevel')`
+`log.get('priority')`
 
 ### set(setting, value)
 
 Updates the value of setting
 
-`log.set('logLevel', 3)`
+`log.set('priority', 3)`
 
 ### time
 
-`log.time(logLevel, label)`
+`log.time(priority, label)`
 
 
 ### timeEnd
 
-`log.timeEnd(logLevel, label)`
+`log.timeEnd(priority, label)`
 
 
 ### group
 
-`log.group(logLevel, label)`
+`log.group(priority, label)`
 
 
 ### groupCollapsed
 
-`log.group(logLevel, label)`
+`log.group(priority, label)`
 
 
 ### groupEnd
 
-`log.groupEnd(logLevel)`
+`log.groupEnd(priority)`
 
 
 ## Experimental APIs
@@ -238,7 +229,7 @@ Updates the value of setting
 
 Provides an exception safe way to run some code within a group
 
-`log.withGroup(logLevel, label, func)`
+`log.withGroup(priority, label, func)`
 
 
 ### trace
