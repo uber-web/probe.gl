@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript console instrumentation for browser and Node",
   "license": "MIT",
-  "version": "3.2.0-beta.1",
+  "version": "3.2.0-beta.2",
   "keywords": [
     "javascript",
     "profiling",
@@ -30,7 +30,8 @@
     "asciify-image": false
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
+    "@babel/runtime": "^7.0.0",
+    "@probe.gl/stats": "3.2.0-beta.2"
   },
   "gitHead": "4fe07fa846b5f3a27d108e154aca63a46a746d99"
 }
