@@ -20,7 +20,7 @@ canvas.addEventListener('click', evt => {
   try {
     redraw();
   } catch (error) {
-    log.warn(error.message)();
+    log.error(error.message)();
   }
 });
 ```
@@ -34,7 +34,7 @@ canvas.addEventListener('click', () => {
   try {
     redraw();
   } catch (error) {
-    log.warn(error.message)();
+    log.error(error.message)();
   }
 });
 ```
@@ -55,7 +55,7 @@ $ npm install --save-dev babel-plugin-probe-gl
 ```json
 {
   "plugins": [["probe-gl", {
-    "removeLogs": ["log", "warn"]
+    "removeLogs": ["log", "warn"],
     "patterns": ["*.glsl.js"]
   }]]
 }
