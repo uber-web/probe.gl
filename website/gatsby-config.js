@@ -1,6 +1,13 @@
-const {getGatsbyConfig, registerReactComponent} = require('ocular-gatsby/api');
+const ocularConfig = require('./ocular-config');
 
-const config = require('./ocular-config');
+const GATSBY_CONFIG = {
+  plugins: [
+    {resolve: `gatsby-theme-ocular`, options: ocularConfig},
+    {resolve: 'gatsby-plugin-no-sourcemaps'}
+  ],
+};
 
-module.exports = getGatsbyConfig(config);
+// NOTE: uncomment to debug config
+console.log(JSON.stringify(GATSBY_CONFIG, null, 2));
 
+module.exports = GATSBY_CONFIG;
