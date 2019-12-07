@@ -1,7 +1,5 @@
 # Console Logging
 
-> This doc is a WIP
-
 ### Probe API Signature
 
 A probe.gl function invocation typically looks like this:

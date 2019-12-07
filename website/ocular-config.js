@@ -18,7 +18,7 @@ for (const dependency in DEPENDENCIES) {
 }
 
 module.exports = {
-  logLevel: 3,
+  logLevel: 1,
 
   PATH_PREFIX: '/probe.gl',
 
