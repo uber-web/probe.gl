@@ -8,6 +8,6 @@ const GATSBY_CONFIG = {
 };
 
 // NOTE: uncomment to debug config
-console.log(JSON.stringify(GATSBY_CONFIG, null, 2));
+// console.log(JSON.stringify(GATSBY_CONFIG, null, 2));
 
 module.exports = GATSBY_CONFIG;
