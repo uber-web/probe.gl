@@ -1,5 +1,7 @@
 CHANGELOG
 
+v3.2.0 - Dec 16, 2019
+
 v3.2.0-beta.3 - Dec 5, 2019
 
 - fix transpilation (#117)
