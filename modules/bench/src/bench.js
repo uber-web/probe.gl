@@ -43,19 +43,15 @@ export default class Bench {
     return this;
   }
 
-  run() {
+  async run() {
     const timeStart = getHiResTimestamp();
 
     const {tests, onBenchmarkComplete} = this;
-    const promise = runTests({tests, onBenchmarkComplete});
+    await runTests({tests, onBenchmarkComplete});
 
-    promise.then(() => {
-      const elapsed = (getHiResTimestamp() - timeStart) / 1000;
-      logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
-      this.onSuiteComplete();
-    });
-
-    return promise;
+    const elapsed = (getHiResTimestamp() - timeStart) / 1000;
+    logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
+    this.onSuiteComplete();
   }
 
   group(id) {
@@ -122,7 +118,7 @@ export default class Bench {
       priority = 0;
     }
 
-    assert(id);
+    assert(typeof id === 'string');
     assert(typeof func1 === 'function');
 
     let initFunc = null;
@@ -132,8 +128,19 @@ export default class Bench {
       testFunc = func2;
     }
 
+    // Test case options
+    const opts = {
+      ...this.opts
+    };
+
     assert(!this.tests[id], 'tests need unique id strings');
-    this.tests[id] = {id, priority, initFunc, testFunc, opts: this.opts};
+    this.tests[id] = {
+      id,
+      priority,
+      initFunc,
+      testFunc,
+      opts
+    };
     return this.tests[id];
   }
 }
@@ -184,7 +191,7 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
   // Inject a small delay between each test. System cools and DOM console updates...
   await addDelay(test.opts.delay);
 
-  const result = test.async ? await runBenchTestAsync(test) : runBenchTest(test);
+  const result = await runBenchTestAsync(test);
 
   const {iterationsPerSecond, time, iterations, error} = result;
 
@@ -212,70 +219,7 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
   }
 }
 
-// Sync tests
-
-function runBenchTest(test) {
-  const results = [];
-  let totalTime = 0;
-  let totalIterations = 0;
-
-  for (let i = 0; i < test.opts.minIterations; i++) {
-    const {time, iterations} = runBenchTestTimed(test, test.opts.time);
-    const iterationsPerSecond = iterations / time;
-    results.push(iterationsPerSecond);
-    totalTime += time;
-    totalIterations += iterations;
-  }
-
-  return {
-    time: totalTime,
-    iterations: totalIterations,
-    iterationsPerSecond: mean(results),
-    error: cv(results)
-  };
-}
-
-// Run a test func for an increasing amount of iterations until time threshold exceeded
-function runBenchTestTimed(test, minTime) {
-  let iterations = 1;
-  let elapsedMillis = 0;
-
-  // Run increasing amount of interations until we reach time threshold, default at least 100ms
-  while (elapsedMillis < minTime) {
-    let multiplier = 10;
-    if (elapsedMillis > 10) {
-      multiplier = (test.opts.time / elapsedMillis) * 1.25;
-    }
-    iterations *= multiplier;
-    const timeStart = getHiResTimestamp();
-    runBenchTestIterations(test, iterations);
-    elapsedMillis = getHiResTimestamp() - timeStart;
-  }
-
-  const time = elapsedMillis / 1000;
-
-  return {time, iterations};
-}
-
-// Run a test func for a specific amount of iterations
-function runBenchTestIterations(test, iterations) {
-  const testArgs = test.initFunc && test.initFunc();
-
-  const {context, testFunc} = test;
-  if (context && testArgs) {
-    for (let i = 0; i < iterations; i++) {
-      testFunc.call(context, testArgs);
-    }
-  } else {
-    for (let i = 0; i < iterations; i++) {
-      testFunc.call(context);
-    }
-  }
-}
-
-// ASYNC TESTS
-// This path is duplicated to minimize overhead in the sync case
-// TODO - increase code sharing between paths
+// Test runners
 
 async function runBenchTestAsync(test) {
   const results = [];
@@ -311,13 +255,20 @@ async function runBenchTestTimedAsync(test, minTime) {
     }
     iterations *= multiplier;
     const timeStart = getHiResTimestamp();
-    await runBenchTestIterationsAsync(test, iterations);
+    if (test.async) {
+      await runBenchTestIterationsAsync(test, iterations);
+    } else {
+      runBenchTestIterations(test, iterations);
+    }
     elapsedMillis = getHiResTimestamp() - timeStart;
   }
 
   const time = elapsedMillis / 1000;
 
-  return {time, iterations};
+  return {
+    time,
+    iterations
+  };
 }
 
 // Run a test func for a specific amount of iterations
@@ -332,6 +283,24 @@ async function runBenchTestIterationsAsync(test, iterations) {
   } else {
     for (let i = 0; i < iterations; i++) {
       await testFunc.call(context);
+    }
+  }
+}
+
+// Sync tests
+
+// Run a test func for a specific amount of iterations
+function runBenchTestIterations(test, iterations) {
+  const testArgs = test.initFunc && test.initFunc();
+
+  const {context, testFunc} = test;
+  if (context && testArgs) {
+    for (let i = 0; i < iterations; i++) {
+      testFunc.call(context, testArgs);
+    }
+  } else {
+    for (let i = 0; i < iterations; i++) {
+      testFunc.call(context);
     }
   }
 }
