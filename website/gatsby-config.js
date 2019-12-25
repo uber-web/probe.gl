@@ -1,23 +1,7 @@
 const resolve = require('path').resolve;
-
-const DEPENDENCIES = require('./package.json').dependencies;
-// eslint-disable-next-line import/no-extraneous-dependencies
-const ALIASES = require('ocular-dev-tools/config/ocular.config')({
-  root: resolve(__dirname, '..')
-}).aliases;
-
-// When duplicating example dependencies in website, autogenerate
-// aliases to ensure the website version is picked up
-// NOTE: module dependencies are automatically injected
-// TODO - should this be automatically done by ocular-gatsby?
-const dependencyAliases = {};
-for (const dependency in DEPENDENCIES) {
-  dependencyAliases[dependency] = `${__dirname}/node_modules/${dependency}`;
-}
-
 const DOCS = require('../docs/table-of-contents.json');
 
-const GATSBY_CONFIG = {
+module.exports = {
   plugins: [
     {
       resolve: `gatsby-theme-ocular`, 
@@ -89,21 +73,8 @@ const GATSBY_CONFIG = {
         ADDITIONAL_LINKS: [],
       
         GA_TRACKING: null,
-      
-      
-        // Ocular adds this to gatsby's webpack config
-        webpack: {
-          resolve: {
-            alias: Object.assign({}, ALIASES, dependencyAliases)
-          }
-        }
       }        
     },
     {resolve: 'gatsby-plugin-no-sourcemaps'}
   ],
 };
-
-// NOTE: uncomment to debug config
-// console.log(JSON.stringify(GATSBY_CONFIG, null, 2));
-
-module.exports = GATSBY_CONFIG;
