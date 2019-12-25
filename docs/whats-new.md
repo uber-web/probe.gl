@@ -1,6 +1,6 @@
 # What's New
 
-## v3.x 
+## v3.x
 
 Release Date: TBD
 

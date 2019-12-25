@@ -44,5 +44,8 @@ export default function coreBench(bench) {
         sum += element;
       }
       return sum;
+    })
+    .addAsync('parallel wait for 1000 promises', {throughput: LENGTH}, async () => {
+      return await 1;
     });
 }
