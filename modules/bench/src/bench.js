@@ -60,11 +60,6 @@ export default class Bench {
     return this;
   }
 
-  // Signatures:
-  // add(priority, id, initFunc, testFunc)
-  // add(priority, id, testFunc)
-  // add(id, initFunc, testFunc)
-  // add(id, testFunc)
   add(priority, id, func1, func2) {
     this._add(priority, id, func1, func2);
     return this;
@@ -110,8 +105,20 @@ export default class Bench {
     return current;
   }
 
+  // Signatures:
+  // add(priority, id, initFunc, testFunc)
+  // add(priority, id, testFunc)
+  // add({id, {...options}, initFunc, testFunc)
+  // add(id, initFunc, testFunc)
+  // add(id, testFunc)
   _add(priority, id, func1, func2) {
-    if (typeof priority === 'string') {
+    let options = {};
+
+    if (typeof priority === 'string' && typeof id === 'object') {
+      options = id;
+      id = priority;
+      priority = 0;
+    } else if (typeof priority === 'string') {
       func2 = func1;
       func1 = id;
       id = priority;
@@ -130,7 +137,9 @@ export default class Bench {
 
     // Test case options
     const opts = {
-      ...this.opts
+      ...this.opts,
+      repetitions: 1, // repetitions per test case
+      ...options
     };
 
     assert(!this.tests[id], 'tests need unique id strings');
@@ -267,7 +276,8 @@ async function runBenchTestTimedAsync(test, minTime) {
 
   return {
     time,
-    iterations
+    // Test cases can use `options.repetitions` to account for multiple repetitions per iteration
+    iterations: iterations * test.opts.repetitions
   };
 }
 
