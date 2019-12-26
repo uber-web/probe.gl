@@ -106,15 +106,19 @@ export default class Bench {
   }
 
   // Signatures:
-  //  add(priority, id, testFunc)
   //  add(id, {...options}, testFunc)
   //  add(id, testFunc)
   // Deprecated signatures
+  //  add(priority, id, testFunc)
   //  add(priority, id, initFunc, testFunc)
   //  add(id, initFunc, testFunc)
 
   _add(priority, id, func1, func2) {
     let options = {};
+
+    if (typeof priority === 'number') {
+      console.warn('`priority` argument is deprecated, use `options.priority` instead');
+    }
 
     if (typeof priority === 'string' && typeof id === 'object') {
       options = id;
