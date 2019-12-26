@@ -32,21 +32,33 @@ Adds a group header.
 
 ### add
 
-Adds a test case. Supports multiple signatures
+Adds a test case. Supports multiple signatures:
 
-`bench.add(priority, id, initFunc, testFunc)`
-`bench.add(priority, id, testFunc)`
-`bench.add(id, initFunc, testFunc)`
-`bench.add(id, testFunc)`
+`bench.add(id : String, options : Object, initFunc: () => void, testFunc: () => void)`
+`bench.add(priority : Number, id : String, initFunc: () => void, testFunc: () => void)`
+`bench.add(priority : Number, id : String, testFunc: () => void)`
+`bench.add(id : String, initFunc: () => void, testFunc: () => void)`
+`bench.add(id : String, testFunc: () => void)`
 
-* `priority`=`0` (Number, optional) - allows controlling which bench cases execute.
-* `id` (String)
-* `initFunc` (Function, options) -
-* `testFunc` (Function, options) -
+Parameters
+
+* `priority`=`0` (Number, optional) - allows controlling which bench cases execute. Can also be specified through the `options` object.
+* `id` (String) - The unique string for this test. Used as the description of the test in the results.
+* `initFunc` (Function, options) - Function run before any tests
+* `testFunc` (Function, options) - Function run for each test iteration
+
+Options
+
+* `repetitions` multiplier applied to the number of actual repetitions. Use this if each test case already performs a number of iterations
+* `priority` can be specified as part of options
+
+Returns itself for chaining.
 
 ## addAsync
 
-Adds an async test case. Use when `testFunc` returns a promise. Supports same signatures as `add`.
+Adds an async test case. Use when `testFunc` returns a promise. Supports same signatures as `add`. 
+
+When using `addAsync`, `testFunc` is expected to return a promise.
 
 ### run()
 
