@@ -1,8 +1,29 @@
 # What's New
 
+## v3.x 
+
+Release Date: TBD
+
+### **@probe.gl/bench**
+- New bench case option: `repetitions`
+
+## v3.2
+
+Release Date: Dec 16, 2019
+
+New modules
+- `@probe.gl/stats` New module enabling users to import `Stats` object only
+- `@probe.gl/seer` Seer repository moved into probe.gl monorepo.
+
+`@probe.gl/log`: `Log` class improvements
+- Rename `log.priority` to `log.level`
+- Change default `enabled` behavior of Log class
+- Improve log perf
+- Remove rest parameters from Log class
+
 ## v3.1
 
-Release Date: TBD, Sep 2019 (Beta Release Available)
+Release Date: Sep 13, 2019
 
 ### **probe.gl**
 
@@ -20,7 +41,7 @@ Release Date: TBD, Sep 2019 (Beta Release Available)
 
 ## v3.0
 
-Release Date: Apr, 2019
+Release Date: Apr 1, 2019
 
 ## Module split
 

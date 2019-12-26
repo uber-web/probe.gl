@@ -7,7 +7,18 @@ export function formatSI(number, precision = 3) {
 }
 
 function getSISuffix(multipleOf3) {
-  const SI_SUFFIXES = {0: '', 1: 'K', 2: 'M', 3: 'G', '-1': 'm', '-2': 'µ', '-3': 'n'};
+  const SI_SUFFIXES = {
+    0: '',
+    1: 'K',
+    2: 'M',
+    3: 'G',
+    4: 'T',
+    5: 'P',
+    6: 'E',
+    '-1': 'm',
+    '-2': 'µ',
+    '-3': 'n'
+  };
   const key = String(multipleOf3);
   return key in SI_SUFFIXES ? SI_SUFFIXES[key] : `e${multipleOf3 * 3}`;
 }
