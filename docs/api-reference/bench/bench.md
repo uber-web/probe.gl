@@ -35,7 +35,6 @@ Adds a group header.
 Adds a test case. Supports multiple signatures:
 
 `bench.add(id : String, options : Object, testFunc: () => void)`
-`bench.add(priority : Number, id : String, testFunc: () => void)`
 `bench.add(id : String, testFunc: () => void)`
 
 Parameters
