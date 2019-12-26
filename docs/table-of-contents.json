@@ -4,55 +4,55 @@
     {
       "title": "Overview",
       "entries": [
-        {"entry": "docs/README"},
+        {"entry": "docs"},
         {"entry": "docs/whats-new"}
       ]
     },
     {
       "title": "Getting Started",
       "entries": [
-        {"entry": "docs/get-started/README"},
+        {"entry": "docs/get-started"},
         {"entry": "docs/get-started/adding-probes"}
       ]
     },
     {
       "title": "Developer Guide",
       "entries": [
-        {"entry": "docs/articles/about-logging.md"},
-        {"entry": "docs/articles/about-benchmarking.md"},
-        {"entry": "docs/articles/about-testing.md"}
+        {"entry": "docs/articles/about-logging"},
+        {"entry": "docs/articles/about-benchmarking"},
+        {"entry": "docs/articles/about-testing"}
       ]
     },
     {
       "title": "API Reference",
       "chapters": [
         {
-          "title": "Logging and Stats",
+          "title": "Logging",
           "entries": [
-            {"entry": "docs/api-reference/log/log.md"},
-            {"entry": "docs/api-reference/log/stat.md"},
-            {"entry": "docs/api-reference/log/stats.md"}
+            {"entry": "docs/api-reference/log/log"}
           ]
         },
         {
-          "title": "Widgets",
+          "title": "Stats",
           "entries": [
-            {"entry": "docs/api-reference/stats-widget/stats-widget.md"}
+            {"entry": "docs/api-reference/stats/stat"},
+            {"entry": "docs/api-reference/stats/stats"},
+            {"entry": "docs/api-reference/stats-widget/stats-widget"}
           ]
         },
         {
           "title": "Benchmarking",
           "entries": [
-            {"entry": "docs/api-reference/bench/bench.md"}
+            {"entry": "docs/api-reference/bench/bench"}
           ]
         },
         {
           "title": "Testing",
           "entries": [
-            {"entry": "docs/api-reference/test-utils/browser-driver.md"},
-            {"entry": "docs/api-reference/test-utils/browser-test-driver.md"},
-            {"entry": "docs/api-reference/test-utils/make-spy.md"},
-            {"entry": "docs/api-reference/test-utils/log-to-dom.md"}
+            {"entry": "docs/api-reference/test-utils/browser-driver"},
+            {"entry": "docs/api-reference/test-utils/browser-test-driver"},
+            {"entry": "docs/api-reference/test-utils/make-spy"},
+            {"entry": "docs/api-reference/test-utils/log-to-dom"}
           ]
         }
       ]

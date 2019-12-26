@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import {StatsWidget} from '@probe.gl/stats-widget';
 import {Stats} from '@probe.gl/stats';
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this._stats = new Stats({id: 'Stats Demo'});
