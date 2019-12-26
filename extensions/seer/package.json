@@ -64,7 +64,7 @@
     "react-map-gl": "beta",
     "sinon": "^2.3.6",
     "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0",
+    "webpack-dev-server": "^3.8.2",
     "webpack-stats-plugin": "^0.1.5"
   },
   "ava": {
