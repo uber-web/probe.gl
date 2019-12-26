@@ -34,10 +34,8 @@ Adds a group header.
 
 Adds a test case. Supports multiple signatures:
 
-`bench.add(id : String, options : Object, initFunc: () => void, testFunc: () => void)`
-`bench.add(priority : Number, id : String, initFunc: () => void, testFunc: () => void)`
+`bench.add(id : String, options : Object, testFunc: () => void)`
 `bench.add(priority : Number, id : String, testFunc: () => void)`
-`bench.add(id : String, initFunc: () => void, testFunc: () => void)`
 `bench.add(id : String, testFunc: () => void)`
 
 Parameters
@@ -45,10 +43,11 @@ Parameters
 * `priority`=`0` (Number, optional) - allows controlling which bench cases execute. Can also be specified through the `options` object.
 * `id` (String) - The unique string for this test. Used as the description of the test in the results.
 * `initFunc` (Function, options) - Function run before any tests
-* `testFunc` (Function, options) - Function run for each test iteration
+* `testFunc` (Function, options) - Function run for each test iteration. 
 
 Options
 
+* `initialize`: `() => any` initialization function called once before `testFunc` iterations start.
 * `repetitions` multiplier applied to the number of actual repetitions. Use this if each test case already performs a number of iterations
 * `priority` can be specified as part of options
 

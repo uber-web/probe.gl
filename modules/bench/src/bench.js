@@ -106,11 +106,13 @@ export default class Bench {
   }
 
   // Signatures:
-  // add(priority, id, initFunc, testFunc)
-  // add(priority, id, testFunc)
-  // add({id, {...options}, initFunc, testFunc)
-  // add(id, initFunc, testFunc)
-  // add(id, testFunc)
+  //  add(priority, id, testFunc)
+  //  add(id, {...options}, testFunc)
+  //  add(id, testFunc)
+  // Deprecated signatures
+  //  add(priority, id, initFunc, testFunc)
+  //  add(id, initFunc, testFunc)
+
   _add(priority, id, func1, func2) {
     let options = {};
 
@@ -128,9 +130,10 @@ export default class Bench {
     assert(typeof id === 'string');
     assert(typeof func1 === 'function');
 
-    let initFunc = null;
+    let initFunc = options.initialize;
     let testFunc = func1;
     if (typeof func2 === 'function') {
+      console.warn('`initFunc` argument is deprecated, use `options.initialize` instead');
       initFunc = func1;
       testFunc = func2;
     }

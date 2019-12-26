@@ -21,6 +21,22 @@ test('Bench#run', t => {
     log: ({message}) => t.comment(message)
   });
 
+  suite.add('initFunc in options', {initialize: () => 1}, value => {
+    if (!value === 1) {
+      t.fail();
+    }
+  });
+
+  suite.add(
+    'initFunc as param (deprecated)',
+    () => 1,
+    value => {
+      if (!value === 1) {
+        t.fail();
+      }
+    }
+  );
+
   iteratorBench(suite);
   parseColorBench(suite);
 
