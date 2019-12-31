@@ -145,7 +145,8 @@ export default class Bench {
     // Test case options
     const opts = {
       ...this.opts,
-      repetitions: 1, // repetitions per test case
+      multiplier: 1, // multiplier per test case
+      unit: 'iterations',
       ...options
     };
 
@@ -196,7 +197,7 @@ async function runTests({tests, onBenchmarkComplete = noop}) {
   for (const id in tests) {
     const test = tests[id];
     if (test.group) {
-      logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
+      logEntry(test, {...test.opts, entry: LOG_ENTRY.GROUP, message: test.id});
     } else {
       await runTest({test, onBenchmarkComplete});
     }
@@ -245,7 +246,7 @@ async function runBenchTestAsync(test) {
   for (let i = 0; i < test.opts.minIterations; i++) {
     let time;
     let iterations;
-    if (test.async && test.throughput) {
+    if (test.async && test._throughput) {
       ({time, iterations} = await runBenchTestParallelIterationsAsync(test, test.throughput));
     } else {
       ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
@@ -289,8 +290,8 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
 
   return {
     time,
-    // Test cases can use `options.repetitions` to account for multiple repetitions per iteration
-    iterations: iterations * test.opts.repetitions
+    // Test cases can use `options.multiplier` to account for multiple repetitions per iteration
+    iterations: iterations * test.opts.multiplier
   };
 }
 

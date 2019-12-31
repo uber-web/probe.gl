@@ -46,8 +46,9 @@ Options
 
 * `priority`=`0` (Number, optional) - allows controlling which bench cases execute. Can also be specified through the `options` object.
 * `initialize`=: `() => any` initialization function called once before `testFunc` iterations start.
-* `repetitions`=`1` : `Number` Multiplier applied to the number of actual repetitions. Use this if each test case already performs a number of iterations. Affects reporting only.
-* `throughput`=`false` : `Number` Use with `Bench.addAsync` to specify that `throughput` iterations should be run in parallel. Note that automatic iteration selection is not available in this case.
+* `multiplier`=`1` : `Number` Multiplier applied to the number of actual iterations. Use this if each test case already performs a number of iterations. Affects reporting only.
+* `unit`=`'iterations'`: Can be used to customize the output message for bench results.
+* `_throughput`=`false` : `Number` Use with `Bench.addAsync` to specify that `_throughput` iterations should be run in parallel. Note that automatic iteration selection is not available in this case.
 
 Returns: itself for chaining.
 

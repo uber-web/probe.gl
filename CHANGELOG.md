@@ -1,8 +1,9 @@
 CHANGELOG
 
 v3.x
-- `Bench.addAsync` New `options.throughput` to measure parallel async processing throughput
-- `Bench.add` New `options.repetitions` to account for multiple repetitions per iteration
+- `Bench.addAsync` Experimental `options._throughput` to measure parallel async processing throughput
+- `Bench.add/addAsync` New `options.multiplier` to adjust bench result numbers to account for multiple repetitions per iteration
+- `Bench.add/addAsync` New `options.units` to customize bench result messages
 
 v3.2.0-beta.3 - Dec 5, 2019
 

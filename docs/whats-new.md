@@ -5,7 +5,7 @@
 Release Date: TBD
 
 ### **@probe.gl/bench**
-- New bench case option: `repetitions`
+- New bench case options: `options.multiplier`, `options.units`, `options._throughput`
 
 ## v3.2
 
