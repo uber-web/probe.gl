@@ -32,14 +32,14 @@ export function logResultsAsMarkdownTable({entry, id, itersPerSecond, error, tim
   }
 }
 
-export function logResultsAsTree({entry, id, itersPerSecond, error, time}) {
+export function logResultsAsTree({entry, id, itersPerSecond, error, time, unit}) {
   switch (entry) {
     case LOG_ENTRY.GROUP:
       console.log('');
       console.log(`${id}`);
       break;
     case LOG_ENTRY.TEST:
-      console.log(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
+      console.log(`├─ ${id}: ${itersPerSecond} ${unit}/s ±${(error * 100).toFixed(2)}%`);
       break;
     case LOG_ENTRY.COMPLETE:
       console.log('');
@@ -49,11 +49,11 @@ export function logResultsAsTree({entry, id, itersPerSecond, error, time}) {
   }
 }
 
-export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, time}) {
+export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, time, unit}) {
   switch (entry) {
     case LOG_ENTRY.TEST:
       console.log(
-        `├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}% (${time.toFixed(
+        `├─ ${id}: ${itersPerSecond} ${unit}/s ±${(error * 100).toFixed(2)}% (${time.toFixed(
           2
         )}s elapsed)`
       );

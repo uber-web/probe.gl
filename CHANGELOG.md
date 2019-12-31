@@ -1,5 +1,10 @@
 CHANGELOG
 
+v3.x
+- `Bench.addAsync` Experimental `options._throughput` to measure parallel async processing throughput
+- `Bench.add/addAsync` New `options.multiplier` to adjust bench result numbers to account for multiple repetitions per iteration
+- `Bench.add/addAsync` New `options.units` to customize bench result messages
+
 v3.2.1 - Jan 15, 2019
 
 - [test-utils] Add option to exclude empty pixels in screenshot diffing (#125)
