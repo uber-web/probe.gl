@@ -1,9 +1,12 @@
 CHANGELOG
 
-v3.x
-- `Bench.addAsync` Experimental `options._throughput` to measure parallel async processing throughput
-- `Bench.add/addAsync` New `options.multiplier` to adjust bench result numbers to account for multiple repetitions per iteration
-- `Bench.add/addAsync` New `options.units` to customize bench result messages
+v3.3.0-alpha.1 - Dec 31, 2019
+
+- bench: Add `options._throughput` to run async tests in parallel (#121)
+- bench: Add `options.repetitions` to tests for more meaningful metrics reporting (#120)
+- bench: Join sync and async runner code paths (#119)
+- Bump webpack-dev-server from 2.11.5 to 3.8.2 in /extensions/seer (#106)
+- Bump serialize-javascript from 1.9.1 to 2.1.1 in /extensions/seer (#113)
 
 v3.2.0-beta.3 - Dec 5, 2019
 
