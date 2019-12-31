@@ -145,7 +145,8 @@ export default class Bench {
     // Test case options
     const opts = {
       ...this.opts,
-      repetitions: 1, // repetitions per test case
+      multiplier: 1, // multiplier per test case
+      unit: 'iterations',
       ...options
     };
 
@@ -196,7 +197,7 @@ async function runTests({tests, onBenchmarkComplete = noop}) {
   for (const id in tests) {
     const test = tests[id];
     if (test.group) {
-      logEntry(test, {entry: LOG_ENTRY.GROUP, id: test.id, message: test.id});
+      logEntry(test, {...test.opts, entry: LOG_ENTRY.GROUP, message: test.id});
     } else {
       await runTest({test, onBenchmarkComplete});
     }
@@ -243,7 +244,13 @@ async function runBenchTestAsync(test) {
   let totalIterations = 0;
 
   for (let i = 0; i < test.opts.minIterations; i++) {
-    const {time, iterations} = await runBenchTestTimedAsync(test, test.opts.time);
+    let time;
+    let iterations;
+    if (test.async && test._throughput) {
+      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, test.throughput));
+    } else {
+      ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
+    }
     const iterationsPerSecond = iterations / time;
     results.push(iterationsPerSecond);
     totalTime += time;
@@ -259,7 +266,7 @@ async function runBenchTestAsync(test) {
 }
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
-async function runBenchTestTimedAsync(test, minTime) {
+async function runBenchTestForMinimumTimeAsync(test, minTime) {
   let iterations = 1;
   let elapsedMillis = 0;
 
@@ -283,24 +290,31 @@ async function runBenchTestTimedAsync(test, minTime) {
 
   return {
     time,
-    // Test cases can use `options.repetitions` to account for multiple repetitions per iteration
-    iterations: iterations * test.opts.repetitions
+    // Test cases can use `options.multiplier` to account for multiple repetitions per iteration
+    iterations: iterations * test.opts.multiplier
   };
+}
+
+// Run a test func for a specific amount of parallel iterations
+async function runBenchTestParallelIterationsAsync(test, iterations) {
+  const testArgs = test.initFunc && test.initFunc();
+
+  const promises = [];
+
+  const {context, testFunc} = test;
+  for (let i = 0; i < iterations; i++) {
+    promises.push(testFunc.call(context, testArgs));
+  }
+
+  return await Promise.all(promises);
 }
 
 // Run a test func for a specific amount of iterations
 async function runBenchTestIterationsAsync(test, iterations) {
   const testArgs = test.initFunc && test.initFunc();
-
   const {context, testFunc} = test;
-  if (context && testArgs) {
-    for (let i = 0; i < iterations; i++) {
-      await testFunc.call(context, testArgs);
-    }
-  } else {
-    for (let i = 0; i < iterations; i++) {
-      await testFunc.call(context);
-    }
+  for (let i = 0; i < iterations; i++) {
+    await testFunc.call(context, testArgs);
   }
 }
 
@@ -310,6 +324,7 @@ async function runBenchTestIterationsAsync(test, iterations) {
 function runBenchTestIterations(test, iterations) {
   const testArgs = test.initFunc && test.initFunc();
 
+  // When running sync, avoid overhead of parameter passing if not needed
   const {context, testFunc} = test;
   if (context && testArgs) {
     for (let i = 0; i < iterations; i++) {

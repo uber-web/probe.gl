@@ -39,18 +39,18 @@ Adds a test case. Supports multiple signatures:
 
 Parameters
 
-* `priority`=`0` (Number, optional) - allows controlling which bench cases execute. Can also be specified through the `options` object.
 * `id` (String) - The unique string for this test. Used as the description of the test in the results.
-* `initFunc` (Function, options) - Function run before any tests
-* `testFunc` (Function, options) - Function run for each test iteration. 
+* `testFunc` (Function, options) - Function run for each test iteration.
 
 Options
 
-* `initialize`: `() => any` initialization function called once before `testFunc` iterations start.
-* `repetitions` multiplier applied to the number of actual repetitions. Use this if each test case already performs a number of iterations
-* `priority` can be specified as part of options
+* `priority`=`0` (Number, optional) - allows controlling which bench cases execute. Can also be specified through the `options` object.
+* `initialize`=: `() => any` initialization function called once before `testFunc` iterations start.
+* `multiplier`=`1` : `Number` Multiplier applied to the number of actual iterations. Use this if each test case already performs a number of iterations. Affects reporting only.
+* `unit`=`'iterations'`: Can be used to customize the output message for bench results.
+* `_throughput`=`false` : `Number` Use with `Bench.addAsync` to specify that `_throughput` iterations should be run in parallel. Note that automatic iteration selection is not available in this case.
 
-Returns itself for chaining.
+Returns: itself for chaining.
 
 ## addAsync
 
