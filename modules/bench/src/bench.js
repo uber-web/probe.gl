@@ -184,6 +184,7 @@ function runCalibrationTests({tests}) {
 function logEntry(test, opts) {
   const priority = (global.probe && global.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
+    opts = {...test.opts, ...opts};
     test.opts.log(opts);
   }
 }
@@ -197,7 +198,7 @@ async function runTests({tests, onBenchmarkComplete = noop}) {
   for (const id in tests) {
     const test = tests[id];
     if (test.group) {
-      logEntry(test, {...test.opts, entry: LOG_ENTRY.GROUP, message: test.id});
+      logEntry(test, {entry: LOG_ENTRY.GROUP, message: test.id});
     } else {
       await runTest({test, onBenchmarkComplete});
     }
@@ -216,8 +217,6 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
   if (!silent) {
     logEntry(test, {
       entry: LOG_ENTRY.TEST,
-      id: test.id,
-      priority: test.priority,
       itersPerSecond,
       time,
       error,
@@ -246,8 +245,11 @@ async function runBenchTestAsync(test) {
   for (let i = 0; i < test.opts.minIterations; i++) {
     let time;
     let iterations;
+    // Runs "test._throughput" parallel test cases
     if (test.async && test._throughput) {
-      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, test.throughput));
+      const {_throughput} = test;
+      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, _throughput));
+      iterations *= _throughput;
     } else {
       ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
     }
