@@ -146,7 +146,7 @@ export default class Bench {
     const opts = {
       ...this.opts,
       multiplier: 1, // multiplier per test case
-      unit: 'iterations',
+      unit: '',
       ...options
     };
 
@@ -184,7 +184,8 @@ function runCalibrationTests({tests}) {
 function logEntry(test, opts) {
   const priority = (global.probe && global.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
-    opts = {...test.opts, ...opts};
+    opts = {...test, ...test.opts, ...opts};
+    delete opts.opts;
     test.opts.log(opts);
   }
 }
@@ -213,7 +214,11 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
 
   const {iterationsPerSecond, time, iterations, error} = result;
 
-  const itersPerSecond = formatSI(iterationsPerSecond);
+  let itersPerSecond = formatSI(iterationsPerSecond);
+  if (test.opts.unit) {
+    itersPerSecond += ` ${test.opts.unit}`;
+  }
+
   if (!silent) {
     logEntry(test, {
       entry: LOG_ENTRY.TEST,
@@ -246,10 +251,9 @@ async function runBenchTestAsync(test) {
     let time;
     let iterations;
     // Runs "test._throughput" parallel test cases
-    if (test.async && test._throughput) {
-      const {_throughput} = test;
+    if (test.async && test.opts._throughput) {
+      const {_throughput} = test.opts;
       ({time, iterations} = await runBenchTestParallelIterationsAsync(test, _throughput));
-      iterations *= _throughput;
     } else {
       ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
     }
@@ -301,6 +305,8 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
 async function runBenchTestParallelIterationsAsync(test, iterations) {
   const testArgs = test.initFunc && test.initFunc();
 
+  const timeStart = getHiResTimestamp();
+
   const promises = [];
 
   const {context, testFunc} = test;
@@ -308,7 +314,14 @@ async function runBenchTestParallelIterationsAsync(test, iterations) {
     promises.push(testFunc.call(context, testArgs));
   }
 
-  return await Promise.all(promises);
+  await Promise.all(promises);
+
+  const time = (getHiResTimestamp() - timeStart) / 1000;
+
+  return {
+    time,
+    iterations
+  };
 }
 
 // Run a test func for a specific amount of iterations
