@@ -21,7 +21,7 @@ test('Bench#run', t => {
     log: ({message}) => t.comment(message)
   });
 
-  suite.add('initFunc in options', {initialize: () => 1}, value => {
+  suite.add('initFunc in options', {initialize: () => 1, unit: 'initializations'}, value => {
     if (!value === 1) {
       t.fail();
     }

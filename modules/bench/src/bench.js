@@ -146,7 +146,7 @@ export default class Bench {
     const opts = {
       ...this.opts,
       multiplier: 1, // multiplier per test case
-      unit: 'iterations',
+      unit: '',
       ...options
     };
 
@@ -184,6 +184,8 @@ function runCalibrationTests({tests}) {
 function logEntry(test, opts) {
   const priority = (global.probe && global.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
+    opts = {...test, ...test.opts, ...opts};
+    delete opts.opts;
     test.opts.log(opts);
   }
 }
@@ -197,7 +199,7 @@ async function runTests({tests, onBenchmarkComplete = noop}) {
   for (const id in tests) {
     const test = tests[id];
     if (test.group) {
-      logEntry(test, {...test.opts, entry: LOG_ENTRY.GROUP, message: test.id});
+      logEntry(test, {entry: LOG_ENTRY.GROUP, message: test.id});
     } else {
       await runTest({test, onBenchmarkComplete});
     }
@@ -212,12 +214,14 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
 
   const {iterationsPerSecond, time, iterations, error} = result;
 
-  const itersPerSecond = formatSI(iterationsPerSecond);
+  let itersPerSecond = formatSI(iterationsPerSecond);
+  if (test.opts.unit) {
+    itersPerSecond += ` ${test.opts.unit}`;
+  }
+
   if (!silent) {
     logEntry(test, {
       entry: LOG_ENTRY.TEST,
-      id: test.id,
-      priority: test.priority,
       itersPerSecond,
       time,
       error,
@@ -246,8 +250,10 @@ async function runBenchTestAsync(test) {
   for (let i = 0; i < test.opts.minIterations; i++) {
     let time;
     let iterations;
-    if (test.async && test._throughput) {
-      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, test.throughput));
+    // Runs "test._throughput" parallel test cases
+    if (test.async && test.opts._throughput) {
+      const {_throughput} = test.opts;
+      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, _throughput));
     } else {
       ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
     }
@@ -299,6 +305,8 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
 async function runBenchTestParallelIterationsAsync(test, iterations) {
   const testArgs = test.initFunc && test.initFunc();
 
+  const timeStart = getHiResTimestamp();
+
   const promises = [];
 
   const {context, testFunc} = test;
@@ -306,7 +314,14 @@ async function runBenchTestParallelIterationsAsync(test, iterations) {
     promises.push(testFunc.call(context, testArgs));
   }
 
-  return await Promise.all(promises);
+  await Promise.all(promises);
+
+  const time = (getHiResTimestamp() - timeStart) / 1000;
+
+  return {
+    time,
+    iterations
+  };
 }
 
 // Run a test func for a specific amount of iterations
