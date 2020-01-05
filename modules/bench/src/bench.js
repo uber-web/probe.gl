@@ -213,10 +213,7 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
 
   const {iterationsPerSecond, time, iterations, error} = result;
 
-  let itersPerSecond = formatSI(iterationsPerSecond);
-  if (test.opts.unit) {
-    itersPerSecond += ` ${test.opts.unit}`;
-  }
+  const itersPerSecond = formatSI(iterationsPerSecond);
 
   if (!silent) {
     logEntry(test, {
@@ -224,7 +221,7 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
       itersPerSecond,
       time,
       error,
-      message: `${test.id} ${itersPerSecond}/s ±${(error * 100).toFixed(2)}%`
+      message: `${test.id} ${itersPerSecond} ${test.opts.unit}/s ±${(error * 100).toFixed(2)}%`
     });
   }
 
@@ -256,6 +253,11 @@ async function runBenchTestAsync(test) {
     } else {
       ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
     }
+
+    // Test options can have `multiplier` to return a more semantic number
+    // (e.g. number of bytes, lines, points or pixels decoded per iteration)
+    iterations *= test.opts.multiplier;
+
     const iterationsPerSecond = iterations / time;
     results.push(iterationsPerSecond);
     totalTime += time;
@@ -295,8 +297,7 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
 
   return {
     time,
-    // Test cases can use `options.multiplier` to account for multiple repetitions per iteration
-    iterations: iterations * test.opts.multiplier
+    iterations
   };
 }
 
