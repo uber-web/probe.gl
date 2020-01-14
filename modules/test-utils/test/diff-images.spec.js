@@ -50,7 +50,7 @@ test('diffImage', async t => {
       title: 'color difference',
       source1: resolve(dataDir, 'icon-marker.png'),
       source2: resolve(dataDir, 'icon-marker-color.png'),
-      options: {threshold: 0.5, excludeEmpty: true},
+      options: {threshold: 0.5, includeEmpty: false},
       success: false
     },
     {

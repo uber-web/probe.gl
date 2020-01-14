@@ -29,7 +29,7 @@ function diffPNGs(image1, image2, options) {
     createDiffImage = false,
     tolerance = 0.1,
     includeAA = false,
-    excludeEmpty = false
+    includeEmpty = true
   } = options;
 
   const diffImage = createDiffImage ? new Uint8Array(width * height) : null;
@@ -44,9 +44,9 @@ function diffPNGs(image1, image2, options) {
     {threshold: tolerance, includeAA} // options
   );
 
-  const pixelCount = excludeEmpty
-    ? Math.min(getNonEmptyPixels(image1.data), getNonEmptyPixels(image2.data))
-    : width * height;
+  const pixelCount = includeEmpty
+    ? width * height
+    : Math.min(getNonEmptyPixels(image1.data), getNonEmptyPixels(image2.data));
 
   const match = 1 - mismatchedPixels / pixelCount;
 

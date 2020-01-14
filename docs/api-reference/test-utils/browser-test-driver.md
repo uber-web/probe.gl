@@ -126,6 +126,7 @@ Request a pixel diff between the current page and a reference "golden image." Th
 * `threshold` (Number, optional) - the matching score for the test to pass. Between `0` (no pixels matched) to `1` (all pixels matched). Default `0.99`.
 * `tolerance` (Number, optional) - the tolerance when comparing two pixels. Between `0` (strict color match) to `1` (anything will pass). Default `0.1`.
 * `includeAA` (Boolean, optional) - If `true`, all pixels are compared. Otherwise detect and ignore anti-aliased pixels. Default `false`.
+* `includeEmpty` (Boolean, optional) - If `true`, the matching score is calculated as a percentage of all pixels. If `false`, empty pixels (alpha 0) will be excluded, potentially make the score lower. Default `true`.
 * `createDiffImage` (Boolean, optional) - if `true`, will generate binary image data that highlight the mismatched pixels. Default `false`.
 * `saveOnFail` (Boolean, optional) - if `true`, any screenshots that failed to meet the target matching rate will be saved to disk for further investigation. Default `false`.
 * `saveAs` (String, optional) - the filename to save the screenshot as. If the string contains `[name]`, it will be replaced by the golden image path. Default `[name]-failed.png`.
