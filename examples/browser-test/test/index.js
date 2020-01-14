@@ -1,4 +1,3 @@
-/* global window */
 const test = require('tape');
 
 // Add BrowserTestDriver hooks

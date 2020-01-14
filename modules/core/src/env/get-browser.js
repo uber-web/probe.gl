@@ -41,7 +41,6 @@ export default function getBrowser(mockUserAgent) {
     return 'Electron';
   }
 
-  /* global navigator */
   const navigator_ = typeof navigator !== 'undefined' ? navigator : {};
   const userAgent = mockUserAgent || navigator_.userAgent || '';
   // const appVersion = navigator_.appVersion || '';

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* global console */
 import {rightPad} from 'probe.gl';
 
 // TODO - this is duplicated from bench.js to avoid circular imports
