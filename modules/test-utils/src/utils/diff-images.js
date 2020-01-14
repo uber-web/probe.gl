@@ -1,4 +1,3 @@
-/* global Buffer */
 import fs from 'fs';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
@@ -25,7 +24,13 @@ function diffPNGs(image1, image2, options) {
     throw new Error('Image sizes do not match');
   }
 
-  const {threshold = 0.99, createDiffImage = false, tolerance = 0.1, includeAA = false} = options;
+  const {
+    threshold = 0.99,
+    createDiffImage = false,
+    tolerance = 0.1,
+    includeAA = false,
+    excludeEmpty = false
+  } = options;
 
   const diffImage = createDiffImage ? new Uint8Array(width * height) : null;
 
@@ -39,7 +44,11 @@ function diffPNGs(image1, image2, options) {
     {threshold: tolerance, includeAA} // options
   );
 
-  const match = 1 - mismatchedPixels / (width * height);
+  const pixelCount = excludeEmpty
+    ? Math.min(getNonEmptyPixels(image1.data), getNonEmptyPixels(image2.data))
+    : width * height;
+
+  const match = 1 - mismatchedPixels / pixelCount;
 
   return {
     match,
@@ -47,6 +56,17 @@ function diffPNGs(image1, image2, options) {
     success: match >= threshold,
     diffImage
   };
+}
+
+function getNonEmptyPixels(data) {
+  const pixels = new Uint8Array(data.buffer);
+  let count = 0;
+  for (let i = 3; i < pixels.length; i += 4) {
+    if (pixels[i] > 0) {
+      count++;
+    }
+  }
+  return count;
 }
 
 // TODO - replace pngjs with @loaders.gl/images
