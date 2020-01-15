@@ -27,7 +27,6 @@ function captureAndDiffScreen() {
   });
 }
 
-/* global window */
 if (!window.browserTestDriver_finish) {
   window.browserTestDriver_fail = noOp;
   window.browserTestDriver_finish = noOp;
