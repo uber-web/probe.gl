@@ -44,9 +44,7 @@ function diffPNGs(image1, image2, options) {
     {threshold: tolerance, includeAA} // options
   );
 
-  const pixelCount = includeEmpty
-    ? width * height
-    : Math.min(getNonEmptyPixels(image1.data), getNonEmptyPixels(image2.data));
+  const pixelCount = includeEmpty ? width * height : countNonEmptyPixels(image1.data, image2.data);
 
   const match = 1 - mismatchedPixels / pixelCount;
 
@@ -58,11 +56,13 @@ function diffPNGs(image1, image2, options) {
   };
 }
 
-function getNonEmptyPixels(data) {
-  const pixels = new Uint8Array(data.buffer);
+function countNonEmptyPixels(data1, data2) {
+  const pixels1 = new Uint8Array(data1.buffer);
+  const pixels2 = new Uint8Array(data2.buffer);
   let count = 0;
-  for (let i = 3; i < pixels.length; i += 4) {
-    if (pixels[i] > 0) {
+  for (let i = 3; i < pixels1.length; i += 4) {
+    // Exclude a pixel if it's empty in both images
+    if (pixels1[i] > 0 || pixels2[i] > 0) {
       count++;
     }
   }
