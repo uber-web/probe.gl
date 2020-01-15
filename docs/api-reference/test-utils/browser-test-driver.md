@@ -30,6 +30,8 @@ new BrowserTestDriver().run({
 In your script that is run on the browser:
 
 ```js
+// Polyfill so that the bundle can execute in browsers not controlled by puppeteer
+require('@probe.gl/test-utils/polyfill');
 // Run test cases
 ...
 // App is done running, terminate the browser instance
