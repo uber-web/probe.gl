@@ -16,7 +16,8 @@
   "esnext": "dist/es6/index.js",
   "files": [
     "dist",
-    "src"
+    "src",
+    "polyfill.js"
   ],
   "browser": {
     "child_process": false,
