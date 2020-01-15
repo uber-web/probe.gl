@@ -1,4 +1,3 @@
-/* global global, window */
 import test from 'tape-catch';
 import {Stats} from '@probe.gl/stats';
 import {StatsWidget} from '@probe.gl/stats-widget';

@@ -18,8 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* eslint-disable no-console, no-try-catch */
-/* global console */
+/* eslint-disable no-console */
 import {VERSION, isBrowser} from '../utils/globals';
 import LocalStorage from '../utils/local-storage';
 import {formatImage, formatTime, leftPad} from '../utils/formatters';
@@ -29,7 +28,6 @@ import assert from '../utils/assert';
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 /* eslint-disable no-console */
-/* global console, Image */
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {

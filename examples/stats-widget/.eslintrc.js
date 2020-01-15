@@ -4,12 +4,12 @@ module.exports = {
   plugins: ['react'],
   parser: 'babel-eslint',
   extends: ['uber-jsx', 'uber-es2015', 'prettier', 'prettier/react', 'plugin:import/errors'],
-  overrides: {
+  overrides: [{
     files: ['*.config.js'],
     rules: {
       'import/no-extraneous-dependencies': 0
     }
-  },
+  }],
   "settings": {
     "import/resolver": "webpack"
   },
