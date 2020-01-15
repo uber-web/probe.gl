@@ -1,5 +1,10 @@
 CHANGELOG
 
+v3.2.1 - Jan 15, 2019
+
+- [test-utils] Add option to exclude empty pixels in screenshot diffing (#125)
+- [test-utils] Add polyfill (#124)
+
 v3.2.0 - Dec 16, 2019
 
 v3.2.0-beta.3 - Dec 5, 2019
