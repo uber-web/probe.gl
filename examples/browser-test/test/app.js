@@ -1,4 +1,3 @@
-/* global document */
 export function render() {
   const css = document.createElement('style');
   css.innerHTML = `

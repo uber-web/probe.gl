@@ -1,6 +1,5 @@
 // Built on https://github.com/Erkaman/regl-stats-widget (MIT license)
 // widget styling constants.
-/* global document */
 import {formatMemory, formatTime} from './format-utils';
 import {Stats} from '@probe.gl/stats';
 

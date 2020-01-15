@@ -1,6 +1,5 @@
 // tape tests swallow console messages,
 // so this scripts does some "raw" logging to check that things work.
-/* global console */
 /* eslint-disable no-console */
 const {Log, COLOR} = require('probe.gl');
 // const path = require('path');

@@ -1,4 +1,3 @@
-/* global document, window */
 import test from 'tape-catch';
 
 import {BrowserTestDriver} from '@probe.gl/test-utils';

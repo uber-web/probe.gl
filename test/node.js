@@ -23,7 +23,6 @@ require('reify');
 const {JSDOM} = require('jsdom');
 const dom = new JSDOM(`<!DOCTYPE html>`);
 // These globals are required by @jupyter-widgets/base
-/* global global */
 global.window = dom.window;
 global.document = dom.window.document;
 global.Element = dom.window.Element;
