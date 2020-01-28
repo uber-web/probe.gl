@@ -8,3 +8,5 @@ const suite = new Bench({
 suite.group('probe.gl: No self benchmarks available yet (yarn test runs bench tests)');
 
 suite.run();
+
+export default suite;
