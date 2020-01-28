@@ -2,7 +2,7 @@
   "name": "@probe.gl/stats-widget",
   "description": "DOM widgets for testing and profiling",
   "license": "MIT",
-  "version": "3.3.0-alpha.3",
+  "version": "3.3.0-alpha.4",
   "keywords": [
     "javascript",
     "profiling",
@@ -23,7 +23,7 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "probe.gl": "3.3.0-alpha.3"
+    "probe.gl": "3.3.0-alpha.4"
   },
   "gitHead": "4fe07fa846b5f3a27d108e154aca63a46a746d99"
 }
