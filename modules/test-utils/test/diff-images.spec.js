@@ -63,7 +63,7 @@ test('diffImage', async t => {
 
   for (const testCase of TEST_CASES) {
     const result = await diffImages(testCase.source1, testCase.source2, testCase.options);
-    t.comment(`${result.title}: ${result.match}`);
+    t.comment(`${testCase.title}: ${result.match}`);
     t.is(result.success, testCase.success, 'returns correct result');
   }
 

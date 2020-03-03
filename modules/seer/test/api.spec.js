@@ -37,6 +37,7 @@ test('[API] send', t => {
   api.send('BEFORE_INIT');
   t.is(postMessage.callCount, 0, 'postMessage should not have been called before init');
 
+  // @ts-ignore
   window.__SEER_INITIALIZED__ = true;
 
   api.send('AFTER_INIT');
@@ -52,12 +53,14 @@ test('[API] listeners', t => {
   api.init();
   api.init();
 
+  // @ts-ignore
   t.truthy(window.__SEER_LISTENER__, 'The listener should have been defined');
   t.truthy(addEventListener.calledOnce, 'It should have added the listener');
   t.is(addEventListener.args[0][0], 'message', 'The listener should be on message events');
 
   t.is(api.listeners.size, 0, 'There should be no listeners');
 
+  // @ts-ignore
   t.throws(api.listenFor);
 
   const deck = spy();
@@ -82,6 +85,7 @@ test('[API] listeners', t => {
 
   api.clean();
   api.clean();
+  // @ts-ignore
   t.falsy(window.__SEER_LISTENER__);
   t.truthy(removeEventListener.calledOnce, 'The listener should have been removed');
 
@@ -91,6 +95,7 @@ test('[API] listeners', t => {
 test('[API] methods', t => {
   const postMessage = spy();
   window.postMessage = postMessage;
+  // @ts-ignore
   window.__SEER_INITIALIZED__ = true;
   ['LIST', 'LIST_ITEM'].forEach((type, i) => {
     api[camelCase(type)]({key: 'deck.gl'});

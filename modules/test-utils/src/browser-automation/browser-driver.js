@@ -22,7 +22,7 @@ import puppeteer from 'puppeteer';
 import ChildProcess from 'child_process';
 
 import {COLOR, Log} from 'probe.gl';
-import {getAvailablePort} from './process-utils';
+import {getAvailablePort} from '../utils/process-utils';
 
 const DEFAULT_SERVER_CONFIG = {
   command: 'webpack-dev-server',
@@ -41,26 +41,6 @@ const DEFAULT_PUPPETEER_OPTIONS = {
 const AUTO_PORT_START = 5000;
 
 function noop() {}
-
-function normalizeServerConfig(config, logger) {
-  const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
-
-  // Handle legacy configs
-  if (config.process) {
-    result.command = config.process;
-    logger.deprecated('process', 'command');
-  }
-  if (config.parameters) {
-    result.arguments = config.parameters;
-    logger.deprecated('parameters', 'arguments');
-  }
-
-  Object.assign(result, config, {
-    options: Object.assign({}, result.options, config.options)
-  });
-
-  return result;
-}
 
 export default class BrowserDriver {
   constructor({id = 'browser-driver'} = {}) {
@@ -188,4 +168,24 @@ export default class BrowserDriver {
         process.exit(1);
       });
   }
+}
+
+function normalizeServerConfig(config, logger) {
+  const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
+
+  // Handle legacy configs
+  if (config.process) {
+    result.command = config.process;
+    logger.deprecated('process', 'command');
+  }
+  if (config.parameters) {
+    result.arguments = config.parameters;
+    logger.deprecated('parameters', 'arguments');
+  }
+
+  Object.assign(result, config, {
+    options: Object.assign({}, result.options, config.options)
+  });
+
+  return result;
 }

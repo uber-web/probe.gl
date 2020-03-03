@@ -1,7 +1,9 @@
 const test = require('tape');
 
 // Add BrowserTestDriver hooks
+// @ts-ignore
 test.onFailure(window.browserTestDriver_fail);
+// @ts-ignore
 test.onFinish(window.browserTestDriver_finish);
 
 test('A test', t => {
@@ -11,6 +13,7 @@ test('A test', t => {
   const app = require('./app').render();
 
   window
+    // @ts-ignore
     .browserTestDriver_captureAndDiffScreen({
       threshold: 0.99,
       goldenImage: 'test/golden-image.png',

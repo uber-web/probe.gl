@@ -21,16 +21,20 @@ test('Bench#run', t => {
     log: ({message}) => t.comment(message)
   });
 
+  // @ts-ignore
   suite.add('initFunc in options', {initialize: () => 1, unit: 'initializations'}, value => {
+    // @ts-ignore
     if (!value === 1) {
       t.fail();
     }
   });
 
+  // @ts-ignore
   suite.add(
     'initFunc as param (deprecated)',
     () => 1,
     value => {
+      // @ts-ignore
       if (!value === 1) {
         t.fail();
       }

@@ -1,4 +1,5 @@
 import test from 'tape-catch';
+// @ts-ignore
 import {formatTime, formatMemory} from '@probe.gl/stats-widget/format-utils';
 
 test('StatsWidget#formatTime', t => {

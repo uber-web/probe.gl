@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import test from 'tape-catch';
 import {Stats} from '@probe.gl/stats';
 import {StatsWidget} from '@probe.gl/stats-widget';
@@ -81,15 +83,19 @@ test('StatsWidget#Update stats', t => {
   stats.get('Count').incrementCount();
   statsWidget.update();
 
+  // @ts-ignore
   t.equals(Object.keys(statsWidget._items).length, 3, 'Should have 3 items.');
+  // @ts-ignore
   t.equals(statsWidget._container.childNodes.length, 4, 'Should have 4 child nodes.');
 
+  // @ts-ignore
   t.equals(statsWidget._items.Count.innerHTML, 'Count: 1', 'Should correctly update count stats.');
 
   stats.get('GPU Memory').addCount(1500);
   statsWidget.update();
 
   t.equals(
+    // @ts-ignore
     statsWidget._items['GPU Memory'].innerHTML,
     'GPU Memory: 1.46kB',
     'Should correctly update memory stats.'
@@ -99,6 +105,7 @@ test('StatsWidget#Update stats', t => {
 });
 
 test('StatsWidget#formatters', t => {
+  // @ts-ignore
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {
@@ -116,20 +123,24 @@ test('StatsWidget#formatters', t => {
   stats.get('GPU Memory').addCount(1500);
   statsWidget.update();
 
+  // @ts-ignore
   t.equals(statsWidget._items.Count.innerHTML, 'Count: 1.0k', 'Should use customized formatter.');
   t.equals(
+    // @ts-ignore
     statsWidget._items['GPU Memory'].innerHTML,
     'GPU Memory: 1500',
     'Should use customized formatter.'
   );
 
   statsWidget.setStats(new Stats({id: 'test-stats-2'}));
+  // @ts-ignore
   t.equals(statsWidget._header.innerText, 'test-stats-2', "Should use the new stats' header.");
 
   t.end();
 });
 
 test('StatsWidget#resetOnUpdate', t => {
+  // @ts-ignore
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {

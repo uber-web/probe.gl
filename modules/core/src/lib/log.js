@@ -88,7 +88,7 @@ function getTableHeader(table) {
 // A console wrapper
 
 export default class Log {
-  constructor({id} = {}) {
+  constructor({id} = {id: ''}) {
     this.id = id;
     this.VERSION = VERSION;
     this._startTs = getHiResTimestamp();
@@ -163,11 +163,13 @@ export default class Log {
 
   // Warn, but only once, no console flooding
   warn(message) {
+    // @ts-ignore
     return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
   }
 
   // Print an error
   error(message) {
+    // @ts-ignore
     return this._getLogFunction(0, message, originalConsole.error, arguments);
   }
 
@@ -184,6 +186,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log to a group
   probe(logLevel, message) {
+    // @ts-ignore
     return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
       time: true,
       once: true
@@ -192,11 +195,13 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // Log a debug message
   log(logLevel, message) {
+    // @ts-ignore
     return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
   }
 
   // Log a normal message
   info(logLevel, message) {
+    // @ts-ignore
     return this._getLogFunction(logLevel, message, console.info, arguments);
   }
 
@@ -206,6 +211,7 @@ in a later version. Use \`${newUsage}\` instead`);
       logLevel,
       message,
       originalConsole.debug || originalConsole.info,
+      // @ts-ignore
       arguments,
       ONCE
     );

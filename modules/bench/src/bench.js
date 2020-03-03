@@ -18,8 +18,8 @@ export const LOG_ENTRY = {
 
 export default class Bench {
   constructor({
-    id, // Name is needed for regression (storing/loading)
-    log,
+    id = '', // Name is needed for regression (storing/loading)
+    log = null,
     time = TIME_THRESHOLD_MS,
     delay = TIME_COOLDOWN_MS,
     minIterations = MIN_ITERATIONS
@@ -192,6 +192,7 @@ function logEntry(test, opts) {
 // Run a list of bench test case asynchronously (with short timeouts inbetween)
 async function runTests({tests, onBenchmarkComplete = noop}) {
   // Run default warm up and calibration tests
+  // @ts-ignore
   runCalibrationTests({tests, onBenchmarkComplete});
 
   // Run the suite tests

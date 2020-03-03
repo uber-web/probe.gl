@@ -1,5 +1,6 @@
 /* eslint-disable max-statements */
 import Probe, {Log} from 'probe.gl';
+// @ts-ignore
 import {normalizeArguments} from 'probe.gl/lib/log';
 import test from 'tape-catch';
 

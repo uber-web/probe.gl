@@ -31,6 +31,7 @@ export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
+    // @ts-ignore
     this.suite = new Bench({
       log: this._logResult.bind(this)
     });
@@ -44,6 +45,7 @@ export default class App extends PureComponent {
   componentDidMount() {
     this.suite
       // Calibrate performance
+      // @ts-ignore
       .calibrate()
       .run()
       // when running in browser, notify test the driver that it's done
