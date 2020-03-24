@@ -1,0 +1,36 @@
+{
+  "name": "@probe.gl/react-bench",
+  "description": "A React component to run and visualize `@probe.gl/bench` benchmarks.",
+  "license": "MIT",
+  "version": "3.3.0-alpha.3",
+  "keywords": [
+    "javascript",
+    "bench",
+    "benchmark",
+    "profiling",
+    "instrumentation",
+    "logging"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/probe.gl.git"
+  },
+  "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "esnext": "dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "react-table": "^6.10.0",
+    "css-loader": "^2.1.1",
+    "style-loader": "^1.1.3"
+  },
+  "peerDependencies": {
+    "@probe.gl/bench": "3.3.0-alpha.3",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
+  }
+}

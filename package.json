@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
-  "private": "true",
+  "private": true,
   "keywords": [
     "javascript",
     "profiling",
@@ -14,6 +14,7 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "workspaces": [
+    "examples/*",
     "modules/*"
   ],
   "browser": {
@@ -30,6 +31,7 @@
     "version": "ocular-build core"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.8.3",
     "@babel/register": "^7.0.0",
     "@probe.gl/test-utils": "^3.1.1",
     "babel-loader": "^8.0.0",
@@ -42,7 +44,7 @@
     "eslint-plugin-react": "^7.10",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^15.1.1",
-    "ocular-dev-tools": "~0.1.0",
+    "ocular-dev-tools": "^0.1.8",
     "pre-commit": "^1.2.2",
     "reify": "^0.18.1",
     "url-loader": "^1.0.1"
