@@ -1,1 +1,1 @@
-export {BenchResults} from './bench-results';
+export {BenchResults} from './components/bench-results';

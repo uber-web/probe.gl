@@ -29,6 +29,7 @@ const COMMON_CONFIG = {
           plugins: [
             // Kills object creation performance
             // ['transform-builtin-extend', {globals: ['Array']}]
+            ['@babel/transform-runtime', {useESModules: true}]
           ]
         }
       },

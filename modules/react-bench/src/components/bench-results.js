@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 
 import ReactTable from 'react-table';
-import './react-table.css';
+import '../react-table.css';
 
 function getPercent(score) {
   // Log scale between 100K - 100M, 0-3
