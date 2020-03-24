@@ -9,10 +9,6 @@ module.exports = {
     camelcase: 0,
     'sort-vars': 0
   },
-  globals: {
-    performance: true,
-    process: true
-  },
   env: {
     browser: true,
     node: true

@@ -1,4 +1,4 @@
-# @probe.gl/core
+# @probe.gl/react-bench
 
 A React component to run and visualize `@probe.gl/bench` benchmark suites.
 
