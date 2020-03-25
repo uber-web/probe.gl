@@ -1,6 +1,7 @@
 {
   "name": "stats-wdiget-example",
   "version": "0.0.0",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "start-local": "webpack-dev-server --env.local --progress --hot --open",
