@@ -32,5 +32,6 @@
     "@probe.gl/bench": "3.3.0-alpha.3",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
-  }
+  },
+  "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
