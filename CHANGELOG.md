@@ -1,5 +1,27 @@
 CHANGELOG
 
+v3.3.0-alpha.6 - Mar 25, 2020
+
+- remove examples from workspaces to unblock publish
+
+v3.3.0-alpha.5 - Mar 25, 2020
+
+- react-bench: New module providing UI for @probe.gl/bench benchmarks (#127)
+
+v3.3.0-alpha.4 - Jan 28, 2020
+
+- Remove isHeadless from polyfill (#126)
+- [test-utils] Add polyfill (#124)
+- [test-utils] Add option to exclude empty pixels in screenshot di… (#125)
+
+v3.3.0-alpha.3 - Jan 5, 2020
+
+- bench: Minor fixes (#123)
+
+v3.3.0-alpha.2 - Jan 3, 2020
+
+- bench: Fixes for `options._throughput` (#122)
+
 v3.3.0-alpha.1 - Dec 31, 2019
 
 - bench: Add `options._throughput` to run async tests in parallel (#121)
