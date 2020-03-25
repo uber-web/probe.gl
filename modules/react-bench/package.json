@@ -2,7 +2,7 @@
   "name": "@probe.gl/react-bench",
   "description": "A React component to run and visualize `@probe.gl/bench` benchmarks.",
   "license": "MIT",
-  "version": "3.3.0-alpha.3",
+  "version": "3.3.0-alpha.5",
   "keywords": [
     "javascript",
     "bench",
@@ -24,8 +24,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "react-table": "^6.10.0",
     "css-loader": "^2.1.1",
+    "react-table": "^6.10.0",
     "style-loader": "^1.1.3"
   },
   "peerDependencies": {
