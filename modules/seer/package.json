@@ -23,5 +23,6 @@
   ],
   "scripts": {
     "docs": "cat docs/header.md > README.md && jsdoc2md index.js >> README.md && sed -i '' '30,1000s/##/###/g' README.md"
-  }
+  },
+  "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
