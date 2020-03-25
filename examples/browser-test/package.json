@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
-  "private": "true",
+  "private": true,
   "scripts": {
     "test": "node test/start.js headless",
     "test-browser": "node test/start.js"
