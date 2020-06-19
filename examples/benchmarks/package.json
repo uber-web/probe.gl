@@ -8,8 +8,8 @@
     "start": "webpack-dev-server --progress --hot --open"
   },
   "dependencies": {
-    "@probe.gl/bench": "^3.3.0-alpha.4",
-    "@probe.gl/react-bench": "^3.3.0-alpha.4",
+    "@probe.gl/bench": "^3.3.0",
+    "@probe.gl/react-bench": "^3.3.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },
