@@ -51,26 +51,44 @@ module.exports = {
           }
         ],
       
-        PROJECTS: [
-          /*
-          'deck.gl': 'https://uber.github.io/deck.gl',
-          'luma.gl': 'https://uber.github.io/luma.gl',
-          'react-map-gl': 'https://uber.github.io/react-map-gl',
-          'vis.gl': 'https://uber-web.github.io/vis.gl'
-          */
-        ], 
-        
         EXAMPLES: [
           // TODO: This app is currently more a test app than an example + crashes when imported
           {
            title: 'StatsWidget',
-           // image: 'images/stats-widget.png',
+           image: 'images/stats-widget.png',
            componentUrl: resolve(__dirname, '../examples/stats-widget/app.js'),
            path: 'examples/stats-widget'
           }
         ],
       
-        ADDITIONAL_LINKS: [],
+        PROJECTS: [
+          {
+            name: 'vis.gl',
+            url: 'https://vis.gl'
+          },
+          {
+            name: 'deck.gl',
+            url: 'https://deck.gl'
+          },
+          {
+            name: 'luma.gl',
+            url: 'https://luma.gl'
+          },
+          {
+            name: 'nebula.gl',
+            url: 'https://nebula.gl'
+          }
+        ],
+
+        LINK_TO_GET_STARTED: '/docs/developer-guide/get-started',
+
+        ADDITIONAL_LINKS: [{
+          name: 'Blog',
+          href: 'http://medium.com/vis-gl',
+          index: 1
+        }],
+
+        STYLESHEETS: [''],
       
         GA_TRACKING: null,
       }        
