@@ -1739,23 +1739,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@probe.gl/stats@3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@probe.gl/stats/-/stats-3.2.1.tgz#4e95c75513229ebb01384045e89524a466c022eb"
-  integrity sha512-tXe5krgbodxtVdUVWG4oIicMoCHNGp7QYkaHSDrUeTfJVqYuZz99T6r7qmn0bCo4wQlzn936jJ+QiAltHxatig==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-
-"@probe.gl/test-utils@^3.1.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@probe.gl/test-utils/-/test-utils-3.2.1.tgz#4af5d1d202873f39a3789d78ce564b1d1671dde9"
-  integrity sha512-Mnip0Q/H8oEoX0n2CJZ1txOQfFaO2SL2dldwXr5KQeoXjhgbtaQJhOKUPocqaWKxyAw6S630uogtfKM3txFPUQ==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    pixelmatch "^4.0.2"
-    probe.gl "3.2.1"
-    puppeteer "^1.16.0"
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -8160,14 +8143,6 @@ private@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"
   integrity sha512-VvivMrbvd2nKkiG38qjULzlc+4Vx4wm/whI9pQD35YrARNnhxeiRktSOhSukRLFNlzg6Br/cJPet5J/u19r/mg==
-
-probe.gl@3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/probe.gl/-/probe.gl-3.2.1.tgz#c92db3e89df6c45a9fe0377890c6b0ded35d2974"
-  integrity sha512-ax0flZWVcrw3FF9MMt84mqfIckjkB7ItGer9rr8zlUbkIyzt66ypeJVLQlC28dJ/RBZtriflt2sVAhjENFohQA==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@probe.gl/stats" "3.2.1"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
