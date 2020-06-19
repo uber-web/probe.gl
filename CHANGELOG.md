@@ -1,5 +1,7 @@
 CHANGELOG
 
+v3.3.0 - Jun 18, 2020
+
 v3.3.0-alpha.6 - Mar 25, 2020
 
 - remove examples from workspaces to unblock publish

@@ -1,11 +1,14 @@
 # What's New
 
-## v3.x
+## v3.3
 
-Release Date: TBD
+Release Date: Jun 18, 2020
 
-### **@probe.gl/bench**
-- New bench case options: `options.multiplier`, `options.units`, `options._throughput`
+### `@probe.gl/bench`
+- New options for `Bench` benchmarks: `options.multiplier`, `options.units`, `options._throughput`
+
+### `@probe.gl/react-bench`
+- New module with a react-component that displays the result of `Bench` runs.
 
 ## v3.2
 
