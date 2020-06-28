@@ -17,12 +17,13 @@
 </p>
 
 <p align="center">
-  <img src="https://cdn.pbrd.co/images/2mmml1lec.png" height=100 />
+  <img src="https://github.com/uber-web/probe.gl/raw/0277eb074a1d16164053db7ca0a050f72bdebead/extensions/seer/templates/128.png" height=100 />
 </p>
 
 <p align="center">A customizable devtool solution</p>
-
-<img src="https://cdn.pbrd.co/images/GWt0Bpj.png" />
+<p align="center">
+  <img src="https://lh3.googleusercontent.com/xHO1b53ek9hm0mbX-LfYZrXPQfhea0MdHn3pdcn7hdGA33b5XKKHyR4a8Y0RfNcT85kOZWexaQ=w640-h400-e365" />
+</p>
 
 ### Introduction
 
