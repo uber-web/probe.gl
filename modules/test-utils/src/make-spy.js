@@ -1,4 +1,7 @@
 // Inspired by https://github.com/popomore/spy
+
+// @ts-nocheck TODO - this code assigns to function object
+
 // Attach a spy to the function. The spy has the following methods and fields
 //  * restore() - remove spy completely
 //  * reset() - reset call count

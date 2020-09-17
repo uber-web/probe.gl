@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import test from 'tape-catch';
+// @ts-ignore
 import {mean, std, cv} from '@probe.gl/bench/stat-utils';
 
 // wolfram alpha: mean {1, 2, 3}

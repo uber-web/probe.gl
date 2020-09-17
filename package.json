@@ -23,7 +23,7 @@
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
     "clean": "ocular-clean",
     "build": "ocular-clean && ocular-build",
-    "lint": "ocular-lint",
+    "lint": "tsc && ocular-lint",
     "publish": "ocular-publish",
     "test": "ocular-test",
     "test-fast": "ocular-test fast",
@@ -45,7 +45,9 @@
     "jsdom": "^15.1.1",
     "ocular-dev-tools": "^0.1.8",
     "pre-commit": "^1.2.2",
+    "react-dom": "^16.13.1",
     "reify": "^0.18.1",
+    "typescript": "^4.0.2",
     "url-loader": "^1.0.1"
   },
   "pre-commit": [

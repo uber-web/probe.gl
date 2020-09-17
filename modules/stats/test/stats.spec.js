@@ -95,9 +95,6 @@ test('Stats#constructore with stats', t => {
         type: 'memory'
       },
       {
-        id: 'stat-3'
-      },
-      {
         name: 'stat-2',
         type: 'fps'
       }

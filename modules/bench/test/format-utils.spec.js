@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import test from 'tape-catch';
+// @ts-ignore
 import {formatSI} from '@probe.gl/bench/format-utils';
 
 const FORMAT_SI_TESTS = [

@@ -20,6 +20,8 @@
 
 function getStorage(type) {
   try {
+    /** @type {Storage} */
+    // @ts-ignore
     const storage = window[type];
     const x = '__storage_test__';
     storage.setItem(x, x);

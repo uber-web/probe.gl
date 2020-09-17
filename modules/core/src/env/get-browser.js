@@ -26,6 +26,7 @@ import isBrowser from './is-browser';
 import isElectron from './is-electron';
 
 export function isMobile() {
+  // @ts-ignore
   return typeof window.orientation !== 'undefined';
 }
 
@@ -54,12 +55,15 @@ export default function getBrowser(mockUserAgent) {
   if (isMSIE || isTrident) {
     return 'IE';
   }
+  // @ts-ignore
   if (window.chrome) {
     return 'Chrome';
   }
+  // @ts-ignore
   if (window.safari) {
     return 'Safari';
   }
+  // @ts-ignore
   if (window.mozInnerScreenX) {
     return 'Firefox';
   }

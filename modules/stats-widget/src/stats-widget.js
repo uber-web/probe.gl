@@ -63,6 +63,7 @@ export default class StatsWidget {
 
   setStats(stats) {
     this.stats = stats;
+    // @ts-ignore
     this._createDOMStats(this._container);
     this._setHeaderContent(stats.id);
 
