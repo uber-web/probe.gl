@@ -81,6 +81,7 @@ export default class BrowserDriver {
     }
     return puppeteer.launch(options).then(browser => {
       this.browser = browser;
+      browser.version().then(console.log); // eslint-disable-line
     });
   }
 
