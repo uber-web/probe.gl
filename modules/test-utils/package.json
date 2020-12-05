@@ -28,7 +28,7 @@
     "@babel/runtime": "^7.0.0",
     "pixelmatch": "^4.0.2",
     "probe.gl": "3.3.0",
-    "puppeteer": ">=5.0.0"
+    "puppeteer": "*"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
