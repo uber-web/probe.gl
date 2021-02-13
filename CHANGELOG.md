@@ -1,5 +1,9 @@
 CHANGELOG
 
+v3.3.1 - Feb 12, 2021
+
+- Use latest puppeteer (#140)
+
 v3.3.0 - Jun 18, 2020
 
 v3.3.0-alpha.6 - Mar 25, 2020
