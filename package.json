@@ -43,7 +43,7 @@
     "eslint-plugin-react": "^7.10",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^15.1.1",
-    "ocular-dev-tools": "^0.1.8",
+    "ocular-dev-tools": "^0.3.0",
     "pre-commit": "^1.2.2",
     "react-dom": "^16.13.1",
     "reify": "^0.18.1",
