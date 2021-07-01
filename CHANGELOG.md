@@ -1,6 +1,6 @@
 CHANGELOG
 
-v3.3.1 - Jul 1, 2021
+v3.4.0-beta.1 - Jul 1, 2021
 
 - typescript type definitions (#139)
 - Update build targets (#148)
