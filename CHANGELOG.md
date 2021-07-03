@@ -1,5 +1,10 @@
 CHANGELOG
 
+v3.4.0-beta.2 - Jul 3, 2021
+
+- Add types entry to package.json (#155)
+- [TypeScript] fix Spy interface (#153)
+
 v3.4.0-beta.1 - Jul 1, 2021
 
 - typescript type definitions (#139)
