@@ -11,6 +11,7 @@ interface Spy {
   // (...args: any[]): any;
   restore(): void;
   reset(): void;
+  returns(returnValue: any): void;
   callCount: number;
   called: boolean;
 }
