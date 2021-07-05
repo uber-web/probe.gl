@@ -1,7 +1,14 @@
+const {resolve} = require('path');
+
 const config = {
   lint: {
     paths: ['modules', 'examples', 'test'],
     extensions: ['js']
+  },
+
+  aliases: {
+    // DEV MODULES
+    'dev-modules': resolve(__dirname, './dev-modules')
   },
 
   entry: {

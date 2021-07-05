@@ -1,0 +1,22 @@
+{
+  "name": "babel-plugin-probe-gl",
+  "version": "1.0.0",
+  "description": "Babel plugin for working with the probe.gl library",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uber-web/probe.gl"
+  },
+  "keywords": [
+    "babel-plugin",
+    "probe.gl"
+  ],
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "minimatch": "^3.0.0"
+  }
+}
