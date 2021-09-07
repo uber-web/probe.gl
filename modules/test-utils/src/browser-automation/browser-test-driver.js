@@ -27,11 +27,16 @@ const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
 export default class BrowserTestDriver extends BrowserDriver {
   run(config = {}) {
-    const {title = 'Browser Test', headless = false} = config;
+    const {
+      title = 'Browser Test',
+      headless = false,
+      maxConsoleMessageLength = MAX_CONSOLE_MESSAGE_LENGTH
+    } = config;
     this.title = title;
     this.headless = headless;
     this.time = Date.now();
     this.failures = 0;
+    this.maxConsoleMessageLength = maxConsoleMessageLength;
 
     this.logger.log({
       message: `${title}`,
@@ -110,7 +115,11 @@ export default class BrowserTestDriver extends BrowserDriver {
 
     // Terminal console does not collapse big messages like Chrome does
     // Crop very long text messages to avoid flooding
-    const text = event.text().slice(0, MAX_CONSOLE_MESSAGE_LENGTH);
+    let text = event.text();
+    if (!text.startsWith('data:')) {
+      // Leave data URL intact so that we have a channel to get data out via console
+      text = text.slice(0, this.maxConsoleMessageLength);
+    }
     switch (event.type()) {
       case 'log':
         console.log(text);
