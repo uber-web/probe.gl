@@ -1,5 +1,10 @@
 CHANGELOG
 
+v3.4.1 - Sep 7, 2021
+
+- [feat] expose maxConsoleMessageLength (#160)
+- [fix] broken createDiffImage option (#159)
+
 v3.4.0 - Jul 16, 2021
 
 v3.4.0-beta.2 - Jul 3, 2021
