@@ -32,13 +32,13 @@ function diffPNGs(image1, image2, options) {
     includeEmpty = true
   } = options;
 
-  const diffImage = createDiffImage ? new Uint8Array(width * height) : null;
+  const diffImage = new PNG({width, height});
 
   // pixelmatch returns the number of mismatched pixels
   const mismatchedPixels = pixelmatch(
     image1.data, // image 1
     image2.data, // image 2
-    diffImage, // output
+    diffImage.data, // output
     width, // width
     height, // height
     {threshold: tolerance, includeAA} // options
@@ -47,12 +47,13 @@ function diffPNGs(image1, image2, options) {
   const pixelCount = includeEmpty ? width * height : countNonEmptyPixels(image1.data, image2.data);
 
   const match = 1 - mismatchedPixels / pixelCount;
+  const success = match >= threshold;
 
   return {
     match,
     matchPercentage: `${(match * 100).toFixed(2)}%`,
-    success: match >= threshold,
-    diffImage
+    success,
+    diffImage: !success && createDiffImage ? encodePNG(diffImage) : null
   };
 }
 
@@ -92,4 +93,12 @@ function parsePNG(source) {
     });
   }
   return Promise.reject(new Error('Unknown image source'));
+}
+
+function encodePNG(image) {
+  if (!image) {
+    return null;
+  }
+  const buffer = PNG.sync.write(image, {});
+  return `data:image/png;base64,${buffer.toString('base64')}`;
 }
