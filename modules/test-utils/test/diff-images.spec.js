@@ -3,7 +3,7 @@ import {isBrowser} from 'probe.gl/env';
 
 import {_diffImages as diffImages} from '@probe.gl/test-utils';
 
-test('diffImage', async (t) => {
+test('diffImage', async t => {
   if (isBrowser()) {
     t.comment('diffImage is node only');
     t.end();
@@ -17,7 +17,7 @@ test('diffImage', async (t) => {
       title: 'identical images',
       source1: resolve(dataDir, 'icon-marker.png'),
       source2: resolve(dataDir, 'icon-marker-2.png'),
-      testMatch: (match) => match === 1,
+      testMatch: match => match === 1,
       success: true
     },
     {

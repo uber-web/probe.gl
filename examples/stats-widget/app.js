@@ -57,7 +57,7 @@ export default class App extends Component {
   }
 
   render() {
-    return <div id="stats-demo" ref={(_) => (this._container = _)} />;
+    return <div id="stats-demo" ref={_ => (this._container = _)} />;
   }
 }
 

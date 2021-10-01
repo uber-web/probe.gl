@@ -45,13 +45,13 @@ export default class BrowserTestDriver extends BrowserDriver {
 
     // Backward compatibility: if `server` is not defined, fallback to config object
     return this._startServer(config.server || config)
-      .then((url) => {
+      .then(url => {
         return this._openPage(url, config);
       })
-      .then((result) => {
+      .then(result => {
         return this._onFinish(result);
       })
-      .catch((error) => {
+      .catch(error => {
         this._fail(error.message || error);
       });
   }
@@ -60,13 +60,13 @@ export default class BrowserTestDriver extends BrowserDriver {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
     return this.startBrowser(browserConfig).then(
-      (_) =>
+      _ =>
         new Promise((resolve, reject) => {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
             browserTestDriver_fail: () => this.failures++,
-            browserTestDriver_finish: (message) => resolve(message),
-            browserTestDriver_emulateInput: (event) => this._emulateInput(event),
-            browserTestDriver_captureAndDiffScreen: (opts) => this._captureAndDiff(opts)
+            browserTestDriver_finish: message => resolve(message),
+            browserTestDriver_emulateInput: event => this._emulateInput(event),
+            browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts)
           });
 
           // Puppeteer can only inject functions, not values, into the global scope
@@ -89,7 +89,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           this.openPage({
             url: config.url || url,
             exposeFunctions,
-            onConsole: (event) => this._onConsole(event),
+            onConsole: event => this._onConsole(event),
             onError: reject
           });
         })
@@ -201,8 +201,8 @@ export default class BrowserTestDriver extends BrowserDriver {
     }
     return this.page
       .screenshot(screenshotOptions)
-      .then((image) => diffImages(image, opts.goldenImage, opts))
-      .then((result) => {
+      .then(image => diffImages(image, opts.goldenImage, opts))
+      .then(result => {
         if (!result.success && opts.saveOnFail && result.source1) {
           let filename = opts.saveAs || '[name]-failed.png';
           filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
@@ -217,7 +217,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           error: result.error || null
         };
       })
-      .catch((error) => {
+      .catch(error => {
         return {
           headless: this.headless,
           match: 0,
@@ -233,7 +233,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       message: `Writing screenshot to ${filename}`,
       color: COLOR.BRIGHT_YELLOW
     })();
-    fs.writeFile(filename, data, (error) => {
+    fs.writeFile(filename, data, error => {
       if (error) {
         this.logger.log({
           message: `Save screenshot failed: ${error.message}`,

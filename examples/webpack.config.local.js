@@ -54,7 +54,7 @@ function addLocalDevSettings(config, opts) {
 
 module.exports =
   (baseConfig, opts = {}) =>
-  (env) => {
+  env => {
     let config = baseConfig;
 
     if (env && env.local) {

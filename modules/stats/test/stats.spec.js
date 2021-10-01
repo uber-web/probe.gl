@@ -2,12 +2,12 @@
 import {Stats, Stat} from '@probe.gl/stats';
 import test from 'tape-promise/tape';
 
-test('Stats#import', (t) => {
+test('Stats#import', t => {
   t.equals(typeof Stats, 'function', 'Stats import OK');
   t.end();
 });
 
-test('Stats#counting', (t) => {
+test('Stats#counting', t => {
   const stats = new Stats({id: 'test'});
   const counter = stats.get('test');
   t.doesNotThrow(() => counter.incrementCount(), 'stat.incrementCount works');
@@ -19,7 +19,7 @@ test('Stats#counting', (t) => {
   t.end();
 });
 
-test('Stats#timer()', (t) => {
+test('Stats#timer()', t => {
   const stats = new Stats({id: 'test'});
   const timer = stats.get('test');
   t.doesNotThrow(() => timer.timeStart(), 'timer.timeStart works');
@@ -34,7 +34,7 @@ test('Stats#timer()', (t) => {
   t.end();
 });
 
-test('Stats#reset()', (t) => {
+test('Stats#reset()', t => {
   const stats = new Stats({id: 'test'});
   const stat = stats.get('test');
   stat.incrementCount();
@@ -49,7 +49,7 @@ test('Stats#reset()', (t) => {
   t.end();
 });
 
-test('Stats#timing sampleSize', (t) => {
+test('Stats#timing sampleSize', t => {
   const stats = new Stats({id: 'test'});
   const stat = stats.get('test').setSampleSize(3);
   stat.addTime(0);
@@ -69,7 +69,7 @@ test('Stats#timing sampleSize', (t) => {
   t.end();
 });
 
-test('Stats#timing sampleSize', (t) => {
+test('Stats#timing sampleSize', t => {
   const stats = new Stats({id: 'test'});
   const stat = stats.get('test').setSampleSize(3);
   stat.incrementCount();
@@ -85,7 +85,7 @@ test('Stats#timing sampleSize', (t) => {
   t.end();
 });
 
-test('Stats#constructore with stats', (t) => {
+test('Stats#constructore with stats', t => {
   const statsContent = new Stats({
     id: 'test',
     stats: [

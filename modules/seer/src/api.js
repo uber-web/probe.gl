@@ -47,7 +47,7 @@ const throttle = (key, delay) => {
   return false;
 };
 
-const replacer = (seen) => (key, value) => {
+const replacer = seen => (key, value) => {
   if (value && typeof value === 'object' && seen.has(value)) {
     return undefined;
   }
@@ -85,7 +85,7 @@ const send = (type, data = {}) => {
 
 const listeners = new Map();
 
-const listener = (message) => {
+const listener = message => {
   if (!message || !message.data || message.data.source !== 'seer-core') {
     return;
   }
@@ -93,7 +93,7 @@ const listener = (message) => {
 
   const typeListeners = listeners.get(type);
   if (typeListeners) {
-    typeListeners.forEach((cb) => cb(payload));
+    typeListeners.forEach(cb => cb(payload));
   }
 };
 
@@ -155,11 +155,11 @@ const listenFor = (type, cb) => {
  *
  * @param cb {Function} The callback to remove
  */
-const removeListener = (cb) => {
+const removeListener = cb => {
   listeners.forEach((typeListeners, key) => {
     listeners.set(
       key,
-      typeListeners.filter((l) => l !== cb)
+      typeListeners.filter(l => l !== cb)
     );
   });
 };

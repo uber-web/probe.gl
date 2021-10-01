@@ -182,7 +182,7 @@ export default class Bench {
 
 // Helper function to promisify setTimeout
 function addDelay(timeout): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => resolve(), timeout);
   });
 }

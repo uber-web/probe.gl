@@ -31,7 +31,7 @@ test.onFinish(window.browserTestDriver_finish || (() => {}));
 
 // tap-browser-color alternative
 enableDOMLogging({
-  getStyle: (message) => ({background: failed ? '#F28E82' : '#8ECA6C'})
+  getStyle: message => ({background: failed ? '#F28E82' : '#8ECA6C'})
 });
 
 require('./test-index');

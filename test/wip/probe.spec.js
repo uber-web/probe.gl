@@ -11,7 +11,7 @@ function getInstance() {
   });
 }
 
-test('Probe#VERSION', (t) => {
+test('Probe#VERSION', t => {
   const probe = getInstance();
 
   t.equal(typeof probe.VERSION, 'string', `VERSION is set: ${probe.VERSION}`);
@@ -19,7 +19,7 @@ test('Probe#VERSION', (t) => {
   t.end();
 });
 
-test('Probe#probe', (t) => {
+test('Probe#probe', t => {
   const probe = getInstance();
 
   probe.probe('test');
@@ -35,7 +35,7 @@ test('Probe#probe', (t) => {
   t.end();
 });
 
-test('Probe#probe - level methods', (t) => {
+test('Probe#probe - level methods', t => {
   const probe = getInstance().setLevel(3);
 
   probe.probe('test0');
@@ -47,12 +47,12 @@ test('Probe#probe - level methods', (t) => {
 
   t.equals(log.length, 4, 'Expected rows logged');
   t.deepEqual(
-    log.map((row) => row.level),
+    log.map(row => row.level),
     [1, 1, 2, 3],
     'Levels match expected'
   );
   t.deepEqual(
-    log.map((row) => row.name),
+    log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
     'Names match expected'
   );
@@ -65,7 +65,7 @@ test('Probe#probe - level methods', (t) => {
   t.end();
 });
 
-test('Probe#probe - level methods, lower level set', (t) => {
+test('Probe#probe - level methods, lower level set', t => {
   const probe = getInstance().setLevel(1);
 
   probe.probe('test0');
@@ -77,7 +77,7 @@ test('Probe#probe - level methods, lower level set', (t) => {
 
   t.equals(log.length, 2, 'Expected rows logged');
   t.deepEqual(
-    log.map((row) => row.level),
+    log.map(row => row.level),
     [1, 1],
     'Levels match expected'
   );
@@ -85,7 +85,7 @@ test('Probe#probe - level methods, lower level set', (t) => {
   t.end();
 });
 
-test('Probe#probe - level methods, disabled', (t) => {
+test('Probe#probe - level methods, disabled', t => {
   const probe = getInstance().disable();
 
   probe.probe('test0');
@@ -100,7 +100,7 @@ test('Probe#probe - level methods, disabled', (t) => {
   t.end();
 });
 
-test('Probe#sample - level methods', (t) => {
+test('Probe#sample - level methods', t => {
   const probe = getInstance().setLevel(3);
 
   probe.sample('test0');
@@ -112,12 +112,12 @@ test('Probe#sample - level methods', (t) => {
 
   t.equals(log.length, 4, 'Expected rows logged');
   t.deepEqual(
-    log.map((row) => row.level),
+    log.map(row => row.level),
     [1, 1, 2, 3],
     'Levels match expected'
   );
   t.deepEqual(
-    log.map((row) => row.name),
+    log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
     'Names match expected'
   );

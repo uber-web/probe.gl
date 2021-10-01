@@ -12,7 +12,7 @@ const FORMAT_SI_TESTS = [
   {value: 0.0001234, result: '123µ'}
 ];
 
-test('formatters#formatSI', (t) => {
+test('formatters#formatSI', t => {
   for (const tc of FORMAT_SI_TESTS) {
     const result = formatSI(tc.value);
     t.equal(result, tc.result, `formatSI(${tc.value}) should be ${tc.result}`);

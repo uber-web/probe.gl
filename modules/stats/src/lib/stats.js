@@ -36,7 +36,7 @@ export default class Stats {
 
   getTable() {
     const table = {};
-    this.forEach((stat) => {
+    this.forEach(stat => {
       table[stat.name] = {
         time: stat.time || 0,
         count: stat.count || 0,
@@ -49,7 +49,7 @@ export default class Stats {
   }
 
   _initializeStats(stats = []) {
-    stats.forEach((stat) => this._getOrCreate(stat));
+    stats.forEach(stat => this._getOrCreate(stat));
   }
 
   _getOrCreate(stat) {

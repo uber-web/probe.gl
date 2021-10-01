@@ -6,11 +6,11 @@ import pixelmatch from 'pixelmatch';
 export default function diffImages(source1, source2, options = {}) {
   return Promise.all([parsePNG(source1), parsePNG(source2)])
     .then(([image1, image2]) => diffPNGs(image1, image2, options))
-    .catch((error) => ({
+    .catch(error => ({
       success: false,
       error: error.message
     }))
-    .then((result) =>
+    .then(result =>
       Object.assign(result, {
         source1,
         source2,

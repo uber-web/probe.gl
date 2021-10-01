@@ -15,50 +15,48 @@ export default function benchColor(suite) {
     .add(
       'color#parseColor (3 element array) -> Uint8ClampedArray target',
       {initialize: () => new Uint8ClampedArray(4)},
-      (target) => parseColor(COLOR_ARRAY_4, target)
+      target => parseColor(COLOR_ARRAY_4, target)
     )
     .add(
       'color#parseColor (3 element typed array) -> Uint8ClampedArray target',
       {priority: 1, initialize: () => new Uint8ClampedArray(4)},
-      (target) => parseColor(COLOR_TYPED_ARRAY, target)
+      target => parseColor(COLOR_TYPED_ARRAY, target)
     )
     .add(
       'color#parseColor (4 element typed array) -> Uint8ClampedArray target',
       {priority: 1, initialize: () => new Uint8ClampedArray(4)},
-      (target) => parseColor(COLOR_TYPED_ARRAY_4, target)
+      target => parseColor(COLOR_TYPED_ARRAY_4, target)
     )
 
     .add(
       'color#parseColor (3 element array) -> array target',
       {priority: 1, initialize: () => []},
-      (target) => parseColor(COLOR_ARRAY, target)
+      target => parseColor(COLOR_ARRAY, target)
     )
     .add(
       'color#parseColor (4 element array) -> array target',
       {priority: 1, initialize: () => []},
-      (target) => parseColor(COLOR_ARRAY_4, target)
+      target => parseColor(COLOR_ARRAY_4, target)
     )
 
     .group('Parse Color: From string')
     .add(
       'color#parseColor (string) -> typed array target',
       {initialize: () => new Uint8ClampedArray(4)},
-      (target) => parseColor(COLOR_STRING, target)
+      target => parseColor(COLOR_STRING, target)
     )
     .add(
       'color#parseColor (string with alpha) -> typed array target',
       {priority: 1, initialize: () => new Uint8ClampedArray(4)},
-      (target) => parseColor(COLOR_STRING_4, target)
+      target => parseColor(COLOR_STRING_4, target)
     )
-    .add(
-      'color#parseColor (string) -> array target',
-      {priority: 1, initialize: () => []},
-      (target) => parseColor(COLOR_STRING, target)
+    .add('color#parseColor (string) -> array target', {priority: 1, initialize: () => []}, target =>
+      parseColor(COLOR_STRING, target)
     )
     .add(
       'color#parseColor (string with alpha) -> array target',
       {priority: 1, initialize: () => []},
-      (target) => parseColor(COLOR_STRING_4, target)
+      target => parseColor(COLOR_STRING_4, target)
     )
     .add(1, 'color#parseColor (string), no target', () => parseColor(COLOR_STRING))
 

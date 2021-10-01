@@ -449,7 +449,7 @@ function logImageInNode({image, message = '', scale = 1}) {
   }
   if (asciify) {
     return () =>
-      asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then((data) =>
+      asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then(data =>
         console.log(data)
       );
   }
