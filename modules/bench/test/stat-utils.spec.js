@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 // @ts-ignore
 import {mean, std, cv} from '@probe.gl/bench/stat-utils';
 
 // wolfram alpha: mean {1, 2, 3}
-test('statistics#mean', t => {
+test('statistics#mean', (t) => {
   const MEAN_TESTS = [
     {
       input: [1],
@@ -27,7 +27,7 @@ test('statistics#mean', t => {
 });
 
 // wolfram alpha: standard deviation {1, 2, 3}
-test('statistics#std', t => {
+test('statistics#std', (t) => {
   const STD_TESTS = [
     {
       input: [1],
@@ -54,7 +54,7 @@ test('statistics#std', t => {
 });
 
 // wolfram alpha: coefficient of variation {1, 2, 3}
-test('statistics#cv', t => {
+test('statistics#cv', (t) => {
   const STD_ERR_TESTS = [
     {
       input: [1],

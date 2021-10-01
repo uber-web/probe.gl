@@ -2,7 +2,7 @@
 import Probe, {Log} from 'probe.gl';
 // @ts-ignore
 import {normalizeArguments} from 'probe.gl/lib/log';
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 function makeOpts(logLevel, message) {
   return {logLevel, message, args: arguments};
@@ -31,7 +31,7 @@ const NORMALIZE_ARGUMENTS_TEST_CASES = [
   }
 ];
 
-test('Log#import', t => {
+test('Log#import', (t) => {
   t.equals(typeof Log, 'function', 'Log imported OK');
   t.equals(typeof Probe, 'object', 'default (Probe) imported OK');
   t.ok(
@@ -41,7 +41,7 @@ test('Log#import', t => {
   t.end();
 });
 
-test('Log#normalizeArguments', t => {
+test('Log#normalizeArguments', (t) => {
   for (const tc of NORMALIZE_ARGUMENTS_TEST_CASES) {
     const opts = normalizeArguments({...tc.args});
 
@@ -54,13 +54,13 @@ test('Log#normalizeArguments', t => {
   t.end();
 });
 
-test('Probe#probe', t => {
+test('Probe#probe', (t) => {
   t.doesNotThrow(() => Probe.probe('test'), 'Probe.probe works');
   t.doesNotThrow(() => Probe.probe(0, 'test'), 'Probe.probe works');
   t.end();
 });
 
-test('Probe#getTotal()', t => {
+test('Probe#getTotal()', (t) => {
   const time1 = Probe.getTotal();
   const time2 = Probe.getTotal();
   t.ok(Number.isFinite(time1), 'Probe.getTotal() returned number');
@@ -69,7 +69,7 @@ test('Probe#getTotal()', t => {
   t.end();
 });
 
-test('Log#log', t => {
+test('Log#log', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.log('test')(), 'log.log works');
@@ -77,7 +77,7 @@ test('Log#log', t => {
   t.end();
 });
 
-test('Log#log(functions)', t => {
+test('Log#log(functions)', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.log(() => 'test')(), 'log.log works');
@@ -85,7 +85,7 @@ test('Log#log(functions)', t => {
   t.end();
 });
 
-test('Log#group - create, log, end', t => {
+test('Log#group - create, log, end', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
 
@@ -95,7 +95,7 @@ test('Log#group - create, log, end', t => {
   t.end();
 });
 
-test('Log#log(functions2)', t => {
+test('Log#log(functions2)', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.log(() => 'test')(), 'log.log works');
@@ -103,7 +103,7 @@ test('Log#log(functions2)', t => {
   t.end();
 });
 
-test('Log#once', t => {
+test('Log#once', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.once('test')(), 'log.once works');
@@ -111,21 +111,21 @@ test('Log#once', t => {
   t.end();
 });
 
-test('Log#warn', t => {
+test('Log#warn', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.warn('test')(), 'log.warn works');
   t.end();
 });
 
-test('Log#error', t => {
+test('Log#error', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.error('test')(), 'log.error works');
   t.end();
 });
 
-test('Log#assert', t => {
+test('Log#assert', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.assert(true, 'test'), 'log.assert works');
@@ -133,7 +133,7 @@ test('Log#assert', t => {
   t.end();
 });
 
-test('Log#table', t => {
+test('Log#table', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.table(0, {a: {c: 1}, b: {c: 2}})(), 'log.table works');
@@ -141,21 +141,21 @@ test('Log#table', t => {
   t.end();
 });
 
-test('Log#get', t => {
+test('Log#get', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.get('level'), "log.get('level') works");
   t.end();
 });
 
-test('Log#set', t => {
+test('Log#set', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.set('level', 1), "log.set('level', 1) works");
   t.end();
 });
 
-test('Log#settings', t => {
+test('Log#settings', (t) => {
   const log = new Log({id: 'test'});
   t.ok(log instanceof Log, 'log created successfully');
   t.doesNotThrow(() => log.settings(), 'log.settings() works');

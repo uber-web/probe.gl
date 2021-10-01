@@ -39,7 +39,7 @@ export default class BrowserDriver {
 
   startBrowser(options?: {
     headless?: boolean;
-    defaultViewport?: {width: number, height: number};
+    defaultViewport?: {width: number; height: number};
   }): Promise<void>;
 
   openPage(options?: {

@@ -59,7 +59,7 @@ export default class BrowserDriver {
     if (this.browser) {
       return Promise.resolve(this.browser);
     }
-    return puppeteer.launch(options).then(browser => {
+    return puppeteer.launch(options).then((browser) => {
       this.browser = browser;
       browser.version().then(console.log); // eslint-disable-line
     });
@@ -80,7 +80,7 @@ export default class BrowserDriver {
 
     return this.browser
       .newPage()
-      .then(page => {
+      .then((page) => {
         this.page = page;
 
         // attach events
@@ -94,7 +94,7 @@ export default class BrowserDriver {
         }
         return Promise.all(promises);
       })
-      .then(_ => this.page.goto(url));
+      .then((_) => this.page.goto(url));
   }
 
   stopBrowser() {
@@ -115,7 +115,7 @@ export default class BrowserDriver {
       config.port === 'auto' ? getAvailablePort(AUTO_PORT_START) : Promise.resolve(config.port);
 
     return getPort.then(
-      port =>
+      (port) =>
         new Promise((resolve, reject) => {
           const args = [...config.arguments];
           if (port) {
@@ -164,7 +164,7 @@ export default class BrowserDriver {
     this.stopBrowser()
       .then(() => this.stopServer())
       .then(() => process.exit(statusCode))
-      .catch(error => {
+      .catch((error) => {
         this.logger.error(error.message || error);
         process.exit(1);
       });

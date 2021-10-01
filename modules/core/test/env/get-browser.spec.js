@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 import {getBrowser} from 'probe.gl/env';
 
-test('getBrowser', t => {
+test('getBrowser', (t) => {
   t.equal(
     getBrowser('Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)'),
     'IE',

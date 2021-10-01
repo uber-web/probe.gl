@@ -18,19 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// @ts-nocheck
+
 import test from 'ava';
 import camelCase from 'lodash/camelCase';
 import {spy} from 'sinon';
 
 import api from '../src/api';
 
-test('[API] check exports', t => {
+test('[API] check exports', (t) => {
   t.truthy(api, 'The global object is defined');
   t.truthy(Object.keys(api).length, 'Some methods are exported');
   t.truthy(api.send, 'The send method is defined');
 });
 
-test('[API] send', t => {
+test('[API] send', (t) => {
   const postMessage = spy();
   window.postMessage = postMessage;
 
@@ -46,7 +48,7 @@ test('[API] send', t => {
 });
 
 // eslint-disable-next-line max-statements
-test('[API] listeners', t => {
+test('[API] listeners', (t) => {
   const addEventListener = spy();
   window.addEventListener = addEventListener;
 
@@ -89,10 +91,10 @@ test('[API] listeners', t => {
   t.falsy(window.__SEER_LISTENER__);
   t.truthy(removeEventListener.calledOnce, 'The listener should have been removed');
 
-  api.listenFor('deck.gl', f => f);
+  api.listenFor('deck.gl', (f) => f);
 });
 
-test('[API] methods', t => {
+test('[API] methods', (t) => {
   const postMessage = spy();
   window.postMessage = postMessage;
   // @ts-ignore

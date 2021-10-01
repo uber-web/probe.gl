@@ -6,7 +6,7 @@ test.onFailure(window.browserTestDriver_fail);
 // @ts-ignore
 test.onFinish(window.browserTestDriver_finish);
 
-test('A test', t => {
+test('A test', (t) => {
   // Default tape test timeout is 500ms - allow enough time for render and screenshot
   t.timeoutAfter(2000);
 
@@ -20,7 +20,7 @@ test('A test', t => {
       region: app.getBoundingClientRect(),
       saveOnFail: true
     })
-    .then(result => {
+    .then((result) => {
       if (result.error) {
         t.fail(result.error);
       } else {

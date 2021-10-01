@@ -23,11 +23,11 @@ const DEFAULT_CSS = {
 };
 
 export const DEFAULT_FORMATTERS = {
-  count: stat => `${stat.name}: ${stat.count}`,
-  averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
-  totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
-  fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
-  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
+  count: (stat) => `${stat.name}: ${stat.count}`,
+  averageTime: (stat) => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  totalTime: (stat) => `${stat.name}: ${formatTime(stat.time)}`,
+  fps: (stat) => `${stat.name}: ${Math.round(stat.getHz())}fps`,
+  memory: (stat) => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
 export default class StatsWidget {
@@ -87,7 +87,7 @@ export default class StatsWidget {
 
   _update() {
     // make sure that we clear the old text before drawing new text.
-    this.stats.forEach(stat => {
+    this.stats.forEach((stat) => {
       this._createDOMItem(stat.name);
       this._items[stat.name].innerHTML = this._getLines(stat).join('<BR>');
 
@@ -157,7 +157,7 @@ export default class StatsWidget {
 
   _createDOMStats() {
     if (this.stats instanceof Stats) {
-      this.stats.forEach(stat => {
+      this.stats.forEach((stat) => {
         this._createDOMItem(stat.name);
       });
     }

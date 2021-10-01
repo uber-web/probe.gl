@@ -1,4 +1,4 @@
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 import {BrowserTestDriver} from '@probe.gl/test-utils';
 
@@ -26,12 +26,12 @@ function createTestCanvas() {
   return canvas;
 }
 
-test('BrowserTestDriver#import', t => {
+test('BrowserTestDriver#import', (t) => {
   t.ok(BrowserTestDriver, 'BrowserTestDriver symbol imported');
   t.end();
 });
 
-test('BrowserTestDriver#ImageDiff', t => {
+test('BrowserTestDriver#ImageDiff', (t) => {
   // @ts-ignore
   if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
@@ -51,7 +51,7 @@ test('BrowserTestDriver#ImageDiff', t => {
   window
     // @ts-ignore
     .browserTestDriver_captureAndDiffScreen(diffSettings)
-    .then(result => {
+    .then((result) => {
       if (result.success) {
         t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
       } else if (result.error) {
@@ -67,7 +67,7 @@ test('BrowserTestDriver#ImageDiff', t => {
       // @ts-ignore
       return window.browserTestDriver_captureAndDiffScreen(diffSettings);
     })
-    .then(result => {
+    .then((result) => {
       if (result.success) {
         t.fail(`Screenshot should not match golden image: ${result.matchPercentage}`);
       } else if (result.error) {
