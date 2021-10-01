@@ -1,4 +1,5 @@
 import fs from 'fs';
+// eslint-disable-next-line  import/no-extraneous-dependencies
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 

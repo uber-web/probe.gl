@@ -1,11 +1,16 @@
-const {getBabelConfig} = require('ocular-dev-tools');
+const {getBabelConfig, deepMerge} = require('ocular-dev-tools');
 
 module.exports = (api) => {
-  const config = getBabelConfig(api);
+  const defaultConfig = getBabelConfig(api, {react: true});
 
-  // TODO - this only applies to one module...
-  config.presets = (config.presets || []).concat(['@babel/preset-react']);
-  config.plugins = (config.plugins || []).concat([]);
+  const config = deepMerge(defaultConfig, {
+    plugins: [],
+    ignore: [
+      // babel can't process .d.ts
+      /\.d\.ts$/
+    ]
+  });
 
+  // console.debug(config);
   return config;
 };

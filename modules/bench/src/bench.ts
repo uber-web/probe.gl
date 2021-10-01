@@ -59,6 +59,7 @@ export default class Bench {
   async run() {
     const timeStart = getHiResTimestamp();
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const {tests, onBenchmarkComplete} = this;
     // @ts-expect-error
     await runTests({tests, onBenchmarkComplete});
