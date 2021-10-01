@@ -15,9 +15,11 @@ export default class Stats {
   forEach(fn: (stat: Stat) => void): void;
 
   getTable(): {
-    time: number;
-    count: number;
-    average: number;
-    hz: number;
-  }[];
+    [name: string]: {
+      time: number;
+      count: number;
+      average: number;
+      hz: number;
+    }
+  };
 }
