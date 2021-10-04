@@ -1,4 +1,3 @@
-/* global setInterval, clearInterval */
 import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {StatsWidget} from '@probe.gl/stats-widget';

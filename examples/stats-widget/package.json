@@ -7,9 +7,12 @@
     "start-local": "webpack-dev-server --env.local --progress --hot --open",
     "start": "webpack-dev-server --progress --hot --open"
   },
+  "peerDependencies": {
+    "@probe.gl/stats": "^3.3.0"
+  },
   "dependencies": {
-    "@probe.gl/stats-widget": "^3.3.0",
-    "probe.gl": "3.3.0",
+      "@probe.gl/stats-widget": "^3.3.0",
+      "probe.gl": "3.3.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },
