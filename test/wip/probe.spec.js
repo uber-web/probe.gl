@@ -46,7 +46,11 @@ test('Probe#probe - level methods', t => {
   const log = probe.getLog();
 
   t.equals(log.length, 4, 'Expected rows logged');
-  t.deepEqual(log.map(row => row.level), [1, 1, 2, 3], 'Levels match expected');
+  t.deepEqual(
+    log.map(row => row.level),
+    [1, 1, 2, 3],
+    'Levels match expected'
+  );
   t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],
@@ -72,7 +76,11 @@ test('Probe#probe - level methods, lower level set', t => {
   const log = probe.getLog();
 
   t.equals(log.length, 2, 'Expected rows logged');
-  t.deepEqual(log.map(row => row.level), [1, 1], 'Levels match expected');
+  t.deepEqual(
+    log.map(row => row.level),
+    [1, 1],
+    'Levels match expected'
+  );
 
   t.end();
 });
@@ -103,7 +111,11 @@ test('Probe#sample - level methods', t => {
   const log = probe.getLog();
 
   t.equals(log.length, 4, 'Expected rows logged');
-  t.deepEqual(log.map(row => row.level), [1, 1, 2, 3], 'Levels match expected');
+  t.deepEqual(
+    log.map(row => row.level),
+    [1, 1, 2, 3],
+    'Levels match expected'
+  );
   t.deepEqual(
     log.map(row => row.name),
     ['test0', 'test1', 'test2', 'test3'],

@@ -18,10 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// @ts-ignore
-
-const timers = new Map();
-
 /**
  * Ready check for Seer initialization
  *
@@ -38,7 +34,7 @@ export function isReady();
  */
 export function throttle(key, delay): boolean;
 
-export function replacer(seen): any // ((key, value): Array);
+export function replacer(seen): any; // ((key, value): Array);
 
 /**
  * Low-level api leveraging window.postMessage
@@ -47,8 +43,6 @@ export function replacer(seen): any // ((key, value): Array);
  * @param payload {Any} The action payload
  */
 export function send(type: string, data?: any): void;
-
-const listeners: Map<any, any>;
 
 export function listener(message): void;
 

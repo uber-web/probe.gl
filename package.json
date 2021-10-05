@@ -30,26 +30,20 @@
     "version": "ocular-build core"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.8.3",
-    "@babel/register": "^7.0.0",
-    "babel-loader": "^8.0.0",
     "coveralls": "^2.13.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-config-uber-es2015": "^3.1.2",
-    "eslint-config-uber-jsx": "^3.3.3",
     "eslint-import-resolver-webpack": "^0.11.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-react": "^7.10",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^15.1.1",
-    "ocular-dev-tools": "^0.3.1",
+    "ocular-dev-tools": "1.0.0-alpha.7",
     "pre-commit": "^1.2.2",
     "react-dom": "^16.13.1",
     "reify": "^0.18.1",
-    "typescript": "^4.0.2",
     "url-loader": "^1.0.1"
   },
   "pre-commit": [
     "test-fast"
-  ]
+  ],
+  "dependencies": {}
 }

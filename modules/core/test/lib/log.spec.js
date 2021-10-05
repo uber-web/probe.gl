@@ -2,7 +2,7 @@
 import Probe, {Log} from 'probe.gl';
 // @ts-ignore
 import {normalizeArguments} from 'probe.gl/lib/log';
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 function makeOpts(logLevel, message) {
   return {logLevel, message, args: arguments};

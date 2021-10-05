@@ -1,6 +1,6 @@
 /* eslint-disable max-statements */
 import {Stats, Stat} from '@probe.gl/stats';
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 test('Stats#import', t => {
   t.equals(typeof Stats, 'function', 'Stats import OK');

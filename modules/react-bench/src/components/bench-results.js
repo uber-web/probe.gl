@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types, import/no-unresolved */
 import React, {Component} from 'react';
 
 import ReactTable from 'react-table';

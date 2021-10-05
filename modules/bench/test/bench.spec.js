@@ -1,5 +1,5 @@
 import {Bench} from '@probe.gl/bench';
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 import iteratorBench from './iterator.bench';
 import parseColorBench from './parse-color.bench';

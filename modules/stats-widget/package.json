@@ -25,5 +25,8 @@
     "@babel/runtime": "^7.0.0",
     "probe.gl": "3.4.1"
   },
+  "peerDependencies": {
+    "@probe.gl/stats": "3.4.1"
+  },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }

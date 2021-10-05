@@ -176,7 +176,9 @@ export default class BrowserTestDriver extends BrowserDriver {
   }
 
   _emulateInput(event) {
+    // eslint-disable-next-line import/namespace
     if (eventDispatchers[event.type]) {
+      // eslint-disable-next-line import/namespace
       return eventDispatchers[event.type](this.page, event);
     }
     throw new Error(`Unknown event: ${event.type}`);

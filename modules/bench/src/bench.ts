@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {global, assert, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
+import {assert, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
@@ -16,24 +16,38 @@ export const LOG_ENTRY = {
   COMPLETE: 'complete'
 };
 
+export type BenchOptions = {
+  id?: string;
+  log?: any;
+  time?: number;
+  delay?: number;
+  minIterations?: number;
+};
+
 export default class Bench {
-  constructor({
-    id = '', // Name is needed for regression (storing/loading)
-    log = null,
-    time = TIME_THRESHOLD_MS,
-    delay = TIME_COOLDOWN_MS,
-    minIterations = MIN_ITERATIONS
-  } = {}) {
-    if (!log) {
-      const markdown = global.probe && global.probe.markdown;
-      log = markdown ? logResultsAsMarkdownTable : logResultsAsTree;
+  id: string;
+  opts: Required<BenchOptions>;
+  tests = {};
+  results = {};
+  table = {};
+
+  constructor(options: BenchOptions = {}) {
+    const {
+      id = '', // Name is needed for regression (storing/loading)
+      log = null,
+      time = TIME_THRESHOLD_MS,
+      delay = TIME_COOLDOWN_MS,
+      minIterations = MIN_ITERATIONS
+    } = options;
+
+    let logger = log;
+    if (!logger) {
+      const markdown = globalThis.probe && globalThis.probe.markdown;
+      logger = markdown ? logResultsAsMarkdownTable : logResultsAsTree;
     }
 
     this.id = id;
-    this.opts = {log, time, delay, minIterations};
-    this.tests = {};
-    this.results = {};
-    this.table = {};
+    this.opts = {id, log: logger, time, delay, minIterations};
     autobind(this);
     Object.seal(this);
   }
@@ -45,7 +59,9 @@ export default class Bench {
   async run() {
     const timeStart = getHiResTimestamp();
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const {tests, onBenchmarkComplete} = this;
+    // @ts-expect-error
     await runTests({tests, onBenchmarkComplete});
 
     const elapsed = (getHiResTimestamp() - timeStart) / 1000;
@@ -133,6 +149,7 @@ export default class Bench {
     assert(typeof id === 'string');
     assert(typeof func1 === 'function');
 
+    // @ts-expect-error
     let initFunc = options.initialize;
     let testFunc = func1;
     if (typeof func2 === 'function') {
@@ -164,7 +181,7 @@ export default class Bench {
 // Helper methods
 
 // Helper function to promisify setTimeout
-function addDelay(timeout, func) {
+function addDelay(timeout): Promise<void> {
   return new Promise(resolve => {
     setTimeout(() => resolve(), timeout);
   });
@@ -181,7 +198,7 @@ function runCalibrationTests({tests}) {
 }
 
 function logEntry(test, opts) {
-  const priority = (global.probe && global.probe.priority) | 10;
+  const priority = (globalThis.probe && globalThis.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
     opts = {...test, ...test.opts, ...opts};
     delete opts.opts;

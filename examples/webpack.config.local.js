@@ -6,7 +6,8 @@
 // without publishing or npm linking, with conveniences such hot reloading etc.
 
 const resolve = require('path').resolve;
-const ALIASES = require('ocular-dev-tools/config/ocular.config')({
+const {getOcularConfig} = require('ocular-dev-tools');
+const ALIASES = getOcularConfig({
   root: resolve(__dirname, '..')
 }).aliases;
 
@@ -51,14 +52,16 @@ function addLocalDevSettings(config, opts) {
   return config;
 }
 
-module.exports = (baseConfig, opts = {}) => env => {
-  let config = baseConfig;
+module.exports =
+  (baseConfig, opts = {}) =>
+  env => {
+    let config = baseConfig;
 
-  if (env && env.local) {
-    config = addLocalDevSettings(config, opts);
-  }
+    if (env && env.local) {
+      config = addLocalDevSettings(config, opts);
+    }
 
-  // uncomment to debug
-  // console.warn(JSON.stringify(config, null, 2));
-  return config;
-};
+    // uncomment to debug
+    // console.warn(JSON.stringify(config, null, 2));
+    return config;
+  };

@@ -52,10 +52,7 @@ const replacer = seen => (key, value) => {
     return undefined;
   }
   seen.add(value);
-  const isArray = Object.prototype.toString
-    .call(value)
-    .slice(8, -1)
-    .includes('Array');
+  const isArray = Object.prototype.toString.call(value).slice(8, -1).includes('Array');
   if (isArray) {
     return Array.prototype.slice.call(value, 0, 20);
   }
@@ -160,7 +157,10 @@ const listenFor = (type, cb) => {
  */
 const removeListener = cb => {
   listeners.forEach((typeListeners, key) => {
-    listeners.set(key, typeListeners.filter(l => l !== cb));
+    listeners.set(
+      key,
+      typeListeners.filter(l => l !== cb)
+    );
   });
 };
 

@@ -1,4 +1,4 @@
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 
 import {BrowserTestDriver} from '@probe.gl/test-utils';
 

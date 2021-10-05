@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// @ts-nocheck
+
 import test from 'ava';
 import camelCase from 'lodash/camelCase';
 import {spy} from 'sinon';

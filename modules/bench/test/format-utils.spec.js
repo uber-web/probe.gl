@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 // @ts-ignore
 import {formatSI} from '@probe.gl/bench/format-utils';
 

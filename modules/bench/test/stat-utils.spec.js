@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 // @ts-ignore
 import {mean, std, cv} from '@probe.gl/bench/stat-utils';
 

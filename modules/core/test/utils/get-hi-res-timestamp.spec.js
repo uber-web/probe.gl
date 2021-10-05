@@ -1,4 +1,4 @@
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 import {_getHiResTimestamp} from '@probe.gl/stats';
 
 test('_getHiResTimestamp', t => {

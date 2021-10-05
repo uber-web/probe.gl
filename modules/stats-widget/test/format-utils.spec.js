@@ -1,4 +1,4 @@
-import test from 'tape-catch';
+import test from 'tape-promise/tape';
 // @ts-ignore
 import {formatTime, formatMemory} from '@probe.gl/stats-widget/format-utils';
 
