@@ -38,12 +38,15 @@ export default class Stats {
     }
   }
 
-  getTable(): Record<string, {
-    time: number;
-    count: number;
-    average: number;
-    hz: number;
-  }> {
+  getTable(): Record<
+    string,
+    {
+      time: number;
+      count: number;
+      average: number;
+      hz: number;
+    }
+    > {
     const table = {};
     this.forEach(stat => {
       table[stat.name] = {
