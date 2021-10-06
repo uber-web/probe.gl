@@ -1,7 +1,7 @@
 // Built on https://github.com/Erkaman/regl-stats-widget (MIT license)
 // widget styling constants.
 import {formatMemory, formatTime} from './format-utils';
-import {Stats} from '@probe.gl/stats';
+import {Stats, Stat} from '@probe.gl/stats';
 
 const DEFAULT_CSS = {
   css: {
@@ -30,12 +30,34 @@ export const DEFAULT_FORMATTERS = {
   memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
-export default class StatsWidget {
-  constructor(stats, options = {}) {
-    this.stats = stats;
-    this.title = options.title;
+export type StatWidgetProps = {
+  title?: string;
+  framesPerUpdate?: number;
+  css?: object;
+  container?: HTMLElement;
+  formatters?: {[type: string]: string | ((stat: Stat) => string)};
+  resetOnUpdate?: {[statName: string]: boolean};
+};
 
-    this._framesPerUpdate = Math.round(Math.max(options.framesPerUpdate || 1, 1));
+export default class StatsWidget {
+  stats: Stats;
+  title: string;
+  _framesPerUpdate: number;
+  _formatters;
+  _resetOnUpdate = {};
+  _counter = 0;
+  _css;
+  _headerCSS;
+  _itemCSS;
+  _container = null;
+  _header = null;
+  _items = {};
+
+  constructor(stats: Stats, options?: StatWidgetProps) {
+    stats = stats;
+    this.title = options?.title || 'Stats';
+
+    this._framesPerUpdate = Math.round(Math.max(options?.framesPerUpdate || 1, 1));
     this._formatters = DEFAULT_FORMATTERS;
     this._resetOnUpdate = {};
 
@@ -45,7 +67,7 @@ export default class StatsWidget {
     this._initializeUpdateConfigs(options);
 
     // UI
-    this._css = Object.assign({}, DEFAULT_CSS.css, options.css);
+    this._css = Object.assign({}, DEFAULT_CSS.css, options?.css);
     this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
     this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
 
@@ -56,12 +78,12 @@ export default class StatsWidget {
     this._header = null;
     this._items = {};
 
-    this._createDOM(options.container);
+    this._createDOM(options?.container);
     this._createDOMHeader();
     this._createDOMStats();
   }
 
-  setStats(stats) {
+  setStats(stats: Stats): void {
     this.stats = stats;
     // @ts-ignore
     this._createDOMStats(this._container);
@@ -70,9 +92,10 @@ export default class StatsWidget {
     this.update();
   }
 
-  update() {
+  update(): void {
     // compatible with the old API
     // TODO should call stats.size
+    // @ts-expect-error
     const stats = this.stats && this.stats.stats;
     if (!stats || Object.keys(stats).length === 0) {
       return;
@@ -85,7 +108,7 @@ export default class StatsWidget {
     this._update();
   }
 
-  _update() {
+  _update(): void {
     // make sure that we clear the old text before drawing new text.
     this.stats.forEach(stat => {
       this._createDOMItem(stat.name);
@@ -97,8 +120,8 @@ export default class StatsWidget {
     });
   }
 
-  _initializeFormatters(options) {
-    if (options.formatters) {
+  _initializeFormatters(options?: StatWidgetProps): void {
+    if (options?.formatters) {
       for (const name in options.formatters) {
         let formatter = options.formatters[name];
 
@@ -111,15 +134,15 @@ export default class StatsWidget {
     }
   }
 
-  _initializeUpdateConfigs(options) {
-    if (options.resetOnUpdate) {
+  _initializeUpdateConfigs(options?: StatWidgetProps): void {
+    if (options?.resetOnUpdate) {
       for (const name in options.resetOnUpdate) {
         this._resetOnUpdate[name] = options.resetOnUpdate[name];
       }
     }
   }
 
-  _createDOM(container) {
+  _createDOM(container: HTMLElement) {
     if (typeof document === 'undefined' || !document) {
       return;
     }
@@ -136,7 +159,7 @@ export default class StatsWidget {
     }
   }
 
-  _createDOMHeader() {
+  _createDOMHeader(): void {
     // header
     if (!this._header) {
       this._header = document.createElement('div');
@@ -149,13 +172,13 @@ export default class StatsWidget {
     this._setHeaderContent();
   }
 
-  _setHeaderContent(title) {
+  _setHeaderContent(title?: string): void {
     if (this._header) {
       this._header.innerText = title || this.title || (this.stats && this.stats.id) || '';
     }
   }
 
-  _createDOMStats() {
+  _createDOMStats(): void {
     if (this.stats instanceof Stats) {
       this.stats.forEach(stat => {
         this._createDOMItem(stat.name);
@@ -163,7 +186,7 @@ export default class StatsWidget {
     }
   }
 
-  _createDOMItem(statName) {
+  _createDOMItem(statName: string): void {
     if (!this._container) {
       return;
     }
@@ -179,7 +202,7 @@ export default class StatsWidget {
     this._container.appendChild(this._items[statName]);
   }
 
-  _getLines(stat) {
+  _getLines(stat: Stat): string[] {
     const formatter =
       this._formatters[stat.name] || this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
     return formatter(this.stats.get(stat.name)).split('\n');

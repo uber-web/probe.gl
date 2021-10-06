@@ -5,7 +5,7 @@ export default class Stats {
   readonly id: string;
   private stats = {};
 
-  constructor(options: {id: string; stats?: Stat[] | {name: string; type?: string}[]}) {
+  constructor(options: {id: string; stats?: Stats | Stat[] | {name: string; type?: string}[]}) {
     this.id = options.id;
     this.stats = {};
 
@@ -38,12 +38,15 @@ export default class Stats {
     }
   }
 
-  getTable(): Record<string, {
-    time: number;
-    count: number;
-    average: number;
-    hz: number;
-  }> {
+  getTable(): Record<
+    string,
+    {
+      time: number;
+      count: number;
+      average: number;
+      hz: number;
+    }
+    > {
     const table = {};
     this.forEach(stat => {
       table[stat.name] = {
@@ -57,7 +60,7 @@ export default class Stats {
     return table;
   }
 
-  _initializeStats(stats = []): void {
+  _initializeStats(stats: Stats | Stat[] | {name: string; type?: string}[] = []): void {
     stats.forEach(stat => this._getOrCreate(stat));
   }
 
