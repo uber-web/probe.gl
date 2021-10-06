@@ -55,9 +55,9 @@ export default class StatsWidget {
 
   constructor(stats: Stats, options?: StatWidgetProps) {
     stats = stats;
-    this.title = options.title;
+    this.title = options?.title || 'Stats';
 
-    this._framesPerUpdate = Math.round(Math.max(options.framesPerUpdate || 1, 1));
+    this._framesPerUpdate = Math.round(Math.max(options?.framesPerUpdate || 1, 1));
     this._formatters = DEFAULT_FORMATTERS;
     this._resetOnUpdate = {};
 
@@ -67,7 +67,7 @@ export default class StatsWidget {
     this._initializeUpdateConfigs(options);
 
     // UI
-    this._css = Object.assign({}, DEFAULT_CSS.css, options.css);
+    this._css = Object.assign({}, DEFAULT_CSS.css, options?.css);
     this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
     this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
 
@@ -78,7 +78,7 @@ export default class StatsWidget {
     this._header = null;
     this._items = {};
 
-    this._createDOM(options.container);
+    this._createDOM(options?.container);
     this._createDOMHeader();
     this._createDOMStats();
   }
@@ -121,7 +121,7 @@ export default class StatsWidget {
   }
 
   _initializeFormatters(options?: StatWidgetProps): void {
-    if (options.formatters) {
+    if (options?.formatters) {
       for (const name in options.formatters) {
         let formatter = options.formatters[name];
 
@@ -135,7 +135,7 @@ export default class StatsWidget {
   }
 
   _initializeUpdateConfigs(options?: StatWidgetProps): void {
-    if (options.resetOnUpdate) {
+    if (options?.resetOnUpdate) {
       for (const name in options.resetOnUpdate) {
         this._resetOnUpdate[name] = options.resetOnUpdate[name];
       }
