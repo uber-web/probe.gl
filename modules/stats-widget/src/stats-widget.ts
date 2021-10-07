@@ -42,26 +42,25 @@ export type StatWidgetProps = {
 export default class StatsWidget {
   stats: Stats;
   title: string;
+  collapsed: boolean = false;
   _framesPerUpdate: number;
-  _formatters;
+  _formatters = DEFAULT_FORMATTERS;
   _resetOnUpdate = {};
   _counter = 0;
   _css;
   _headerCSS;
   _itemCSS;
-  _container = null;
-  _header = null;
+  _container: HTMLElement = null;
+  _innerContainer: HTMLElement = null;
+  _statsContainer: HTMLElement = null;
+  _header: HTMLElement = null;
   _items = {};
 
   constructor(stats: Stats, options?: StatWidgetProps) {
-    stats = stats;
-    this.title = options?.title || 'Stats';
+    this.stats = stats;
+    this.title = options?.title || (this.stats && this.stats.id) || 'Stats';
 
     this._framesPerUpdate = Math.round(Math.max(options?.framesPerUpdate || 1, 1));
-    this._formatters = DEFAULT_FORMATTERS;
-    this._resetOnUpdate = {};
-
-    this._counter = 0;
 
     this._initializeFormatters(options);
     this._initializeUpdateConfigs(options);
@@ -74,20 +73,14 @@ export default class StatsWidget {
     delete this._css.header;
     delete this._css.item;
 
-    this._container = null;
-    this._header = null;
-    this._items = {};
-
     this._createDOM(options?.container);
-    this._createDOMHeader();
     this._createDOMStats();
   }
 
   setStats(stats: Stats): void {
     this.stats = stats;
-    // @ts-ignore
-    this._createDOMStats(this._container);
-    this._setHeaderContent(stats.id);
+    this._createDOMStats();
+    this._setHeaderContent();
 
     this.update();
   }
@@ -106,6 +99,14 @@ export default class StatsWidget {
     }
 
     this._update();
+  }
+
+  setCollapsed(collapsed: boolean): void {
+    this.collapsed = collapsed;
+    if (this._statsContainer) {
+      this._statsContainer.style.display = this.collapsed ? 'none' : 'block';
+    }
+    this._setHeaderContent();
   }
 
   _update(): void {
@@ -157,6 +158,19 @@ export default class StatsWidget {
       }
       document.body.appendChild(this._container);
     }
+
+    // When adding the widget to an existing element, make sure there
+    // is a container for this widget specifically, so that multiple widgets
+    // can be added to the same container.
+    this._innerContainer = document.createElement('div');
+    this._container.appendChild(this._innerContainer);
+
+    // Create the contents of the stats widget, starting with the header
+    this._createDOMHeader();
+
+    // Create an element for the stats themselves, so we can collapse it later
+    this._statsContainer = document.createElement('div');
+    this._innerContainer.appendChild(this._statsContainer);
   }
 
   _createDOMHeader(): void {
@@ -166,16 +180,23 @@ export default class StatsWidget {
       for (const name in this._headerCSS) {
         this._header.style[name] = this._headerCSS[name];
       }
-      this._container.appendChild(this._header);
+      this._header.onclick = this._toggleCollapsed.bind(this);
+      this._innerContainer.appendChild(this._header);
     }
 
     this._setHeaderContent();
   }
 
-  _setHeaderContent(title?: string): void {
+  _setHeaderContent() {
     if (this._header) {
-      this._header.innerText = title || this.title || (this.stats && this.stats.id) || '';
+      const collapsedState = this.collapsed ? '\u25b6' : '\u2b07';
+      const title = this.title || (this.stats && this.stats.id) || '';
+      this._header.innerText = `${collapsedState} ${title}`;
     }
+  }
+
+  _toggleCollapsed() {
+    this.setCollapsed(!this.collapsed);
   }
 
   _createDOMStats(): void {
@@ -187,7 +208,7 @@ export default class StatsWidget {
   }
 
   _createDOMItem(statName: string): void {
-    if (!this._container) {
+    if (!this._statsContainer) {
       return;
     }
 
@@ -199,7 +220,7 @@ export default class StatsWidget {
     for (const name in this._itemCSS) {
       this._items[statName].style[name] = this._itemCSS[name];
     }
-    this._container.appendChild(this._items[statName]);
+    this._statsContainer.appendChild(this._items[statName]);
   }
 
   _getLines(stat: Stat): string[] {
