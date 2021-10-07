@@ -1,12 +1,14 @@
 // TODO - dummy benchmark - should replace with log related benchmark
 const arr = [1, 1, 1, 1];
 
+// @ts-ignore
 const someFn = i => ((((i * 3 * 8) / 1200) * 0.002) / 40) * 0.2;
 
 let sumForEach = 0;
 let sumMap = 0;
 let sumFor = 0;
 
+// @ts-ignore
 export default function addBenchmarks(suite, addReferenceBenchmarks) {
   suite
     .group('Javascript Array benchmark')

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 async function functionKeysDown(page, {shiftKey, ctrlKey, metaKey}) {
   if (shiftKey) {
     await page.keyboard.down('Shift');

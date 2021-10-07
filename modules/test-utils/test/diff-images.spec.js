@@ -17,6 +17,7 @@ test('diffImage', async t => {
       title: 'identical images',
       source1: resolve(dataDir, 'icon-marker.png'),
       source2: resolve(dataDir, 'icon-marker-2.png'),
+      // @ts-ignore
       testMatch: match => match === 1,
       success: true
     },

@@ -9,14 +9,31 @@ import fs from 'fs';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
-export default class BrowserTestDriver extends BrowserDriver {
-  title;
-  headless;
-  maxConsoleMessageLength;
-  time = Date.now();
-  failures = 0;
+type BrowserTestConfig = {
+  title?: string;
+  headless?: boolean;
+  maxConsoleMessageLength?: number;
+  server?: {
+    command?: string;
+    arguments?: string[];
+  };
+  command?: string;
+  arguments?: string[];
+  browser?: object;
+  exposeFunctions?: any;
+  exposeFunction?: boolean;
+  url?: string;
+};
 
-  run(config: Record<string, any> = {}): Promise<void> {
+export default class BrowserTestDriver extends BrowserDriver {
+
+  title: string;
+  headless: boolean = false;
+  time: number = Date.now();
+  failures: number = 0;
+  maxConsoleMessageLength = MAX_CONSOLE_MESSAGE_LENGTH;
+
+  run(config: BrowserTestConfig = {}): Promise<void> {
     const {
       title = 'Browser Test',
       headless = false,
@@ -25,8 +42,6 @@ export default class BrowserTestDriver extends BrowserDriver {
     this.title = title;
     this.headless = headless;
     this.maxConsoleMessageLength = maxConsoleMessageLength;
-    this.time = Date.now();
-    this.failures = 0;
 
     this.logger.log({
       message: `${title}`,
@@ -46,7 +61,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       });
   }
 
-  _openPage(url, config: Record<string, any> = {}) {
+  _openPage(url, config: BrowserTestConfig = {}) {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
     return this.startBrowser(browserConfig).then(
@@ -87,11 +102,12 @@ export default class BrowserTestDriver extends BrowserDriver {
     );
   }
 
-  _startServer(config = {}) {
+  _startServer(config: BrowserTestConfig) {
     if (!config) {
       return null;
     }
     if (typeof config === 'function') {
+      // @ts-expect-error
       return config();
     }
     return this.startServer(config);
