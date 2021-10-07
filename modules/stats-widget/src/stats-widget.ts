@@ -3,6 +3,9 @@
 import {formatMemory, formatTime} from './format-utils';
 import {Stats, Stat} from '@probe.gl/stats';
 
+const RIGHT_ARROW = '\u25b6';
+const DOWN_ARROW = '\u2b07';
+
 const DEFAULT_CSS = {
   css: {
     position: 'fixed',
@@ -58,7 +61,7 @@ export default class StatsWidget {
 
   constructor(stats: Stats, options?: StatWidgetProps) {
     this.stats = stats;
-    this.title = options?.title || (this.stats && this.stats.id) || 'Stats';
+    this.title = options?.title;
 
     this._framesPerUpdate = Math.round(Math.max(options?.framesPerUpdate || 1, 1));
 
@@ -170,6 +173,7 @@ export default class StatsWidget {
 
     // Create an element for the stats themselves, so we can collapse it later
     this._statsContainer = document.createElement('div');
+    this._statsContainer.style.display = 'block';
     this._innerContainer.appendChild(this._statsContainer);
   }
 
@@ -189,8 +193,8 @@ export default class StatsWidget {
 
   _setHeaderContent() {
     if (this._header) {
-      const collapsedState = this.collapsed ? '\u25b6' : '\u2b07';
-      const title = this.title || (this.stats && this.stats.id) || '';
+      const collapsedState = this.collapsed ? RIGHT_ARROW : DOWN_ARROW;
+      const title = this.title || (this.stats && this.stats.id) || 'Stats';
       this._header.innerText = `${collapsedState} ${title}`;
     }
   }
