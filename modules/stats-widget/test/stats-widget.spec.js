@@ -197,3 +197,14 @@ test('StatsWidget#resetOnUpdate', t => {
 
   t.end();
 });
+
+test('StatsWidget#remove', t => {
+  const container = _global.document.createElement('div');
+  container.id = 'test-stats-widget-container';
+  const statsWidget = new StatsWidget(null, {container});
+  t.ok(statsWidget._container === container);
+  t.equals(statsWidget._container.childNodes.length, 1, 'Should have 1 child node.');
+  statsWidget.remove();
+  t.equals(statsWidget._container.childNodes.length, 0, 'Should have 0 child nodes.');
+  t.end();
+});

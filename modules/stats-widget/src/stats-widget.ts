@@ -58,6 +58,7 @@ export default class StatsWidget {
   _statsContainer: HTMLElement = null;
   _header: HTMLElement = null;
   _items = {};
+  _added: boolean = false;
 
   constructor(stats: Stats, options?: StatWidgetProps) {
     this.stats = stats;
@@ -102,6 +103,16 @@ export default class StatsWidget {
     }
 
     this._update();
+  }
+
+  /**
+   * Remove the stats widget from the container it was added to.
+   * The stats widget cannot be reused after this is called.
+   */
+  remove(): void {
+    // if re-adding the stats widget is needed, a code path to
+    // re-add the _innerContainer should be added, e.g. in _update.
+    this._container.removeChild(this._innerContainer);
   }
 
   setCollapsed(collapsed: boolean): void {
