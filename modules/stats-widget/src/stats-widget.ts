@@ -15,7 +15,8 @@ const DEFAULT_CSS = {
     lineSpacing: 6
   },
   headerCSS: {
-    fontSize: '16px'
+    fontSize: '16px',
+    cursor: 'pointer'
   },
   itemCSS: {
     paddingLeft: '8px'
