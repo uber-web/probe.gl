@@ -40,8 +40,16 @@ test('StatsWidget#Constructor with no stats or options', t => {
   t.ok(statsWidget._header, 'Should create a dom header.');
   t.equals(statsWidget._container.childNodes.length, 1, 'Should have one child node.');
   t.ok(
-    statsWidget._container.childNodes[0] === statsWidget._header,
-    'Should append header to container as the first child'
+    statsWidget._container.childNodes[0] === statsWidget._innerContainer,
+    'Should append inner container to container as the first child'
+  );
+  t.ok(
+    statsWidget._innerContainer.childNodes[0] === statsWidget._header,
+    'Should append header to inner container as the first child'
+  );
+  t.ok(
+    statsWidget._innerContainer.childNodes[1] === statsWidget._statsContainer,
+    'Should append stats container to inner container as the second child'
   );
   t.end();
 });
@@ -65,8 +73,31 @@ test('StatsWidget#setStats', t => {
   statsWidget.setStats(stats);
 
   t.equals(Object.keys(statsWidget._items).length, 3, 'Should have 3 items.');
-  t.equals(statsWidget._container.childNodes.length, 4, 'Should have 4 child nodes.');
+  t.equals(statsWidget._container.childNodes.length, 1, 'Should have 2 child nodes.');
+  t.equals(statsWidget._innerContainer.childNodes.length, 2, 'Should have 2 child nodes.');
+  t.equals(statsWidget._statsContainer.childNodes.length, 3, 'Should have 3 child nodes.');
   t.equals(statsWidget._counter, 1, 'Should call update() and increase _counter.');
+
+  t.end();
+});
+
+test('StatsWidget#collapse', t => {
+  const container = _global.document.createElement('div');
+  container.id = 'test-stats-widget-container';
+  const statsWidget = new StatsWidget(getStatsObject(), {container});
+
+  t.ok(!statsWidget.collapsed, 'Starts uncollapsed');
+  t.equals(statsWidget._statsContainer.style.display, 'block', 'Starts in block display');
+
+  statsWidget.setCollapsed(true);
+
+  t.ok(statsWidget.collapsed, 'Collapses');
+  t.equals(statsWidget._statsContainer.style.display, 'none', 'Collapses to none display');
+
+  statsWidget.setCollapsed(false);
+
+  t.ok(!statsWidget.collapsed, 'Uncollapses');
+  t.equals(statsWidget._statsContainer.style.display, 'block', 'Uncollapses to block display');
 
   t.end();
 });
@@ -86,7 +117,9 @@ test('StatsWidget#Update stats', t => {
   // @ts-ignore
   t.equals(Object.keys(statsWidget._items).length, 3, 'Should have 3 items.');
   // @ts-ignore
-  t.equals(statsWidget._container.childNodes.length, 4, 'Should have 4 child nodes.');
+  t.equals(statsWidget._container.childNodes.length, 1, 'Should have 1 child nodes.');
+  t.equals(statsWidget._innerContainer.childNodes.length, 2, 'Should have 2 child nodes.');
+  t.equals(statsWidget._statsContainer.childNodes.length, 3, 'Should have 3 child nodes.');
 
   // @ts-ignore
   t.equals(statsWidget._items.Count.innerHTML, 'Count: 1', 'Should correctly update count stats.');
@@ -134,7 +167,11 @@ test('StatsWidget#formatters', t => {
 
   statsWidget.setStats(new Stats({id: 'test-stats-2'}));
   // @ts-ignore
-  t.equals(statsWidget._header.innerText, 'test-stats-2', "Should use the new stats' header.");
+  t.equals(
+    statsWidget._header.innerText,
+    '\u2b07 test-stats-2',
+    "Should use the new stats' header."
+  );
 
   t.end();
 });
@@ -158,5 +195,16 @@ test('StatsWidget#resetOnUpdate', t => {
   t.equals(stats.get('Count').count, 0, 'Should reset count.');
   t.equals(stats.get('GPU Memory').count, 1500, 'Should not reset memory.');
 
+  t.end();
+});
+
+test('StatsWidget#remove', t => {
+  const container = _global.document.createElement('div');
+  container.id = 'test-stats-widget-container';
+  const statsWidget = new StatsWidget(null, {container});
+  t.ok(statsWidget._container === container);
+  t.equals(statsWidget._container.childNodes.length, 1, 'Should have 1 child node.');
+  statsWidget.remove();
+  t.equals(statsWidget._container.childNodes.length, 0, 'Should have 0 child nodes.');
   t.end();
 });
