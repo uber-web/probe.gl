@@ -22,9 +22,6 @@
     "dist",
     "src"
   ],
-  "scripts": {
-    "post-build": "tsc -b tsconfig.json"
-  },
   "dependencies": {
     "@babel/runtime": "^7.0.0"
   },
