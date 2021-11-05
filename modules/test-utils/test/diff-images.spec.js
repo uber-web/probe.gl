@@ -1,5 +1,5 @@
 import test from 'tape-promise/tape';
-import {isBrowser} from 'probe.gl/env';
+import {isBrowser} from 'probe.gl';
 
 import {_diffImages as diffImages} from '@probe.gl/test-utils';
 

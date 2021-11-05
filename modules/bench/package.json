@@ -19,6 +19,9 @@
     "dist",
     "src"
   ],
+  "scripts": {
+    "post-build": "tsc"
+  },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "probe.gl": "3.5.0-alpha.1"

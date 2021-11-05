@@ -22,6 +22,9 @@
     "dist",
     "src"
   ],
+  "scripts": {
+    "post-build": "tsc"
+  },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "css-loader": "^2.1.1",
