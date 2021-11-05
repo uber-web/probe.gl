@@ -100,7 +100,7 @@ export default class Bench {
   }
 
   onSuiteComplete() {
-    const localStorage = new LocalStorage({id: this.id});
+    const localStorage = new LocalStorage(this.id);
     const saved = localStorage.getConfiguration();
     const current = this.updateTable(this.table, saved);
     localStorage.updateConfiguration(current);

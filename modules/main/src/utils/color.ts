@@ -24,7 +24,7 @@ function getColor(color) {
   return typeof color === 'string' ? COLOR[color.toUpperCase()] || COLOR.WHITE : color;
 }
 
-export function addColor(string, color, background) {
+export function addColor(string, color, background?) {
   if (!isBrowser && typeof string === 'string') {
     if (color) {
       color = getColor(color);

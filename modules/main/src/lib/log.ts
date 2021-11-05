@@ -88,13 +88,19 @@ function getTableHeader(table) {
 // A console wrapper
 
 export default class Log {
+  static VERSION = VERSION;
+
+  id: string;
+  VERSION: string = VERSION;
+  _startTs: number = getHiResTimestamp();
+  _deltaTs: number = getHiResTimestamp();
+  // TODO - fix support from throttling groups
+  LOG_THROTTLE_TIMEOUT: number = 0; // Time before throttled messages are logged again
+  _storage: LocalStorage;
+  userData = {};
+
   constructor({id} = {id: ''}) {
     this.id = id;
-    this.VERSION = VERSION;
-    this._startTs = getHiResTimestamp();
-    this._deltaTs = getHiResTimestamp();
-    // TODO - fix support from throttling groups
-    this.LOG_THROTTLE_TIMEOUT = 0; // Time before throttled messages are logged again
     this._storage = new LocalStorage(`__probe-${this.id}__`, DEFAULT_SETTINGS);
     this.userData = {};
 
@@ -185,7 +191,7 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   // Log to a group
-  probe(logLevel, message) {
+  probe(logLevel, message?) {
     // @ts-ignore
     return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
       time: true,
@@ -194,19 +200,19 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   // Log a debug message
-  log(logLevel, message) {
+  log(logLevel, message?) {
     // @ts-ignore
     return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
   }
 
   // Log a normal message
-  info(logLevel, message) {
+  info(logLevel, message?) {
     // @ts-ignore
     return this._getLogFunction(logLevel, message, console.info, arguments);
   }
 
   // Log a normal message, but only once, no console flooding
-  once(logLevel, message) {
+  once(logLevel, message?) {
     return this._getLogFunction(
       logLevel,
       message,
@@ -268,15 +274,17 @@ in a later version. Use \`${newUsage}\` instead`);
     );
   }
 
-  timeStamp(logLevel, message) {
+  timeStamp(logLevel, message?) {
     return this._getLogFunction(logLevel, message, console.timeStamp || noop);
   }
 
   group(logLevel, message, opts = {collapsed: false}) {
     opts = normalizeArguments({logLevel, message, opts});
     const {collapsed} = opts;
+    // @ts-expect-error
     opts.method = (collapsed ? console.groupCollapsed : console.group) || console.info;
 
+    // @ts-expect-error
     return this._getLogFunction(opts);
   }
 
@@ -312,7 +320,7 @@ in a later version. Use \`${newUsage}\` instead`);
     return this.isEnabled() && this.getLevel() >= normalizeLogLevel(logLevel);
   }
 
-  _getLogFunction(logLevel, message, method, args = [], opts) {
+  _getLogFunction(logLevel, message, method, args = [], opts?: Record<string, any>) {
     if (this._shouldLog(logLevel)) {
       // normalized opts + timings
       opts = normalizeArguments({logLevel, message, args, opts});
@@ -347,8 +355,6 @@ in a later version. Use \`${newUsage}\` instead`);
     return noop;
   }
 }
-
-Log.VERSION = VERSION;
 
 // Get logLevel from first argument:
 // - log(logLevel, message, args) => logLevel

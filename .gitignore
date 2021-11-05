@@ -12,6 +12,8 @@ npm-debug.log
 */**/yarn.lock
 yarn-error.log
 
+tsconfig.tsbuildinfo
+
 # editor files
 .project
 .DS_Store

@@ -25,7 +25,7 @@ import {window} from './globals';
 import isBrowser from './is-browser';
 import isElectron from './is-electron';
 
-export function isMobile() {
+export function isMobile(): boolean {
   // @ts-ignore
   return typeof window.orientation !== 'undefined';
 }
@@ -33,7 +33,7 @@ export function isMobile() {
 // Simple browser detection
 // `mockUserAgent` parameter allows user agent to be overridden for testing
 /* eslint-disable complexity */
-export default function getBrowser(mockUserAgent) {
+export default function getBrowser(mockUserAgent?: string): string {
   if (!mockUserAgent && !isBrowser()) {
     return 'Node';
   }
@@ -43,6 +43,7 @@ export default function getBrowser(mockUserAgent) {
   }
 
   const navigator_ = typeof navigator !== 'undefined' ? navigator : {};
+  // @ts-expect-error
   const userAgent = mockUserAgent || navigator_.userAgent || '';
   // const appVersion = navigator_.appVersion || '';
 

@@ -3,7 +3,7 @@
 
 import isElectron from './is-electron';
 
-export default function isBrowser() {
+export default function isBrowser(): boolean {
   // Check if in browser by duck-typing Node context
   const isNode =
     // @ts-ignore
@@ -13,6 +13,6 @@ export default function isBrowser() {
 }
 
 // document does not exist on worker thread
-export function isBrowserMainThread() {
+export function isBrowserMainThread(): boolean {
   return isBrowser() && typeof document !== 'undefined';
 }
