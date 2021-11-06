@@ -19,13 +19,13 @@
 // THE SOFTWARE.
 
 /* eslint-disable no-console */
-import {VERSION, isBrowser} from '../utils/globals';
-import LocalStorage from '../utils/local-storage';
-import {formatImage, formatTime, leftPad} from '../utils/formatters';
-import {addColor} from '../utils/color';
-import {autobind} from '../utils/autobind';
-import assert from '../utils/assert';
-import getHiResTimestamp from '../utils/hi-res-timestamp';
+import {VERSION, isBrowser} from '@probe.gl/env';
+import LocalStorage from './utils/local-storage';
+import {formatImage, formatTime, leftPad} from './utils/formatters';
+import {addColor} from './utils/color';
+import {autobind} from './utils/autobind';
+import assert from './utils/assert';
+import {getHiResTimestamp} from './utils/hi-res-timestamp';
 
 /* eslint-disable no-console */
 

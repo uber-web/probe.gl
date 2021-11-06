@@ -1,6 +1,6 @@
-import checkIfBrowser from '../env/is-browser';
+import checkIfBrowser from '../lib/is-browser';
 
-export {self, window, global, document, process, console} from '../env/globals';
+export {self, window, global, document, process, console} from '../lib/globals';
 
 // Extract injected version from package.json (injected by babel plugin)
 // @ts-ignore

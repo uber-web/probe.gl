@@ -1,12 +1,13 @@
 {
-  "name": "@probe.gl/bench",
-  "description": "JavaScript benchmarking utility",
+  "name": "@probe.gl/env",
+  "description": "JavaScript environment detection for browser and Node",
   "license": "MIT",
   "version": "3.5.0-alpha.1",
   "keywords": [
-    "bench",
-    "benchmark",
-    "benchmarking"
+    "javascript",
+    "profiling",
+    "instrumentation",
+    "logging"
   ],
   "repository": {
     "type": "git",
@@ -19,9 +20,12 @@
     "dist",
     "src"
   ],
+  "sideEffects": [
+    "./src/env/globals.js",
+    "./src/lib/globals.js"
+  ],
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "@probe.gl/log": "3.5.0-alpha.1"
+    "@babel/runtime": "^7.0.0"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }

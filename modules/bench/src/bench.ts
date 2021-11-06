@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {assert, autobind, LocalStorage, getHiResTimestamp} from 'probe.gl';
+import {autobind, LocalStorage, getHiResTimestamp} from '@probe.gl/log';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
@@ -15,6 +15,12 @@ export const LOG_ENTRY = {
   TEST: 'test',
   COMPLETE: 'complete'
 };
+
+function assert(condition: unknown, message?: string) {
+  if (!condition) {
+    throw new Error(message || 'Assertion failed');
+  }
+}
 
 export type BenchOptions = {
   id?: string;

@@ -1,9 +1,9 @@
 // probe.gl, MIT license
 
-import {window, process, isBrowser} from './globals';
+import {window, process, isBrowser} from '@probe.gl/env';
 
 /** Get best timer available. */
-export default function getHiResTimestamp() {
+export function getHiResTimestamp() {
   let timestamp;
   // @ts-expect-error
   if (isBrowser && window.performance) {

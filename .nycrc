@@ -1,3 +1,14 @@
 {
-  "extends": "node_modules/ocular-dev-tools/templates/.nycrc"
+  "all": "true",
+  "include": [
+    "modules/**/src/**/*.+(js|jsx|mjs|ts|tsx)"
+  ],
+  "exclude": [
+    "**/wip/**",
+    "**/libs/**",
+    "**/test/**",
+    "**/*.d.ts",
+
+    "**/bundle.+(js|ts)"
+  ]
 }
