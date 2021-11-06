@@ -8,8 +8,6 @@
     "outDir": "dist"
   },
   "references": [
-    {"path": "../env"},
-    {"path": "../log"},
-    {"path": "../stats"}
+    {"path": "../env"}
   ]
 }
