@@ -23,7 +23,7 @@ export function rightPad(string, length = 8) {
   return `${string}${' '.repeat(padLength)}`;
 }
 
-export function formatValue(v, opts = {}) {
+export function formatValue(v, opts: {isInteger?: boolean} = {}) {
   const EPSILON = 1e-16;
   const {isInteger = false} = opts;
   if (Array.isArray(v) || ArrayBuffer.isView(v)) {

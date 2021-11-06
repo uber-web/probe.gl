@@ -92,7 +92,6 @@ export default class StatsWidget {
   update(): void {
     // compatible with the old API
     // TODO should call stats.size
-    // @ts-expect-error
     const stats = this.stats && this.stats.stats;
     if (!stats || Object.keys(stats).length === 0) {
       return;

@@ -1,22 +1,5 @@
-// Copyright (c) 2015 - 2017 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// probe.gl, MIT license
+
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from 'probe.gl';
 import diffImages from '../utils/diff-images';
@@ -26,7 +9,13 @@ import fs from 'fs';
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
 export default class BrowserTestDriver extends BrowserDriver {
-  run(config = {}) {
+  title;
+  headless;
+  maxConsoleMessageLength;
+  time = Date.now();
+  failures = 0;
+
+  run(config: Record<string, any> = {}): Promise<void> {
     const {
       title = 'Browser Test',
       headless = false,
@@ -34,9 +23,9 @@ export default class BrowserTestDriver extends BrowserDriver {
     } = config;
     this.title = title;
     this.headless = headless;
+    this.maxConsoleMessageLength = maxConsoleMessageLength;
     this.time = Date.now();
     this.failures = 0;
-    this.maxConsoleMessageLength = maxConsoleMessageLength;
 
     this.logger.log({
       message: `${title}`,
@@ -56,7 +45,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       });
   }
 
-  _openPage(url, config = {}) {
+  _openPage(url, config: Record<string, any> = {}) {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
     return this.startBrowser(browserConfig).then(
@@ -195,8 +184,10 @@ export default class BrowserTestDriver extends BrowserDriver {
       encoding: 'binary'
     };
     if (opts.region) {
+      // @ts-expect-error
       screenshotOptions.clip = opts.region;
     } else {
+      // @ts-expect-error
       screenshotOptions.fullPage = true;
     }
     return this.page

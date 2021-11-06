@@ -1,7 +1,7 @@
 // based on https://github.com/cheton/is-electron
 // https://github.com/electron/electron/issues/2288
 /* eslint-disable complexity */
-export default function isElectron(mockUserAgent) {
+export default function isElectron(mockUserAgent?: string): boolean {
   // Renderer process
   if (
     typeof window !== 'undefined' &&
