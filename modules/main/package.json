@@ -21,16 +21,11 @@
     "src",
     "env.js"
   ],
-  "sideEffects": [
-    "./src/init.js",
-    "./src/env/globals.js",
-    "./src/lib/globals.js"
-  ],
-  "browser": {
-    "asciify-image": false
-  },
+  "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "@probe.gl/env": "3.5.0-alpha.1",
+    "@probe.gl/log": "3.5.0-alpha.1",
     "@probe.gl/stats": "3.5.0-alpha.1"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"

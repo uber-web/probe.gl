@@ -18,8 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'probe.gl/test';
+import '@probe.gl/env/test';
+import '@probe.gl/log/test';
 import '@probe.gl/stats/test';
 import '@probe.gl/stats-widget/test';
 import '@probe.gl/bench/test';
 import '@probe.gl/test-utils/test';
+
+// DEPRECATED
+import 'probe.gl/test';

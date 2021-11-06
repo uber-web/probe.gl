@@ -1,4 +1,4 @@
-import {isBrowser} from './globals';
+import {isBrowser} from '@probe.gl/env';
 
 export const COLOR = {
   BLACK: 30,

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import {rightPad} from 'probe.gl';
+import {rightPad} from '@probe.gl/log';
 
 // TODO - this is duplicated from bench.js to avoid circular imports
 const LOG_ENTRY = {

@@ -1,6 +1,6 @@
-# probe.gl
+# @probe.gl/env
 
-Logging and instrumentation tools for JavaScript
+JavaScript environment detection for browser and Node
 
 [probe.gl](https://uber-web.github.io/probe.gl/#/documentation/overview/docs) is a collection of logging, instrumentation, bench-marking and test tools for JavaScript applications.
 
