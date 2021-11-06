@@ -1,4 +1,5 @@
 // probe.gl, MIT license
+/* eslint-disable camelcase */
 
 import BrowserDriver from './browser-driver';
 import {COLOR, addColor} from 'probe.gl';
@@ -75,7 +76,7 @@ export default class BrowserTestDriver extends BrowserDriver {
             color: COLOR.BRIGHT_YELLOW
           })();
 
-          this.openPage({
+          return this.openPage({
             url: config.url || url,
             exposeFunctions,
             onConsole: event => this._onConsole(event),
@@ -149,7 +150,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     if (this.headless) {
-      this.exit(0);
+      this.exit(0); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
   }
 
@@ -160,7 +161,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     if (this.headless) {
-      this.exit(1);
+      this.exit(1); // eslint-disable-line @typescript-eslint/no-floating-promises
     }
   }
 
