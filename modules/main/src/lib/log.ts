@@ -43,7 +43,7 @@ const DEFAULT_SETTINGS = {
   level: 0
 };
 
-function noop() {}
+function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 
 const cache = {};
 const ONCE = {once: true};

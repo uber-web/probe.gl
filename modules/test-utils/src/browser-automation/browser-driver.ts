@@ -22,7 +22,7 @@ const DEFAULT_PUPPETEER_OPTIONS = {
 
 const AUTO_PORT_START = 5000;
 
-function noop() {}
+function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 
 export default class BrowserDriver {
   readonly id: string;
