@@ -76,7 +76,8 @@ export default class BrowserTestDriver extends BrowserDriver {
             color: COLOR.BRIGHT_YELLOW
           })();
 
-          return this.openPage({
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          this.openPage({
             url: config.url || url,
             exposeFunctions,
             onConsole: event => this._onConsole(event),
