@@ -69,6 +69,7 @@ function PerformanceBarCell({row}) {
 export class BenchResults extends Component {
   _renderTable() {
     // eslint-disable-next-line react/prop-types
+    // @ts-expect-error
     const {log} = this.props;
     return (
       <div>
