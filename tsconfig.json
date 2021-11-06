@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
+    // "baseUrl" should be provided if "paths" are provided
     "baseUrl": ".",
     "paths": {
       "@probe.gl/main/*": ["modules/main/src/*"],
