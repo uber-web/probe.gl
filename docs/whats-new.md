@@ -1,5 +1,37 @@
 # What's New
 
+## v3.5.alpha
+
+Release Date: TBD (Q4 2021)
+
+- TypeScript `.d.ts` files are now more robust (automatically built from source `.ts` files).
+- The main `probe.gl` module is now fully deprecated and has been split into `@probe.gl/env` and `@probe.gl/log`.
+
+### `@probe.gl/env` (NEW MODULE)
+
+- The environment functionality from the now deprecated `probe.gl` module (global exports, `isBrowser`, `isElectron` etc.)  have been moved to this module.
+
+### `@probe.gl/log` (NEW MODULE)
+
+- The `Log` and `COLOR` classes from the now deprecated `probe.gl` module.
+
+### `@probe.gl/stats-widget`
+
+- Add collapse option
+- Use pointer cursor in header
+
+### `probe.gl`
+
+- The old `probe.gl` module is now fully deprecated and will be removed in probe.gl v4.0.
+- For backwards compatiblity, this module imports and re-exports symbols from `@probe.gl/env`, `@probe.gl/log`, `@probe.gl/stats`.
+- `import 'probe.gl/env` should be replaced with `import '@probe.gl/env'`.
+- See our [Upgrade Guide](./upgrade-guide.md) for more details.
+
+## v3.4
+
+Release Date: Jul 16, 2021
+
+- Exports TypeScript type definitions for all probe.gl modules.
 ## v3.3
 
 Release Date: Jun 18, 2020
