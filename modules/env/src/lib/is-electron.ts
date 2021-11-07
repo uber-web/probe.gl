@@ -6,7 +6,7 @@ export default function isElectron(mockUserAgent?: string): boolean {
   if (
     typeof window !== 'undefined' &&
     typeof window.process === 'object' &&
-    // @ts-ignore
+    // @ts-expect-error
     window.process.type === 'renderer'
   ) {
     return true;
@@ -15,7 +15,7 @@ export default function isElectron(mockUserAgent?: string): boolean {
   if (
     typeof process !== 'undefined' &&
     typeof process.versions === 'object' &&
-    // @ts-ignore
+    // @ts-expect-error
     Boolean(process.versions.electron)
   ) {
     return true;

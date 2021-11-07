@@ -26,7 +26,6 @@ type BrowserTestConfig = {
 };
 
 export default class BrowserTestDriver extends BrowserDriver {
-
   title: string;
   headless: boolean = false;
   time: number = Date.now();

@@ -1,6 +1,5 @@
 /* eslint-disable max-statements */
 import Probe, {Log} from '@probe.gl/log';
-// @ts-ignore
 import {normalizeArguments} from '@probe.gl/log/log';
 import test from 'tape-promise/tape';
 

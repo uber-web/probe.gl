@@ -27,7 +27,7 @@ const timers = new Map();
  *
  * @returns {Boolean}
  */
-// @ts-ignore
+// @ts-expect-error
 const isReady = () => isBrowser && window.__SEER_INITIALIZED__;
 
 /**
@@ -104,12 +104,12 @@ const listener = message => {
  * This method will be called automatically if you use the `listenFor` method.
  */
 const init = () => {
-  // @ts-ignore
+  // @ts-expect-error
   if (!isBrowser || window.__SEER_LISTENER__) {
     return;
   }
   window.addEventListener('message', listener);
-  // @ts-ignore
+  // @ts-expect-error
   window.__SEER_LISTENER__ = true;
 };
 
@@ -118,12 +118,12 @@ const init = () => {
  * or liberate memory.
  */
 const clean = () => {
-  // @ts-ignore
+  // @ts-expect-error
   if (!isBrowser || !window.__SEER_LISTENER__) {
     return;
   }
   window.removeEventListener('message', listener);
-  // @ts-ignore
+  // @ts-expect-error
   delete window.__SEER_LISTENER__;
 };
 
@@ -143,7 +143,7 @@ const listenFor = (type, cb) => {
   if (!listeners.has(type)) {
     listeners.set(type, []);
   }
-  // @ts-ignore
+  // @ts-expect-error
   if (!window.__SEER_LISTENER__) {
     init();
   }
