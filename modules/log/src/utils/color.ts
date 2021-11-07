@@ -18,7 +18,7 @@ export enum COLOR {
   BRIGHT_MAGENTA = 95,
   BRIGHT_CYAN = 96,
   BRIGHT_WHITE = 97
-};
+}
 
 function getColor(color): number {
   return typeof color === 'string' ? COLOR[color.toUpperCase()] || COLOR.WHITE : color;

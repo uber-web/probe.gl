@@ -37,13 +37,13 @@ export function formatValue(v: unknown, opts: {isInteger?: boolean} = {}): strin
     return isInteger ? '0' : '0.';
   }
   if (isInteger) {
-  // @ts-expect-error
-  return v.toFixed(0);
+    // @ts-expect-error
+    return v.toFixed(0);
   }
   // @ts-expect-error
   if (Math.abs(v) > 100 && Math.abs(v) < 10000) {
-  // @ts-expect-error
-  return v.toFixed(0);
+    // @ts-expect-error
+    return v.toFixed(0);
   }
   // @ts-expect-error
   const string = v.toPrecision(2);
