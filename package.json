@@ -22,7 +22,7 @@
   "scripts": {
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
     "clean": "ocular-clean && npm run tsclean",
-    "build": "ocular-clean && time ocular-build && time npm run tsbuild",
+    "build": "ocular-clean && time ocular-build && npm run tsclean && time npm run tsbuild",
     "tsclean": "find . -name tsconfig.tsbuildinfo -exec rm {} \\;",
     "tsbuild": "tsc -b tsconfig.modules.json",
     "lint": "tsc && ocular-lint",
