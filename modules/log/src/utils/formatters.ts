@@ -1,5 +1,5 @@
 // TODO: Currently unused, keeping in case we want it later for log formatting
-export function formatTime(ms) {
+export function formatTime(ms: number): string {
   let formatted;
   if (ms < 10) {
     formatted = `${ms.toFixed(2)}ms`;
@@ -13,17 +13,17 @@ export function formatTime(ms) {
   return formatted;
 }
 
-export function leftPad(string, length = 8) {
+export function leftPad(string: string, length: number = 8): string {
   const padLength = Math.max(length - string.length, 0);
   return `${' '.repeat(padLength)}${string}`;
 }
 
-export function rightPad(string, length = 8) {
+export function rightPad(string: string, length: number = 8): string {
   const padLength = Math.max(length - string.length, 0);
   return `${string}${' '.repeat(padLength)}`;
 }
 
-export function formatValue(v, opts: {isInteger?: boolean} = {}) {
+export function formatValue(v: unknown, opts: {isInteger?: boolean} = {}): string {
   const EPSILON = 1e-16;
   const {isInteger = false} = opts;
   if (Array.isArray(v) || ArrayBuffer.isView(v)) {
@@ -32,21 +32,26 @@ export function formatValue(v, opts: {isInteger?: boolean} = {}) {
   if (!Number.isFinite(v)) {
     return String(v);
   }
+  // @ts-expect-error
   if (Math.abs(v) < EPSILON) {
     return isInteger ? '0' : '0.';
   }
   if (isInteger) {
+    // @ts-expect-error
     return v.toFixed(0);
   }
+  // @ts-expect-error
   if (Math.abs(v) > 100 && Math.abs(v) < 10000) {
+    // @ts-expect-error
     return v.toFixed(0);
   }
+  // @ts-expect-error
   const string = v.toPrecision(2);
   const decimal = string.indexOf('.0');
   return decimal === string.length - 2 ? string.slice(0, -1) : string;
 }
 
-// Helper to formatValue
+/** Helper to formatValue */
 function formatArrayValue(v, opts) {
   const {maxElts = 16, size = 1} = opts;
   let string = '[';
@@ -60,7 +65,7 @@ function formatArrayValue(v, opts) {
   return `${string}${terminator}`;
 }
 
-// Inspired by https://github.com/hughsk/console-image (MIT license)
+/** Inspired by https://github.com/hughsk/console-image (MIT license) */
 export function formatImage(image, message, scale, maxWidth = 600) {
   const imageUrl = image.src.replace(/\(/g, '%28').replace(/\)/g, '%29');
 

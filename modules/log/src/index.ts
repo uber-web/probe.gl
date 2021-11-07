@@ -1,4 +1,3 @@
-import './init';
 import {default as Log} from './log';
 
 // DEFAULT EXPORT IS A LOG INSTANCE
@@ -14,3 +13,5 @@ export {leftPad, rightPad} from './utils/formatters';
 export {autobind} from './utils/autobind';
 export {default as LocalStorage} from './utils/local-storage';
 export {getHiResTimestamp} from './utils/hi-res-timestamp';
+
+import './init';

@@ -20,9 +20,9 @@
 
 /**
  * Binds the "this" argument of all functions on a class instance to the instance
- * @param {Object} obj - class instance (typically a react component)
+ * @param obj - class instance (typically a react component)
  */
-export function autobind(obj, predefined = ['constructor']) {
+export function autobind(obj: object, predefined = ['constructor']): void {
   const proto = Object.getPrototypeOf(obj);
   const propNames = Object.getOwnPropertyNames(proto);
   for (const key of propNames) {
