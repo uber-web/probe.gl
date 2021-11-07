@@ -1,0 +1,36 @@
+// This is a base TS config for the individual packages, mainly for building .d.ts files
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "build": true,
+    "module": "ES2020",
+    "esModuleInterop": true,
+    "declaration": true,
+    // Source map for declarations... not currently needed
+    // "declarationMap": true,
+    "noEmit": true,
+    // "emitDeclarationOnly": true,
+    // Uncomment to debug
+    "listEmittedFiles": true
+  },
+  "references": [
+    {"path": "modules/bench"},
+    {"path": "modules/env"},
+    {"path": "modules/log"},
+    {"path": "modules/main"},
+    {"path": "modules/react-bench"},
+    {"path": "modules/seer"},
+    {"path": "modules/stats"},
+    {"path": "modules/stats-widget"},
+    {"path": "modules/test-utils"}
+  ],
+  "include": [
+    "modules"
+  ],
+  "exclude": [
+    "examples",
+    "test",
+    "modules/*/test",
+    "modules/*/dist"
+  ]
+}

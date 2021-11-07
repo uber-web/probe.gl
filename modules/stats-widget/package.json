@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/uber-web/probe.gl.git"
   },
-  "types": "src/index.d.ts",
+  "types": "dist/index.d.ts",
   "main": "dist/es5/index.js",
   "module": "dist/esm/index.js",
   "files": [
@@ -22,11 +22,13 @@
   ],
   "sideEffects": false,
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
-    "probe.gl": "3.5.0-alpha.1"
+    "@babel/runtime": "^7.0.0"
   },
   "peerDependencies": {
-    "@probe.gl/stats": "3.4.1"
+    "@probe.gl/stats": "3.5.0-alpha.1"
+  },
+  "devDependencies": {
+    "@probe.gl/stats": "3.5.0-alpha.1"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }

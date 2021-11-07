@@ -3,7 +3,7 @@ import Stat from './stat';
 /** A "bag" of `Stat` objects, can be visualized using `StatsWidget` */
 export default class Stats {
   readonly id: string;
-  readonly stats = {};
+  readonly stats: Record<string, Stat> = {};
 
   constructor(options: {id: string; stats?: Stats | Stat[] | {name: string; type?: string}[]}) {
     this.id = options.id;
