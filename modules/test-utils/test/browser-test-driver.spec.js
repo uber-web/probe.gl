@@ -32,7 +32,7 @@ test('BrowserTestDriver#import', t => {
 });
 
 test('BrowserTestDriver#ImageDiff', t => {
-  // @ts-ignore
+  // @ts-expect-error
   if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
     t.end();
@@ -49,7 +49,7 @@ test('BrowserTestDriver#ImageDiff', t => {
   };
 
   window
-    // @ts-ignore
+    // @ts-expect-error
     .browserTestDriver_captureAndDiffScreen(diffSettings)
     .then(result => {
       if (result.success) {
@@ -64,7 +64,7 @@ test('BrowserTestDriver#ImageDiff', t => {
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ff0';
       ctx.fillRect(10, 10, 12, 12);
-      // @ts-ignore
+      // @ts-expect-error
       return window.browserTestDriver_captureAndDiffScreen(diffSettings);
     })
     .then(result => {

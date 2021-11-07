@@ -1,14 +1,7 @@
-/**
- * Inspired by https://github.com/popomore/spy
- * Attach a spy to the function. The spy has the following methods and fields
- * - `restore()` - remove spy completely
- * - `reset()` - reset call count
- * - `callCount` - number of calls
- * - `called` - whether spy was called
- */
+// probe.gl, MIT license
+// Inspired by https://github.com/popomore/spy
 
 // @ts-nocheck
-
 interface Spy {
   // (...args: any[]): any;
   restore(): void;
@@ -18,6 +11,13 @@ interface Spy {
   called: boolean;
 }
 
+/**
+ * Attach a spy to the function. The spy has the following methods and fields
+ * - `restore()` - remove spy completely
+ * - `reset()` - reset call count
+ * - `callCount` - number of calls
+ * - `called` - whether spy was called
+ */
 export function makeSpy(obj, func): Spy {
   let methodName;
 

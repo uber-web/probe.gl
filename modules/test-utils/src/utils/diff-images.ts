@@ -3,15 +3,24 @@ import fs from 'fs';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
+export type DiffImagesOptions = {
+  threshold?: number; // 0.99,
+  createDiffImage?: boolean; // false,
+  tolerance?: number; // 0.1,
+  includeAA?: boolean; // false,
+  includeEmpty?: boolean; // true
+};
+
 export default function diffImages(
   source1,
   source2,
-  options: Record<string, any> = {}
+  options: DiffImagesOptions = {}
 ): Promise<{
+  success: boolean;
   match: string;
   matchPercentage: string;
-  success: boolean;
   diffImage: any;
+  error: string;
 }> {
   // @ts-expect-error
   return Promise.all([parsePNG(source1), parsePNG(source2)])

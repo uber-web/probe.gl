@@ -78,12 +78,12 @@ export class BenchResults extends Component {
             &lt; 1M iterations/s
           </BarCell>
           <div style={{width: 20}} />
-          {/* @ts-ignore */}
+          {/* @ts-expect-error */}
           <BarCell color={ORANGE} percent={100}>
             1M - 10M iterations/s
           </BarCell>
           <div style={{width: 20}} />
-          {/* @ts-ignore */}
+          {/* @ts-expect-error */}
           <BarCell color={GREEN} percent={100}>
             &gt; 10M iterations/s
           </BarCell>

@@ -9,18 +9,24 @@ A simple console wrapper with a host of features
 * Improved `assert` messages - Reformats errors from `assert` to show actual error string
 
 
+## Installing
+
+```
+yarn add @probe.gl/log
+```
+
 ## Usage
 
 Create a new Log
 ```js
-import {Log} from 'probe.gl';
+import {Log} from '@probe.gl/log';
 const log = new Log({id: 'my-app'});
 log.log('Hello world')();  // <<< Note: double function call, is necessary
 ```
 
 Add color (only affects output in Node.js)
 ```js
-import {Log, COLOR} from 'probe.gl';
+import {Log, COLOR} from '@probe.gl/log';
 ...
 log.log({message: 'Hello world', color: COLOR.GREEN});
 ```
@@ -63,7 +69,7 @@ The `message` argument can be a string or a function returning a string.
 ### Colors
 
 To get access to color definitions:
-`import {COLOR} from 'probe.gl'`
+`import {COLOR} from '@probe.gl/log'`
 
 Available colors:
 * `COLOR.BLACK`, `COLOR.RED`, `COLOR.GREEN`, `COLOR.YELLOW`, `COLOR.BLUE`, `COLOR.MAGENTA`, `COLOR.CYAN`, `COLOR.WHITE`

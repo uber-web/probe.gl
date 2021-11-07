@@ -3,7 +3,7 @@
 function getStorage(type): Storage {
   try {
     /** @type {Storage} */
-    // @ts-ignore
+    // @ts-expect-error
     const storage: Storage = window[type];
     const x = '__storage_test__';
     storage.setItem(x, x);

@@ -59,7 +59,7 @@ export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, t
       );
       break;
     default:
-      // @ts-ignore
+      // @ts-expect-error
       logResultsAsTree({entry, id, itersPerSecond, time});
   }
 }

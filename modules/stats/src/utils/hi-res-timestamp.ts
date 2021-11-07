@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-export default function getHiResTimestamp() {
+export default function getHiResTimestamp(): number {
   let timestamp;
   // Get best timer available.
   if (typeof window !== 'undefined' && window.performance) {

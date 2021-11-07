@@ -25,7 +25,9 @@ const DEFAULT_CSS = {
   }
 };
 
-export const DEFAULT_FORMATTERS = {
+export type StatFormatter = (stat: Stat) => string;
+
+export const DEFAULT_FORMATTERS: Record<string, StatFormatter> = {
   count: stat => `${stat.name}: ${stat.count}`,
   averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
   totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
@@ -38,8 +40,8 @@ export type StatWidgetProps = {
   framesPerUpdate?: number;
   css?: object;
   container?: HTMLElement;
-  formatters?: {[type: string]: string | ((stat: Stat) => string)};
-  resetOnUpdate?: {[statName: string]: boolean};
+  formatters?: Record<string, string | StatFormatter>;
+  resetOnUpdate?: Record<string, boolean>;
 };
 
 export default class StatsWidget {
@@ -48,15 +50,15 @@ export default class StatsWidget {
   collapsed: boolean = false;
   _framesPerUpdate: number;
   _formatters = DEFAULT_FORMATTERS;
-  _resetOnUpdate = {};
-  _counter = 0;
   _css;
   _headerCSS;
   _itemCSS;
-  _container: HTMLElement = null;
+  _container: HTMLElement | null = null;
   _innerContainer: HTMLElement = null;
   _statsContainer: HTMLElement = null;
   _header: HTMLElement = null;
+  _resetOnUpdate: Record<string, boolean> = {};
+  _counter: number = 0;
   _items = {};
   _added: boolean = false;
 

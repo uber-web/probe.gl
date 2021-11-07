@@ -3,7 +3,7 @@
 // Parse array or string color
 function parseColor(color, target, index = 0) {
   if (Array.isArray(color) || ArrayBuffer.isView(color)) {
-    // @ts-ignore
+    // @ts-expect-error
     if (!target && color.length === 4) {
       return color;
     }
@@ -12,7 +12,7 @@ function parseColor(color, target, index = 0) {
     target[index + 0] = color[0];
     target[index + 1] = color[1];
     target[index + 2] = color[2];
-    // @ts-ignore
+    // @ts-expect-error
     target[index + 3] = color.length === 4 ? color[4] : 255;
     return target;
   }

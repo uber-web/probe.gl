@@ -1,6 +1,5 @@
 import getHiResTimestamp from '../utils/hi-res-timestamp';
 
-/** Tracks a single statistic */
 export default class Stat {
   readonly name: string;
   readonly type: string;
