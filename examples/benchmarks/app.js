@@ -79,7 +79,6 @@ export default class App extends PureComponent {
     const {log} = this.state;
     return (
       <div>
-        {/* @ts-expect-error */}
         <BenchResults log={log} />
       </div>
     );
