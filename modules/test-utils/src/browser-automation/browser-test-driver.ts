@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 
 import BrowserDriver from './browser-driver';
-import {COLOR, addColor} from 'probe.gl';
+import {COLOR, addColor} from '@probe.gl/log';
 import diffImages from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
 import fs from 'fs';

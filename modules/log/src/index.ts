@@ -2,7 +2,7 @@ import './init';
 import {default as Log} from './log';
 
 // DEFAULT EXPORT IS A LOG INSTANCE
-export default new Log({id: 'probe.gl'});
+export default new Log({id: '@probe.gl/log'});
 
 // LOGGING
 export {default as Log} from './log';

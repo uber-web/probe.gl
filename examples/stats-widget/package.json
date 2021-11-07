@@ -8,11 +8,11 @@
     "start": "webpack-dev-server --progress --hot --open"
   },
   "peerDependencies": {
-    "@probe.gl/stats": "^3.3.0"
+    "@probe.gl/stats": "^3.5.0-alpha.1"
   },
   "dependencies": {
-      "@probe.gl/stats-widget": "^3.3.0",
-      "probe.gl": "3.3.0",
+    "@probe.gl/stats-widget": "^3.5.0-alpha.1",
+    "@probe.gl/stats": "^3.5.0-alpha.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },

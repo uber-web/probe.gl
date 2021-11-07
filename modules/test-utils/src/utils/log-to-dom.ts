@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import {global} from 'probe.gl';
-const {document, console} = global;
+const {document, console} = globalThis;
 
 let old = null;
 

@@ -9,7 +9,7 @@
     "test-browser": "node test/start.js"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "^3.3.0",
+    "@probe.gl/test-utils": "^3.5.0-alpha.1",
     "tape": "^4.5.1"
   },
   "devDependencies": {

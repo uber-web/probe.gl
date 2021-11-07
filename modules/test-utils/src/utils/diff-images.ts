@@ -14,7 +14,7 @@ export type DiffImagesOptions = {
 export default function diffImages(
   source1,
   source2,
-  options?: DiffImagesOptions
+  options: DiffImagesOptions = {}
 ): Promise<{
   success: boolean;
   match: string;

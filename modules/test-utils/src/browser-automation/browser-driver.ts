@@ -3,7 +3,7 @@
 import puppeteer, {Browser} from 'puppeteer';
 import ChildProcess from 'child_process';
 
-import {COLOR, Log} from 'probe.gl';
+import {COLOR, Log} from '@probe.gl/log';
 import {getAvailablePort} from '../utils/process-utils';
 
 const DEFAULT_SERVER_CONFIG = {
