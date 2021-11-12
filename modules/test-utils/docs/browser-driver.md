@@ -84,8 +84,8 @@ driver.startServer({
 
 Parameters:
 
-* `command` (String) - the command to run, default `'webpack-dev-server'`.
-* `arguments` (Array<String>) - a list of string arguments.
+* `command` (string) - the command to run, default `'webpack-dev-server'`.
+* `arguments` (string[]) - a list of string arguments.
 * `options` (Object) - options for the new process. Default `{maxBuffer: 5000 * 1024}`. See [child_process.spawn](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) for details.
 * `port` (`'auto'`|`false`) - `startServer` can attempt to bind the service to an available port if `port` is set to `'auto'`. In this case, the command receives additional arguments `--port <port>`. Default `'auto'`.
 * `wait` (Number) - time in milliseconds to wait after executing the command. If any error is generated from the child process during this period, the `Promise` will reject. Otherwise, the service is considered available. Default `2000`.

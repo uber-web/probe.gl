@@ -5,7 +5,8 @@
       "title": "Overview",
       "entries": [
         {"entry": "docs"},
-        {"entry": "docs/whats-new"}
+        {"entry": "docs/whats-new"},
+        {"entry": "docs/upgrade-guide"}
       ]
     },
     {
@@ -27,32 +28,37 @@
       "title": "API Reference",
       "chapters": [
         {
-          "title": "Logging",
+          "title": "@probe.gl/log",
           "entries": [
-            {"entry": "docs/api-reference/log/log"}
+            {"entry": "modules/log/docs/log"}
           ]
         },
         {
-          "title": "Stats",
+          "title": "@probe.gl/stats",
           "entries": [
-            {"entry": "docs/api-reference/stats/stat"},
-            {"entry": "docs/api-reference/stats/stats"},
-            {"entry": "docs/api-reference/stats-widget/stats-widget"}
+            {"entry": "modules/stats/docs/stat"},
+            {"entry": "modules/stats/docs/stats"}
           ]
         },
         {
-          "title": "Benchmarking",
+          "title": "@probe.gl/stats-widget",
           "entries": [
-            {"entry": "docs/api-reference/bench/bench"}
+            {"entry": "modules/stats-widget/docs/stats-widget"}
           ]
         },
         {
-          "title": "Testing",
+          "title": "@probe.gl/bench",
           "entries": [
-            {"entry": "docs/api-reference/test-utils/browser-driver"},
-            {"entry": "docs/api-reference/test-utils/browser-test-driver"},
-            {"entry": "docs/api-reference/test-utils/make-spy"},
-            {"entry": "docs/api-reference/test-utils/log-to-dom"}
+            {"entry": "modules/bench/docs/bench"}
+          ]
+        },
+        {
+          "title": "@probe.gl/test-utils",
+          "entries": [
+            {"entry": "modules/test-utils/docs/browser-driver"},
+            {"entry": "modules/test-utils/docs/browser-test-driver"},
+            {"entry": "modules/test-utils/docs/make-spy"},
+            {"entry": "modules/test-utils/docs/log-to-dom"}
           ]
         }
       ]

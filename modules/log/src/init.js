@@ -1,2 +1,3 @@
-// @ts-ignore
+// @ts-nocheck
+/* eslint-disable */
 globalThis.probe = {};
