@@ -1,5 +1,6 @@
 const resolve = require('path').resolve;
-const DOCS = require('../docs/table-of-contents.json');
+
+const ROOT_DIR = resolve('..');
 
 module.exports = {
   plugins: [
@@ -8,11 +9,18 @@ module.exports = {
       options: {
         logLevel: 1,
       
-        DOC_FOLDER: '../docs/',
-        ROOT_FOLDER: '..',
         DIR_NAME: __dirname,
-      
-        DOCS,
+        ROOT_FOLDER: ROOT_DIR,
+
+        DOCS: require('../docs/table-of-contents.json'),
+        DOC_FOLDERS: [
+          resolve(ROOT_DIR, 'docs'),
+          resolve(ROOT_DIR, 'modules')
+        ],
+        SOURCE: [
+          resolve('./static'),
+          resolve('./src')
+        ],
       
         PATH_PREFIX: '/probe.gl',
       
@@ -62,12 +70,12 @@ module.exports = {
         
         EXAMPLES: [
           // TODO: This app is currently more a test app than an example + crashes when imported
-          {
-           title: 'StatsWidget',
-           // image: 'images/stats-widget.png',
-           componentUrl: resolve(__dirname, '../examples/stats-widget/app.js'),
-           path: 'examples/stats-widget'
-          }
+          // {
+          //  title: 'StatsWidget',
+          //  // image: 'images/stats-widget.png',
+          //  componentUrl: resolve(__dirname, '../examples/stats-widget/app.js'),
+          //  path: 'examples/stats-widget'
+          // }
         ],
       
         ADDITIONAL_LINKS: [],

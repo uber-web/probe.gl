@@ -1,11 +1,10 @@
 # What's New
 
-## v3.5.alpha
+## v3.5 (In development)
 
 Release Date: TBD (Q4 2021)
 
-- TypeScript `.d.ts` files are now more robust (automatically built from source `.ts` files).
-- The main `probe.gl` module is now fully deprecated and has been split into `@probe.gl/env` and `@probe.gl/log`.
+- TypeScript: exported `.d.ts` files are now more robust (automatically built from source `.ts` files).
 
 ### `@probe.gl/env` (NEW MODULE)
 
@@ -22,9 +21,8 @@ Release Date: TBD (Q4 2021)
 
 ### `probe.gl`
 
-- The old `probe.gl` module is now fully deprecated and will be removed in probe.gl v4.0.
-- For backwards compatiblity, this module imports and re-exports symbols from `@probe.gl/env`, `@probe.gl/log`, `@probe.gl/stats`.
-- `import 'probe.gl/env` should be replaced with `import '@probe.gl/env'`.
+- The original `probe.gl` module is now fully deprecated in favor of scoped submodules and will be removed in probe.gl v4.0.
+- For backwards compatiblity, `the probe.gl` module imports and re-exports symbols from `@probe.gl/env`, `@probe.gl/log`, `@probe.gl/stats`.
 - See our [Upgrade Guide](./upgrade-guide.md) for more details.
 
 ## v3.4
