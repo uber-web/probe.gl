@@ -9,7 +9,10 @@ on:
 
 jobs:
   test-node:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12, 14, 16]
 
     steps:
       - uses: actions/checkout@v2.1.1
