@@ -1,24 +1,32 @@
 # CHANGELOG
 
+v3.5.0-alpha.4 - Nov 7, 2021
+
+- fix(test-utils): Disable puppeteer timeout (#182)
+- chore: "Add CI for Node 16 (#181)
+- chore: BrowserTestDriver async syntax (#180)
+- fix(website): unbreak website (#179)
+
+v3.5.0-alpha.3 - Nov 7, 2021
 v3.5.0-alpha.2 - Nov 7, 2021
 
-    feat: enable .d.ts builds
-    Stats widget: Header cursor (#167)
-    chore: improve TS types across the code base (#176)
-    chore: Monorepo setup for typescript (#175)
-    chore: split out env and log modules (#174)
-    chore: test utils to .ts (#172)
-    chore: more .ts files (#170)
-    chore: Convert to .ts files (#169)
-    chore: `modules/core` -> `modules/main` (#168)
+- feat: enable .d.ts builds
+- Stats widget: Header cursor (#167)
+- chore: improve TS types across the code base (#176)
+- chore: Monorepo setup for typescript (#175)
+- chore: split out env and log modules (#174)
+- chore: test utils to .ts (#172)
+- chore: more .ts files (#170)
+- chore: Convert to .ts files (#169)
+- chore: `modules/core` -> `modules/main` (#168)
 
 v3.5.0-alpha.1 - Oct 20, 2021
 
-    Add collapse option to StatsWidget (#166)
-    chore(stats-widget): Convert module to .ts (#164)
-    chore: Bump to ocular-dev-tools@1.0.0-alpha.7 to prep for typescript (#163)
-    chore: Migrate to Github Actions (#162)
-    fix(stats): stats getTable type (#161)
+- Add collapse option to StatsWidget (#166)
+- chore(stats-widget): Convert module to .ts (#164)
+- chore: Bump to ocular-dev-tools@1.0.0-alpha.7 to prep for typescript (#163)
+- chore: Migrate to Github Actions (#162)
+- fix(stats): stats getTable type (#161)
 
 v3.4.1 - Sep 7, 2021
 

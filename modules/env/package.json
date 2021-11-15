@@ -2,7 +2,7 @@
   "name": "@probe.gl/env",
   "description": "JavaScript environment detection for browser and Node",
   "license": "MIT",
-  "version": "3.5.0-alpha.3",
+  "version": "3.5.0-alpha.4",
   "keywords": [
     "javascript",
     "profiling",

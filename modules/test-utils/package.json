@@ -2,7 +2,7 @@
   "name": "@probe.gl/test-utils",
   "description": "JavaScript browser-based testing utilities",
   "license": "MIT",
-  "version": "3.5.0-alpha.3",
+  "version": "3.5.0-alpha.4",
   "keywords": [
     "integration test",
     "render test"
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@probe.gl/log": "3.5.0-alpha.3",
+    "@probe.gl/log": "3.5.0-alpha.4",
     "pixelmatch": "^4.0.2",
     "puppeteer": "*"
   },
