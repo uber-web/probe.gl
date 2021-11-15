@@ -1,11 +1,12 @@
 // probe.gl, MIT license
 /* eslint-disable camelcase */
 
-import BrowserDriver from './browser-driver';
+import {ScreenshotOptions} from 'puppeteer';
+import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
 import diffImages from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
-import fs from 'fs';
+import BrowserDriver from './browser-driver';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
@@ -195,25 +196,25 @@ export default class BrowserTestDriver extends BrowserDriver {
       return Promise.reject(new Error('Must supply golden image for image diff'));
     }
 
-    const screenshotOptions = {
+    const screenshotOptions: ScreenshotOptions = {
       type: 'png',
       omitBackground: true,
       encoding: 'binary'
     };
     if (opts.region) {
-      // @ts-expect-error
       screenshotOptions.clip = opts.region;
     } else {
-      // @ts-expect-error
       screenshotOptions.fullPage = true;
     }
     return this.page
       .screenshot(screenshotOptions)
       .then(image => diffImages(image, opts.goldenImage, opts))
       .then(result => {
+        // @ts-expect-error
         if (!result.success && opts.saveOnFail && result.source1) {
           let filename = opts.saveAs || '[name]-failed.png';
           filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
+          // @ts-expect-error
           this._saveScreenshot(filename, result.source1);
         }
         return {

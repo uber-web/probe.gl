@@ -2,7 +2,7 @@ import ChildProcess from 'child_process';
 
 // Get an available port
 // Works on Unix systems
-export function getAvailablePort(defaultPort = 3000) {
+export function getAvailablePort(defaultPort: number = 3000): Promise<number> {
   return new Promise((resolve, reject) => {
     // Get a list of all ports in use
     ChildProcess.exec('lsof -i -P -n | grep LISTEN', (error, stdout, stderr) => {
