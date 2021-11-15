@@ -75,6 +75,9 @@ export default class BrowserDriver {
 
     this.page = await this.browser.newPage();
 
+    // https://ourcodeworld.com/articles/read/1106/how-to-solve-puppeteer-timeouterror-navigation-timeout-of-30000-ms-exceeded
+    this.page.setDefaultNavigationTimeout(0);
+
     // attach events
     this.page.on('load', onLoad);
     this.page.on('console', onConsole);
