@@ -38,6 +38,7 @@
   "exclude":[
     "test/apps/**/*",
     "node_modules",
-    "**/dist/**/*"
+    "modules/**/dist",
+    "dist"
   ]
 }
