@@ -1,6 +1,11 @@
 # CHANGELOG
 
-v3.5.0-alpha.4 - Nov 7, 2021
+v3.5.0-alpha.5 - Nov 17, 2021
+
+- chore(log): Improved typings for `Log` class (#183)
+- feat(env): Return string constants (#184)
+
+v3.5.0-alpha.4 - Nov 15, 2021
 
 - fix(test-utils): Disable puppeteer timeout (#182)
 - chore: "Add CI for Node 16 (#181)
