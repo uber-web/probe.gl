@@ -1,22 +1,4 @@
-// Copyright (c) 2017 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// probe.gl, MIT license
 
 /* eslint-disable no-console */
 import {VERSION, isBrowser} from '@probe.gl/env';
@@ -27,8 +9,6 @@ import {autobind} from './utils/autobind';
 import assert from './utils/assert';
 import {getHiResTimestamp} from './utils/hi-res-timestamp';
 
-/* eslint-disable no-console */
-
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
   debug: isBrowser ? console.debug || console.log : console.log,
@@ -38,7 +18,17 @@ const originalConsole = {
   error: console.error
 };
 
-const DEFAULT_SETTINGS = {
+type Table = Record<string, any>;
+
+type LogFunction = () => void;
+
+type LogSettings = {
+  enabled?: boolean;
+  level?: number;
+  [key: string]: any;
+};
+
+const DEFAULT_SETTINGS: Required<LogSettings> = {
   enabled: true,
   level: 0
 };
@@ -47,43 +37,6 @@ function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 
 const cache = {};
 const ONCE = {once: true};
-
-/*
-function throttle(tag, timeout) {
-  const prevTime = cache[tag];
-  const time = Date.now();
-  if (!prevTime || (time - prevTime > timeout)) {
-    cache[tag] = time;
-    return true;
-  }
-  return false;
-}
-
-// Assertions don't generate standard exceptions and don't print nicely
-function checkForAssertionErrors(args) {
-  const isAssertion =
-    args &&
-    args.length > 0 &&
-    typeof args[0] === 'object' &&
-    args[0] !== null &&
-    args[0].name === 'AssertionError';
-
-  if (isAssertion) {
-    args = Array.prototype.slice.call(args);
-    args.unshift(`assert(${args[0].message})`);
-  }
-  return args;
-}
-*/
-
-function getTableHeader(table) {
-  for (const key in table) {
-    for (const title in table[key]) {
-      return title || 'untitled';
-    }
-  }
-  return 'empty';
-}
 
 // A console wrapper
 
@@ -94,10 +47,11 @@ export default class Log {
   VERSION: string = VERSION;
   _startTs: number = getHiResTimestamp();
   _deltaTs: number = getHiResTimestamp();
-  // TODO - fix support from throttling groups
-  LOG_THROTTLE_TIMEOUT: number = 0; // Time before throttled messages are logged again
   _storage: LocalStorage;
   userData = {};
+
+  // TODO - fix support from throttling groups
+  LOG_THROTTLE_TIMEOUT: number = 0; // Time before throttled messages are logged again
 
   constructor({id} = {id: ''}) {
     this.id = id;
@@ -110,141 +64,71 @@ export default class Log {
     Object.seal(this);
   }
 
-  set level(newLevel) {
+  set level(newLevel: number) {
     this.setLevel(newLevel);
   }
 
-  get level() {
+  get level(): number {
     return this.getLevel();
   }
 
-  isEnabled() {
+  isEnabled(): boolean {
     return this._storage.config.enabled;
   }
 
-  getLevel() {
+  getLevel(): number {
     return this._storage.config.level;
   }
 
-  // @return {Number} milliseconds, with fractions
+  /** @return {Number} milliseconds, with fractions */
   getTotal() {
     return Number((getHiResTimestamp() - this._startTs).toPrecision(10));
   }
 
-  // @return {Number} milliseconds, with fractions
+  /** @return {Number} milliseconds, with fractions */
   getDelta() {
     return Number((getHiResTimestamp() - this._deltaTs).toPrecision(10));
   }
 
-  // Deprecated
+  /** @deprecated use logLevel */
   set priority(newPriority) {
     this.level = newPriority;
   }
 
+  /** @deprecated use logLevel */
   get priority() {
     return this.level;
   }
 
+  /** @deprecated use logLevel */
   getPriority() {
     return this.level;
   }
 
   // Configure
 
-  enable(enabled = true) {
+  enable(enabled: boolean = true): this {
     this._storage.updateConfiguration({enabled});
     return this;
   }
 
-  setLevel(level) {
+  setLevel(level: number): this {
     this._storage.updateConfiguration({level});
     return this;
   }
 
-  // Unconditional logging
-
-  assert(condition, message) {
-    assert(condition, message);
+  /** return the current status of the setting */
+  get(setting: string): any {
+    return this._storage.config[setting];
   }
 
-  // Warn, but only once, no console flooding
-  warn(message) {
-    // @ts-expect-error
-    return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
+  // update the status of the setting
+  set(setting: string, value: any): void {
+    this._storage.updateConfiguration({[setting]: value});
   }
 
-  // Print an error
-  error(message) {
-    // @ts-expect-error
-    return this._getLogFunction(0, message, originalConsole.error, arguments);
-  }
-
-  deprecated(oldUsage, newUsage) {
-    return this.warn(`\`${oldUsage}\` is deprecated and will be removed \
-in a later version. Use \`${newUsage}\` instead`);
-  }
-
-  removed(oldUsage, newUsage) {
-    return this.error(`\`${oldUsage}\` has been removed. Use \`${newUsage}\` instead`);
-  }
-
-  // Conditional logging
-
-  // Log to a group
-  probe(logLevel, message?) {
-    // @ts-expect-error
-    return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
-      time: true,
-      once: true
-    });
-  }
-
-  // Log a debug message
-  log(logLevel, message?) {
-    // @ts-expect-error
-    return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
-  }
-
-  // Log a normal message
-  info(logLevel, message?) {
-    // @ts-expect-error
-    return this._getLogFunction(logLevel, message, console.info, arguments);
-  }
-
-  // Log a normal message, but only once, no console flooding
-  once(logLevel, message?) {
-    return this._getLogFunction(
-      logLevel,
-      message,
-      originalConsole.debug || originalConsole.info,
-      // @ts-expect-error
-      arguments,
-      ONCE
-    );
-  }
-
-  // Logs an object as a table
-  table(logLevel, table, columns) {
-    if (table) {
-      return this._getLogFunction(logLevel, table, console.table || noop, columns && [columns], {
-        tag: getTableHeader(table)
-      });
-    }
-    return noop;
-  }
-
-  // logs an image under Chrome
-  image({logLevel, priority, image, message = '', scale = 1}) {
-    if (!this._shouldLog(logLevel || priority)) {
-      return noop;
-    }
-    return isBrowser
-      ? logImageInBrowser({image, message, scale})
-      : logImageInNode({image, message, scale});
-  }
-
-  // Logs the current settings as a table
-  settings() {
+  /** Logs the current settings as a table */
+  settings(): void {
     if (console.table) {
       console.table(this._storage.config);
     } else {
@@ -252,14 +136,89 @@ in a later version. Use \`${newUsage}\` instead`);
     }
   }
 
-  // logs the current status of the setting
-  get(setting) {
-    return this._storage.config[setting];
+  // Unconditional logging
+
+  assert(condition: unknown, message?: string): void {
+    assert(condition, message);
   }
 
-  // update the status of the setting
-  set(setting, value) {
-    this._storage.updateConfiguration({[setting]: value});
+  /** Warn, but only once, no console flooding */
+  warn(message: string, ...args): LogFunction;
+  warn(message: string): LogFunction {
+    return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
+  }
+
+  /** Print an error */
+  error(message: string, ...args): LogFunction;
+  error(message: string): LogFunction {
+    return this._getLogFunction(0, message, originalConsole.error, arguments);
+  }
+
+  /** Print a deprecation warning */
+  deprecated(oldUsage: string, newUsage: string): LogFunction {
+    return this.warn(`\`${oldUsage}\` is deprecated and will be removed \
+in a later version. Use \`${newUsage}\` instead`);
+  }
+
+  /** Print a removal warning */
+  removed(oldUsage: string, newUsage: string): LogFunction {
+    return this.error(`\`${oldUsage}\` has been removed. Use \`${newUsage}\` instead`);
+  }
+
+  // Conditional logging
+
+  /** Log to a group */
+  probe(logLevel, message?, ...args): LogFunction;
+  probe(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
+      time: true,
+      once: true
+    });
+  }
+
+  /** Log a debug message */
+  log(logLevel, message?, ...args): LogFunction;
+  log(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
+  }
+
+  /** Log a normal message */
+  info(logLevel, message?, ...args): LogFunction;
+  info(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, console.info, arguments);
+  }
+
+  /** Log a normal message, but only once, no console flooding */
+  once(logLevel, message?, ...args): LogFunction;
+  once(logLevel, message?, ...args) {
+    return this._getLogFunction(
+      logLevel,
+      message,
+      originalConsole.debug || originalConsole.info,
+      arguments,
+      ONCE
+    );
+  }
+
+  /** Logs an object as a table */
+  table(logLevel, table?, columns?): LogFunction {
+    if (table) {
+      // @ts-expect-error Not clear how this works, columns being passed as arguments
+      return this._getLogFunction(logLevel, table, console.table || noop, columns && [columns], {
+        tag: getTableHeader(table)
+      });
+    }
+    return noop;
+  }
+
+  /** logs an image under Chrome */
+  image({logLevel, priority, image, message = '', scale = 1}): LogFunction {
+    if (!this._shouldLog(logLevel || priority)) {
+      return noop;
+    }
+    return isBrowser
+      ? logImageInBrowser({image, message, scale})
+      : logImageInNode({image, message, scale});
   }
 
   time(logLevel, message) {
@@ -279,13 +238,12 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   group(logLevel, message, opts = {collapsed: false}) {
-    opts = normalizeArguments({logLevel, message, opts});
+    const options = normalizeArguments({logLevel, message, opts});
     const {collapsed} = opts;
     // @ts-expect-error
-    opts.method = (collapsed ? console.groupCollapsed : console.group) || console.info;
+    options.method = (collapsed ? console.groupCollapsed : console.group) || console.info;
 
-    // @ts-expect-error
-    return this._getLogFunction(opts);
+    return this._getLogFunction(options);
   }
 
   groupCollapsed(logLevel, message, opts = {}) {
@@ -298,7 +256,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // EXPERIMENTAL
 
-  withGroup(logLevel, message, func) {
+  withGroup(logLevel: number, message: string, func: Function): void {
     this.group(logLevel, message)();
 
     try {
@@ -308,7 +266,7 @@ in a later version. Use \`${newUsage}\` instead`);
     }
   }
 
-  trace() {
+  trace(): void {
     if (console.trace) {
       console.trace();
     }
@@ -316,11 +274,18 @@ in a later version. Use \`${newUsage}\` instead`);
 
   // PRIVATE METHODS
 
-  _shouldLog(logLevel) {
+  /** Deduces log level from a variety of arguments */
+  _shouldLog(logLevel: unknown): boolean {
     return this.isEnabled() && this.getLevel() >= normalizeLogLevel(logLevel);
   }
 
-  _getLogFunction(logLevel, message, method, args = [], opts?: Record<string, any>) {
+  _getLogFunction(
+    logLevel: unknown,
+    message?: unknown,
+    method?: Function,
+    args?: IArguments,
+    opts?: Record<string, any>
+  ): LogFunction {
     if (this._shouldLog(logLevel)) {
       // normalized opts + timings
       opts = normalizeArguments({logLevel, message, args, opts});
@@ -356,12 +321,14 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 }
 
-// Get logLevel from first argument:
-// - log(logLevel, message, args) => logLevel
-// - log(message, args) => 0
-// - log({logLevel, ...}, message, args) => logLevel
-// - log({logLevel, message, args}) => logLevel
-function normalizeLogLevel(logLevel) {
+/**
+ * Get logLevel from first argument:
+ * - log(logLevel, message, args) => logLevel
+ * - log(message, args) => 0
+ * - log({logLevel, ...}, message, args) => logLevel
+ * - log({logLevel, message, args}) => logLevel
+ */
+function normalizeLogLevel(logLevel: unknown): number {
   if (!logLevel) {
     return 0;
   }
@@ -375,6 +342,7 @@ function normalizeLogLevel(logLevel) {
     case 'object':
       // Backward compatibility
       // TODO - deprecate `priority`
+      // @ts-expect-error
       resolvedLevel = logLevel.logLevel || logLevel.priority || 0;
       break;
 
@@ -387,25 +355,36 @@ function normalizeLogLevel(logLevel) {
   return resolvedLevel;
 }
 
-// "Normalizes" the various argument patterns into an object with known types
-// - log(logLevel, message, args) => {logLevel, message, args}
-// - log(message, args) => {logLevel: 0, message, args}
-// - log({logLevel, ...}, message, args) => {logLevel, message, args}
-// - log({logLevel, message, args}) => {logLevel, message, args}
-export function normalizeArguments(opts) {
+/**
+ * "Normalizes" the various argument patterns into an object with known types
+ * - log(logLevel, message, args) => {logLevel, message, args}
+ * - log(message, args) => {logLevel: 0, message, args}
+ * - log({logLevel, ...}, message, args) => {logLevel, message, args}
+ * - log({logLevel, message, args}) => {logLevel, message, args}
+ */
+export function normalizeArguments(opts: {
+  logLevel;
+  message;
+  collapsed?: boolean;
+  args?: IArguments;
+  opts?;
+}): {
+  logLevel: number;
+  message: string;
+  args: any[];
+} {
   const {logLevel, message} = opts;
   opts.logLevel = normalizeLogLevel(logLevel);
+
   // We use `arguments` instead of rest parameters (...args) because IE
   // does not support the syntax. Rest parameters is transpiled to code with
   // perf impact. Doing it here instead avoids constructing args when logging is
   // disabled.
   // TODO - remove when/if IE support is dropped
-  const args = opts.args ? Array.from(opts.args) : [];
-  /* eslint-disable no-empty */
+  const args: any[] = opts.args ? Array.from(opts.args) : [];
   // args should only contain arguments that appear after `message`
+  // eslint-disable-next-line no-empty
   while (args.length && args.shift() !== message) {}
-  /* eslint-enable no-empty */
-  opts.args = args;
 
   switch (typeof logLevel) {
     case 'string':
@@ -432,7 +411,7 @@ export function normalizeArguments(opts) {
   assert(messageType === 'string' || messageType === 'object');
 
   // original opts + normalized opts + opts arg + fixed up message
-  return Object.assign(opts, opts.opts);
+  return Object.assign(opts, {args}, opts.opts);
 }
 
 function decorateMessage(id, message, opts) {
@@ -444,7 +423,7 @@ function decorateMessage(id, message, opts) {
   return message;
 }
 
-// Use the asciify module to log an image under node.js
+/** Use the asciify module to log an image under node.js */
 function logImageInNode({image, message = '', scale = 1}) {
   // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
   let asciify = null;
@@ -484,4 +463,13 @@ function logImageInBrowser({image, message = '', scale = 1}) {
     return noop;
   }
   return noop;
+}
+
+function getTableHeader(table: Table): string {
+  for (const key in table) {
+    for (const title in table[key]) {
+      return title || 'untitled';
+    }
+  }
+  return 'empty';
 }
