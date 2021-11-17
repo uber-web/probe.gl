@@ -42,6 +42,7 @@ test('Log#import', t => {
 
 test('Log#normalizeArguments', t => {
   for (const tc of NORMALIZE_ARGUMENTS_TEST_CASES) {
+    // @ts-expect-error IArguments typing
     const opts = normalizeArguments({...tc.args});
 
     t.deepEqual(

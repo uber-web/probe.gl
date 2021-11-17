@@ -143,13 +143,15 @@ export default class Log {
   }
 
   /** Warn, but only once, no console flooding */
-  warn(message: string, ...args): LogFunction {
-    return this._getLogFunction(0, message, originalConsole.warn, args, ONCE);
+  warn(message: string, ...args): LogFunction;
+  warn(message: string): LogFunction {
+    return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
   }
 
   /** Print an error */
-  error(message: string, ...args): LogFunction {
-    return this._getLogFunction(0, message, originalConsole.error, args);
+  error(message: string, ...args): LogFunction;
+  error(message: string): LogFunction {
+    return this._getLogFunction(0, message, originalConsole.error, arguments);
   }
 
   /** Print a deprecation warning */
@@ -166,30 +168,34 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   /** Log to a group */
-  probe(logLevel, message?, ...args): LogFunction {
-    return this._getLogFunction(logLevel, message, originalConsole.log, args, {
+  probe(logLevel, message?, ...args): LogFunction;
+  probe(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
       time: true,
       once: true
     });
   }
 
   /** Log a debug message */
-  log(logLevel, message?, ...args): LogFunction {
-    return this._getLogFunction(logLevel, message, originalConsole.debug, args);
+  log(logLevel, message?, ...args): LogFunction;
+  log(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
   }
 
   /** Log a normal message */
-  info(logLevel, message?, ...args): LogFunction {
-    return this._getLogFunction(logLevel, message, console.info, args);
+  info(logLevel, message?, ...args): LogFunction;
+  info(logLevel, message?): LogFunction {
+    return this._getLogFunction(logLevel, message, console.info, arguments);
   }
 
   /** Log a normal message, but only once, no console flooding */
-  once(logLevel, message?, ...args): LogFunction {
+  once(logLevel, message?, ...args): LogFunction;
+  once(logLevel, message?, ...args) {
     return this._getLogFunction(
       logLevel,
       message,
       originalConsole.debug || originalConsole.info,
-      args,
+      arguments,
       ONCE
     );
   }
@@ -197,6 +203,7 @@ in a later version. Use \`${newUsage}\` instead`);
   /** Logs an object as a table */
   table(logLevel, table?, columns?): LogFunction {
     if (table) {
+      // @ts-expect-error Not clear how this works, columns being passed as arguments
       return this._getLogFunction(logLevel, table, console.table || noop, columns && [columns], {
         tag: getTableHeader(table)
       });
@@ -276,7 +283,7 @@ in a later version. Use \`${newUsage}\` instead`);
     logLevel: unknown,
     message?: unknown,
     method?: Function,
-    args: any[] = [],
+    args?: IArguments,
     opts?: Record<string, any>
   ): LogFunction {
     if (this._shouldLog(logLevel)) {
@@ -355,18 +362,29 @@ function normalizeLogLevel(logLevel: unknown): number {
  * - log({logLevel, ...}, message, args) => {logLevel, message, args}
  * - log({logLevel, message, args}) => {logLevel, message, args}
  */
-export function normalizeArguments(opts: {logLevel; message; collapsed?: boolean; args?; opts?}): {
+export function normalizeArguments(opts: {
+  logLevel;
+  message;
+  collapsed?: boolean;
+  args?: IArguments;
+  opts?;
+}): {
   logLevel: number;
   message: string;
   args: any[];
 } {
-  const {logLevel, message, args = []} = opts;
+  const {logLevel, message} = opts;
   opts.logLevel = normalizeLogLevel(logLevel);
 
+  // We use `arguments` instead of rest parameters (...args) because IE
+  // does not support the syntax. Rest parameters is transpiled to code with
+  // perf impact. Doing it here instead avoids constructing args when logging is
+  // disabled.
+  // TODO - remove when/if IE support is dropped
+  const args: any[] = opts.args ? Array.from(opts.args) : [];
   // args should only contain arguments that appear after `message`
-  // while (args.length && args.shift() !== message) {}
-  /* eslint-enable no-empty */
-  opts.args = args;
+  // eslint-disable-next-line no-empty
+  while (args.length && args.shift() !== message) {}
 
   switch (typeof logLevel) {
     case 'string':
@@ -393,7 +411,7 @@ export function normalizeArguments(opts: {logLevel; message; collapsed?: boolean
   assert(messageType === 'string' || messageType === 'object');
 
   // original opts + normalized opts + opts arg + fixed up message
-  return Object.assign(opts, opts.opts);
+  return Object.assign(opts, {args}, opts.opts);
 }
 
 function decorateMessage(id, message, opts) {
