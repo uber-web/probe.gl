@@ -3,8 +3,8 @@ import Probe, {Log} from '@probe.gl/log';
 import {normalizeArguments} from '@probe.gl/log/log';
 import test from 'tape-promise/tape';
 
-function makeOpts(logLevel, message) {
-  return {logLevel, message, args: arguments};
+function makeOpts(logLevel, message, ...args) {
+  return {logLevel, message, args};
 }
 
 const NORMALIZE_ARGUMENTS_TEST_CASES = [
