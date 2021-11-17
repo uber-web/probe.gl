@@ -21,9 +21,10 @@
 // This function is needed in initialization stages,
 // make sure it can be imported in isolation
 
-import {window} from './globals';
 import isBrowser from './is-browser';
 import isElectron from './is-electron';
+
+const window = globalThis;
 
 export function isMobile(): boolean {
   return typeof window.orientation !== 'undefined';
@@ -32,7 +33,9 @@ export function isMobile(): boolean {
 // Simple browser detection
 // `mockUserAgent` parameter allows user agent to be overridden for testing
 /* eslint-disable complexity */
-export default function getBrowser(mockUserAgent?: string): string {
+export default function getBrowser(
+  mockUserAgent?: string
+): 'Node' | 'Electron' | 'Chrome' | 'Firefox' | 'Safari' | 'Edge' | 'IE' | 'Unknown' {
   if (!mockUserAgent && !isBrowser()) {
     return 'Node';
   }
