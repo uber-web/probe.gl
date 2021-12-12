@@ -35,5 +35,4 @@ enableDOMLogging({
 });
 
 require('./test-index');
-require('probe.gl/test/lib/raw-logging');
 require('@probe.gl/stats-widget/test');

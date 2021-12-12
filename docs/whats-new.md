@@ -1,8 +1,8 @@
 # What's New
 
-## v3.5 (In development)
+## v3.5
 
-Release Date: TBD (Q4 2021)
+Release Date: Dec 12, 2021
 
 - TypeScript: exported `.d.ts` files are now more robust (automatically built from source `.ts` files).
 

@@ -18,7 +18,3 @@ Probe.probe('long_process', {start: true});
 doLongProcess();
 Probe.probe('long_process', {end: true});
 ```
-
-## Done
-
-- **Console output links back to app** - Makes Chrome console's links point to application source code instead of Probe's source code, making it possible to click on a Probe log in the console and open the line that generated it. To achieve this, Probe methods now return log functions that app calls by applying a "()" function invocation.

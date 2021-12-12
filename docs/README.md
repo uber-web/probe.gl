@@ -1,11 +1,16 @@
 # Introduction
 
-A collection of JavaScript front-end debugging tools
+A collection of JavaScript front-end debugging tools provided as a set of separately installable modules:
 
-* A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications.
-* A benchmark rig to help measure and track regressions of critical functions
-* Test drivers to help do automated browser testing from node
-
+| probe.gl module | Description |
+| --- | --- |
+| `@probe.gl/log`  | A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications. |
+| `@probe.gl/env`  | Basic environment detection (Browser, Node, Electron etc). | 
+| `@probe.gl/stats`  | A minimal bag of performance related stats that applications or frameworks can populate. | 
+| `@probe.gl/stats-widget`  | An HTML widget that helps applications display the contests of `@probe.gl/stats` objects. | 
+| `@probe.gl/bench` | A benchmark rig to help measure and track regressions of critical functions. |
+| `@probe.gl/react-bench` | A React component that displays the output of `@probe.gl/bench`. |
+| `@probe.gl/test-utils` | Test "Drivers" for running automated browser testing from Node via `puppeteer`. |
 
 ## Comparison with other Logging Solutions
 
@@ -20,13 +25,10 @@ proble.gl's focus on debugging and performance instrumentation of front-end appl
 
 ### Logging Support
 
-The basic logging support provided by probe.gl is simple but surprisingly useful.
-
-* **Priority levels** - Your logs will only be displayed when the user has enabled probe.gl and the specified priority level has been set.
-* **Defeats log cascades** - Caches warnings to ensure only one of each warning is emitted to avoid flooding the console.
-* **Readable assert Errors** - Reformats `assert` messages to show actual error string
-* **Image Logging** - Images can be logged to console (Chrome only)
+* **Log levels** - Your logs will only be displayed when the user has enabled probe.gl and the specified priority level has been set.
+* **Defeats log cascades** - Caches messages to ensure only one of each warning is emitted to avoid flooding the console.
 * **Source Code Links** - Clicking probe.gl log messages in the browser console takes you to the source code line where the probe function was called, even though you are not calling `console` methods directly.
+* **Image Logging** - Images can be logged to console (Chrome only)
 
 
 ### Profiling Support
