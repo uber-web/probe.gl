@@ -1,4 +1,4 @@
-# @probe.gl/core
+# @probe.gl/log
 
 Logging and instrumentation tools for JavaScript
 
