@@ -138,7 +138,7 @@ export default class Log {
 
   // Unconditional logging
 
-  assert(condition: unknown, message?: string): void {
+  assert(condition: unknown, message?: string): asserts condition {
     assert(condition, message);
   }
 
