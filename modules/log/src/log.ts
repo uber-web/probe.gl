@@ -8,6 +8,7 @@ import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import assert from './utils/assert';
 import {getHiResTimestamp} from './utils/hi-res-timestamp';
+import {nodeAsciifyImage} from './node/node-asciify-image';
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
@@ -425,19 +426,7 @@ function decorateMessage(id, message, opts) {
 
 /** Use the asciify module to log an image under node.js */
 function logImageInNode({image, message = '', scale = 1}) {
-  // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
-  let asciify = null;
-  try {
-    asciify = module.require('asciify-image');
-  } catch (error) {
-    // asciify not installed, silently ignore
-  }
-  if (asciify) {
-    return () =>
-      asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`}).then(data =>
-        console.log(data)
-      );
-  }
+  nodeAsciifyImage({image, message, scale});
   return noop;
 }
 
