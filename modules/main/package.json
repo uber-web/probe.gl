@@ -2,7 +2,7 @@
   "name": "probe.gl",
   "description": "JavaScript console instrumentation for browser and Node",
   "license": "MIT",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "keywords": [
     "javascript",
     "profiling",
@@ -24,9 +24,9 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@probe.gl/env": "3.5.0",
-    "@probe.gl/log": "3.5.0",
-    "@probe.gl/stats": "3.5.0"
+    "@probe.gl/env": "3.5.1",
+    "@probe.gl/log": "3.5.1",
+    "@probe.gl/stats": "3.5.1"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }

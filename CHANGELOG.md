@@ -1,5 +1,14 @@
 # CHANGELOG
 
+v3.5.1 - Aug 10, 2022
+
+ - fix(log): "quarantine" dynamic import of asciify-image (#197)
+ - feat(log): More robust typings for log.assert. (#188)
+ - fix(log): Correct title in README.md
+
+v3.5.0 - Dec 12, 2022
+  NO CHANGES
+
 v3.5.0-alpha.5 - Nov 17, 2021
 
 - chore(log): Improved typings for `Log` class (#183)
