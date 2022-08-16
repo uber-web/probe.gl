@@ -4,7 +4,7 @@
 // browser statement. https://github.com/uber-web/probe.gl/issues/196
 
 /** Use the asciify-image module, if installed, to log an image under node.js */
-export default function nodeAsciifyImage({image, message = '', scale = 1}): () => Promise<void> {
+export function nodeAsciifyImage({image, message = '', scale = 1}): () => Promise<void> {
   // Note: Runtime load of the "asciify-image" module, avoids including in browser bundles
   let asciify = null;
   try {
