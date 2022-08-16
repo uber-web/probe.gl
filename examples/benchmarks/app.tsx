@@ -1,3 +1,4 @@
+// probe.gl benchmark example
 import React, {PureComponent} from 'react';
 import {render} from 'react-dom';
 
@@ -5,6 +6,13 @@ import {Bench} from '@probe.gl/bench';
 import {BenchResults} from '@probe.gl/react-bench';
 
 import addBenchmarks from '../../test/bench';
+
+type LogItem = {
+  id: string;
+  value?;
+  formattedValue?;
+  formattedError?;
+};
 
 const addReferenceBenchmarks = false;
 
@@ -31,37 +39,33 @@ export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.suite = new Bench({
-      log: this._logResult.bind(this)
-    });
     addBenchmarks(this.suite, addReferenceBenchmarks);
-
-    this.state = {
-      log: []
-    };
   }
 
   componentDidMount() {
     this.suite
       // Calibrate performance
+      // @ts-ignore
       .calibrate()
       .run()
       // when running in browser, notify test the driver that it's done
       .then(() => {});
   }
 
-  _logResult(result) {
+  suite: Bench = new Bench({log: this._addResultToLog.bind(this)});
+  log: LogItem[] = [];
+
+  _addResultToLog(result) {
     const {entry, id, itersPerSecond, error} = result;
 
-    const {log} = this.state;
     switch (entry) {
       case LOG_ENTRY.GROUP:
-        log.push({id});
+        this.log.push({id});
         break;
       case LOG_ENTRY.TEST:
         const value = parseSIPrefix(itersPerSecond);
         // log.push(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
-        log.push({
+        this.log.push({
           id,
           value,
           formattedValue: itersPerSecond,
@@ -76,10 +80,9 @@ export default class App extends PureComponent {
   }
 
   render() {
-    const {log} = this.state;
     return (
       <div>
-        <BenchResults log={log} />
+        <BenchResults log={this.log} />
       </div>
     );
   }

@@ -1,29 +1,24 @@
 {
   "name": "stats-wdiget-example",
-  "version": "3.3.0",
+  "version": "3.5.1",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start-local": "webpack-dev-server --env.local --progress --hot --open",
-    "start": "webpack-dev-server --progress --hot --open"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
   "peerDependencies": {
-    "@probe.gl/stats": "^3.5.0-alpha.1"
+    "@probe.gl/stats": "^3.5.1"
   },
   "dependencies": {
-    "@probe.gl/stats-widget": "^3.5.0-alpha.1",
-    "@probe.gl/stats": "^3.5.0-alpha.1",
+    "@probe.gl/stats-widget": "^3.5.1",
+    "@probe.gl/stats": "^3.5.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.0",
-    "ocular-dev-tools": "^0.0.27",
-    "webpack": "^4.20.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.0"
+    "typescript": "^4.3.2",
+    "vite": "^2.6.4"
   }
 }

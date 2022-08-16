@@ -1,15 +1,16 @@
 {
-  "name": "browser-test-example",
+  "name": "browser-test-webpack-example",
   "version": "3.3.0",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "npm run test-browser",
     "test": "node test/start.js headless",
     "test-browser": "node test/start.js"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "^3.5.0-alpha.1",
+    "@probe.gl/test-utils": "^3.5.1",
     "tape": "^4.5.1"
   },
   "devDependencies": {

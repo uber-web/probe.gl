@@ -58,11 +58,11 @@ export default class Bench {
     Object.seal(this);
   }
 
-  calibrate(id, func1, func2, opts) {
+  calibrate(id?, func1?, func2?, opts?): this {
     return this;
   }
 
-  async run() {
+  async run(): Promise<void> {
     const timeStart = getHiResTimestamp();
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -75,25 +75,25 @@ export default class Bench {
     this.onSuiteComplete();
   }
 
-  group(id) {
+  group(id): this {
     assert(!this.tests[id], 'tests need unique id strings');
     this.tests[id] = {id, group: true, opts: this.opts};
     return this;
   }
 
-  add(priority, id, func1, func2) {
+  add(priority, id, func1, func2): this {
     this._add(priority, id, func1, func2);
     return this;
   }
 
   // Mark test as async (returns promise)
-  addAsync(priority, id, func1, func2) {
+  addAsync(priority, id, func1, func2): this {
     const test = this._add(priority, id, func1, func2);
     test.async = true;
     return this;
   }
 
-  onBenchmarkComplete({id, time, iterations, itersPerSecond}) {
+  onBenchmarkComplete({id, time, iterations, itersPerSecond}): void {
     // calculate iterations per second, save as numeric value
     const current = Math.round(iterations / time);
     // Format as human readable strings
@@ -105,7 +105,7 @@ export default class Bench {
     };
   }
 
-  onSuiteComplete() {
+  onSuiteComplete(): void {
     const localStorage = new LocalStorage(this.id);
     const saved = localStorage.getConfiguration();
     const current = this.updateTable(this.table, saved);
