@@ -8,7 +8,7 @@ import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import assert from './utils/assert';
 import {getHiResTimestamp} from './utils/hi-res-timestamp';
-import {nodeAsciifyImage} from './node/node-asciify-image';
+import nodeAsciifyImage from './node/node-asciify-image';
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
