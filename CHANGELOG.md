@@ -1,5 +1,18 @@
 # CHANGELOG
 
+v3.5.2 - Aug 18, 2022
+
+- chore: Convert examples from webpack to vite (#200)
+- fix(log): vite build error re nodeAsciifyImage (#199)
+
+- build(deps): bump eventsource from 1.1.0 to 1.1.2 (#201)
+- build(deps): bump parse-url from 6.0.0 to 6.0.5 (#198)
+- build(deps): bump terser from 4.8.0 to 4.8.1 (#195)
+- build(deps-dev): bump jsdom from 15.2.1 to 16.5.0 (#193)
+- build(deps): bump async from 2.6.3 to 2.6.4 (#190)
+- build(deps): bump url-parse from 1.5.3 to 1.5.10 (#189)
+- build(deps): bump follow-redirects from 1.14.5 to 1.14.8 (#186)
+
 v3.5.1 - Aug 10, 2022
 
  - fix(log): "quarantine" dynamic import of asciify-image (#197)
