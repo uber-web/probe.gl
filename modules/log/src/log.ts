@@ -8,7 +8,7 @@ import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import assert from './utils/assert';
 import {getHiResTimestamp} from './utils/hi-res-timestamp';
-import {nodeAsciifyImage} from './node/node-asciify-image';
+import * as asciify from './node/node-asciify-image';
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
@@ -426,7 +426,7 @@ function decorateMessage(id, message, opts) {
 
 /** Use the asciify module to log an image under node.js */
 function logImageInNode({image, message = '', scale = 1}) {
-  nodeAsciifyImage({image, message, scale});
+  asciify.nodeAsciifyImage({image, message, scale});
   return noop;
 }
 
