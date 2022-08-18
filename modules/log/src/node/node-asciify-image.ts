@@ -15,7 +15,7 @@ export function nodeAsciifyImage({image, message = '', scale = 1}): () => Promis
   if (asciify) {
     return async () => {
       const data = await asciify(image, {fit: 'box', width: `${Math.round(80 * scale)}%`});
-      console.log(data);
+      console.log(data); // eslint-disable-line no-console
     };
   }
 

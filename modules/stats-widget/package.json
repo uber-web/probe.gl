@@ -25,7 +25,7 @@
     "@babel/runtime": "^7.0.0"
   },
   "peerDependencies": {
-    "@probe.gl/stats": "3.5.0-alpha.1"
+    "@probe.gl/stats": "3.5.1"
   },
   "devDependencies": {
     "@probe.gl/stats": "3.5.1"

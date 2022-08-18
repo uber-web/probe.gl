@@ -48,8 +48,7 @@ const config = deepMerge(defaultConfig, {
         ],
         // We still have some issues with import resolution
         'import/named': 0,
-        'import/no-extraneous-dependencies': ['warn'],
-        // Warn instead of error
+        'import/no-extraneous-dependencies': ['error', {devDependencies: true}], // Warn instead of error
         // 'max-params': ['warn'],
         // 'no-undef': ['warn'],
         // camelcase: ['warn'],

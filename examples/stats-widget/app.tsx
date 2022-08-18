@@ -1,3 +1,4 @@
+// probe.gl example
 import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {StatsWidget} from '@probe.gl/stats-widget';
@@ -6,9 +7,7 @@ import {Stats} from '@probe.gl/stats';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this._stats = new Stats({id: 'Stats Demo'});
     this._initialize();
-
     this._update = this._update.bind(this);
   }
 
@@ -17,6 +16,7 @@ export default class App extends Component {
       container: this._container
     });
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     this._intervalId = setInterval(this._update, 300);
   }
 
@@ -24,6 +24,11 @@ export default class App extends Component {
     // use intervalId from the state to clear the interval
     clearInterval(this._intervalId);
   }
+
+  _stats = new Stats({id: 'Stats Demo'});
+  _statsWidget: StatsWidget;
+  _container: HTMLElement;
+  _intervalId: any;
 
   _initialize() {
     this._stats.get('Count', 'count');
