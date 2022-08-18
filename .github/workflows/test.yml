@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  test-node:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,10 +21,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-
-      - name: Install dependencies
-        run: |
-          yarn bootstrap
 
       - name: Run build
         run: |
