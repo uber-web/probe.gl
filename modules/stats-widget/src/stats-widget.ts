@@ -242,7 +242,8 @@ export default class StatsWidget {
 
   _getLines(stat: Stat): string[] {
     const formatter =
-      this._formatters[stat.name] || this._formatters[stat.type] || DEFAULT_FORMATTERS.count;
+      // eslint-disable-next-line
+      this._formatters[stat.name] || this._formatters[stat.type] || DEFAULT_FORMATTERS['count'];
     return formatter(this.stats.get(stat.name)).split('\n');
   }
 }

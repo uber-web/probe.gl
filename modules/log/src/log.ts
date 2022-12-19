@@ -2,7 +2,7 @@
 
 /* eslint-disable no-console */
 import {VERSION, isBrowser} from '@probe.gl/env';
-import LocalStorage from './utils/local-storage';
+import {LocalStorage} from './utils/local-storage';
 import {formatImage, formatTime, leftPad} from './utils/formatters';
 import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
@@ -23,6 +23,18 @@ type Table = Record<string, any>;
 
 type LogFunction = () => void;
 
+type LogOptions = {
+  method?;
+  time?;
+  total?: number;
+  delta?: number;
+  tag?: string;
+  message?: string;
+  once?: boolean;
+  nothrottle?: boolean;
+  args?: any;
+};
+
 type LogSettings = {
   enabled?: boolean;
   level?: number;
@@ -39,16 +51,21 @@ function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 const cache = {};
 const ONCE = {once: true};
 
-// A console wrapper
+type LogConfiguration = {
+  enabled?: boolean;
+  level?: number;
+};
 
-export default class Log {
+/** A console wrapper */
+
+export class Log {
   static VERSION = VERSION;
 
   id: string;
   VERSION: string = VERSION;
   _startTs: number = getHiResTimestamp();
   _deltaTs: number = getHiResTimestamp();
-  _storage: LocalStorage;
+  _storage: LocalStorage<LogConfiguration>;
   userData = {};
 
   // TODO - fix support from throttling groups
@@ -56,8 +73,8 @@ export default class Log {
 
   constructor({id} = {id: ''}) {
     this.id = id;
-    this._storage = new LocalStorage(`__probe-${this.id}__`, DEFAULT_SETTINGS);
     this.userData = {};
+    this._storage = new LocalStorage<LogConfiguration>(`__probe-${this.id}__`, DEFAULT_SETTINGS);
 
     this.timeStamp(`${this.id} started`);
 
@@ -81,40 +98,40 @@ export default class Log {
     return this._storage.config.level;
   }
 
-  /** @return {Number} milliseconds, with fractions */
-  getTotal() {
+  /** @return milliseconds, with fractions */
+  getTotal(): number {
     return Number((getHiResTimestamp() - this._startTs).toPrecision(10));
   }
 
-  /** @return {Number} milliseconds, with fractions */
-  getDelta() {
+  /** @return milliseconds, with fractions */
+  getDelta(): number {
     return Number((getHiResTimestamp() - this._deltaTs).toPrecision(10));
   }
 
   /** @deprecated use logLevel */
-  set priority(newPriority) {
+  set priority(newPriority: number) {
     this.level = newPriority;
   }
 
   /** @deprecated use logLevel */
-  get priority() {
+  get priority(): number {
     return this.level;
   }
 
   /** @deprecated use logLevel */
-  getPriority() {
+  getPriority(): number {
     return this.level;
   }
 
   // Configure
 
   enable(enabled: boolean = true): this {
-    this._storage.updateConfiguration({enabled});
+    this._storage.setConfiguration({enabled});
     return this;
   }
 
   setLevel(level: number): this {
-    this._storage.updateConfiguration({level});
+    this._storage.setConfiguration({level});
     return this;
   }
 
@@ -125,7 +142,7 @@ export default class Log {
 
   // update the status of the setting
   set(setting: string, value: any): void {
-    this._storage.updateConfiguration({[setting]: value});
+    this._storage.setConfiguration({[setting]: value});
   }
 
   /** Logs the current settings as a table */
@@ -285,7 +302,7 @@ in a later version. Use \`${newUsage}\` instead`);
     message?: unknown,
     method?: Function,
     args?: IArguments,
-    opts?: Record<string, any>
+    opts?: LogOptions
   ): LogFunction {
     if (this._shouldLog(logLevel)) {
       // normalized opts + timings

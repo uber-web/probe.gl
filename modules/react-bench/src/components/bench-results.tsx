@@ -66,7 +66,11 @@ function PerformanceBarCell({row}) {
   return percent ? <BarCell color={color} percent={percent} stars={stars} /> : null;
 }
 
-export class BenchResults extends Component {
+type BenchResultsProps = {
+  log: any;
+};
+
+export class BenchResults extends Component<BenchResultsProps> {
   _renderTable() {
     // eslint-disable-next-line react/prop-types
     const {log} = this.props;
@@ -127,7 +131,7 @@ export class BenchResults extends Component {
     );
   }
 
-  render() {
+  override render() {
     return <div>{this._renderTable()}</div>;
   }
 }

@@ -1,30 +1,26 @@
 /* eslint-disable no-console */
+import type {LogEntry} from './bench';
 import {rightPad} from '@probe.gl/log';
 
-// TODO - this is duplicated from bench.js to avoid circular imports
-const LOG_ENTRY = {
-  GROUP: 'group',
-  TEST: 'test',
-  COMPLETE: 'complete'
-};
+export function logResultsAsMarkdownTable(logEntry: LogEntry): void {
+  const {entry, id, itersPerSecond, error, time} = logEntry;
 
-export function logResultsAsMarkdownTable({entry, id, itersPerSecond, error, time}) {
   const COL1 = 50;
   const COL2 = 12;
   switch (entry) {
-    case LOG_ENTRY.GROUP:
+    case 'group':
       console.log('');
       console.log(`| ${rightPad(id, COL1)} | iterations/s | error |`);
       console.log(`| ${rightPad('---', COL1)} | ---          | --- |`);
       break;
-    case LOG_ENTRY.TEST:
+    case 'test':
       console.log(
         `| ${rightPad(id, COL1)} | ${rightPad(itersPerSecond, COL2)} | ±${(error * 100).toFixed(
           2
         )}% |`
       );
       break;
-    case LOG_ENTRY.COMPLETE:
+    case 'complete':
       console.log('');
       console.log(`Completed benchmark in ${time}s`);
       break;
@@ -32,16 +28,18 @@ export function logResultsAsMarkdownTable({entry, id, itersPerSecond, error, tim
   }
 }
 
-export function logResultsAsTree({entry, id, itersPerSecond, error, time, unit}) {
+export function logResultsAsTree(logEntry: LogEntry): void {
+  const {entry, id, itersPerSecond, error, time, unit} = logEntry;
+
   switch (entry) {
-    case LOG_ENTRY.GROUP:
+    case 'group':
       console.log('');
       console.log(`${id}`);
       break;
-    case LOG_ENTRY.TEST:
+    case 'test':
       console.log(`├─ ${id}: ${itersPerSecond} ${unit}/s ±${(error * 100).toFixed(2)}%`);
       break;
-    case LOG_ENTRY.COMPLETE:
+    case 'complete':
       console.log('');
       console.log(`Completed benchmark in ${time}s`);
       break;
@@ -49,9 +47,11 @@ export function logResultsAsTree({entry, id, itersPerSecond, error, time, unit})
   }
 }
 
-export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, time, unit}) {
+export function logResultsAsTreeWithElapsed(logEntry: LogEntry): void {
+  const {entry, id, itersPerSecond, error, time, unit} = logEntry;
+
   switch (entry) {
-    case LOG_ENTRY.TEST:
+    case 'test':
       console.log(
         `├─ ${id}: ${itersPerSecond} ${unit}/s ±${(error * 100).toFixed(2)}% (${time.toFixed(
           2
@@ -59,7 +59,6 @@ export function logResultsAsTreeWithElapsed({entry, id, itersPerSecond, error, t
       );
       break;
     default:
-      // @ts-expect-error
-      logResultsAsTree({entry, id, itersPerSecond, time});
+      logResultsAsTree(logEntry);
   }
 }

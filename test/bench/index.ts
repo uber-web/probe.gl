@@ -1,3 +1,7 @@
+// probe.gl, MIT license
+
+import type {Bench} from '@probe.gl/bench';
+
 // TODO - dummy benchmark - should replace with log related benchmark
 const arr = [1, 1, 1, 1];
 
@@ -7,7 +11,7 @@ let sumForEach = 0;
 let sumMap = 0;
 let sumFor = 0;
 
-export default function addBenchmarks(suite, addReferenceBenchmarks) {
+export default function addBenchmarks(suite: Bench, addReferenceBenchmarks: boolean): Bench {
   suite
     .group('Javascript Array benchmark')
     .add('Array.forEach', () => arr.forEach(item => (sumForEach += someFn(item))))

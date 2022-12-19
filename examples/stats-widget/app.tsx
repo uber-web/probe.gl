@@ -11,7 +11,7 @@ export default class App extends Component {
     this._update = this._update.bind(this);
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     this._statsWidget = new StatsWidget(null, {
       container: this._container
     });
@@ -20,7 +20,7 @@ export default class App extends Component {
     this._intervalId = setInterval(this._update, 300);
   }
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     // use intervalId from the state to clear the interval
     clearInterval(this._intervalId);
   }
@@ -60,7 +60,7 @@ export default class App extends Component {
     this._statsWidget.update();
   }
 
-  render() {
+  override render() {
     return <div id="stats-demo" ref={_ => (this._container = _)} />;
   }
 }

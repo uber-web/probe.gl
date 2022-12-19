@@ -42,7 +42,7 @@ export default class App extends PureComponent {
     addBenchmarks(this.suite, addReferenceBenchmarks);
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     this.suite
       // Calibrate performance
       // @ts-ignore
@@ -79,7 +79,7 @@ export default class App extends PureComponent {
     this.forceUpdate();
   }
 
-  render() {
+  override render() {
     return (
       <div>
         <BenchResults log={this.log} />

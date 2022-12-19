@@ -162,7 +162,7 @@ export default class BrowserDriver {
       await this.stopServer();
       process.exit(statusCode);
     } catch (error) {
-      this.logger.error(error.message || error);
+      this.logger.error(error instanceof Error ? error.message : String(error));
       process.exit(1);
     }
   }

@@ -14,35 +14,28 @@ function getStorage(type): Storage {
 }
 
 // Store keys in local storage via simple interface
-export default class LocalStorage {
+export class LocalStorage<Configuration extends {}> {
   storage: Storage;
   id: string;
-  config: Record<string, any> = {};
+  config: Required<Configuration>;
 
-  constructor(id: string, defaultSettings: Record<string, any> = {}, type = 'sessionStorage') {
+  constructor(id: string, defaultConfig: Required<Configuration>, type = 'sessionStorage') {
     this.storage = getStorage(type);
     this.id = id;
-    this.config = {};
-    Object.assign(this.config, defaultSettings);
+    this.config = defaultConfig;
     this._loadConfiguration();
   }
 
-  getConfiguration() {
+  getConfiguration(): Required<Configuration> {
     return this.config;
   }
 
-  setConfiguration(configuration) {
-    this.config = {};
-    return this.updateConfiguration(configuration);
-  }
-
-  updateConfiguration(configuration) {
+  setConfiguration(configuration: Configuration): void {
     Object.assign(this.config, configuration);
     if (this.storage) {
       const serialized = JSON.stringify(this.config);
       this.storage.setItem(this.id, serialized);
     }
-    return this;
   }
 
   // Get config from persistent store, if available
