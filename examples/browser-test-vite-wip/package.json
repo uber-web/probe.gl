@@ -1,6 +1,6 @@
 {
   "name": "browser-test-vite-example",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
   "private": true,
@@ -10,7 +10,7 @@
     "test-browser": "node src/start.js"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "3.5.3",
+    "@probe.gl/test-utils": "3.5.4",
     "tape": "^4.5.1"
   },
   "devDependencies": {

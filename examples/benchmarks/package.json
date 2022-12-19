@@ -1,6 +1,6 @@
 {
   "name": "probe.gl-benchmark-example",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "description": "@probe.gl/bench + @probe.gl/react-bench benchmark example",
   "license": "MIT",
   "private": true,
@@ -10,8 +10,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@probe.gl/bench": "3.5.3",
-    "@probe.gl/react-bench": "3.5.3",
+    "@probe.gl/bench": "3.5.4",
+    "@probe.gl/react-bench": "3.5.4",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },

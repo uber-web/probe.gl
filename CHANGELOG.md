@@ -1,8 +1,12 @@
 # CHANGELOG
 
+v3.5.4 - Dec 18, 2022
+
+- fix(bench) Fix logging (#212)
+
 v3.5.3 - Dec 18, 2022
 
-- [test-utils] BrowserTestDriver supports relative url (211)
+- feat(test-utils) BrowserTestDriver supports relative url (#211)
 
 v3.5.2 - Aug 18, 2022
 

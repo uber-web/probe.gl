@@ -2,7 +2,7 @@
   "name": "@probe.gl/log",
   "description": "JavaScript debug logging for browser and Node",
   "license": "MIT",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "keywords": [
     "javascript",
     "profiling",
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "@probe.gl/env": "3.5.3"
+    "@probe.gl/env": "3.5.4"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
