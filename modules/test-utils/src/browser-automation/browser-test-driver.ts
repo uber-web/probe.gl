@@ -91,9 +91,16 @@ export default class BrowserTestDriver extends BrowserDriver {
             color: COLOR.BRIGHT_YELLOW
           })();
 
+          // resolve URL
+          const pageUrl: string = config.url
+            ? config.url.startsWith('http')
+              ? config.url
+              : `${url}/${config.url.replace(/^\//, '')}`
+            : url;
+
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.openPage({
-            url: config.url || url,
+            url: pageUrl,
             exposeFunctions,
             onConsole: event => this._onConsole(event),
             onError: reject
