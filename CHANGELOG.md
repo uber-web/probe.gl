@@ -1,5 +1,7 @@
 # CHANGELOG
 
+v3.6.0-alpha.1 (TBD)
+
 v3.5.4 - Dec 18, 2022
 
 - fix(bench) Fix logging (#212)
