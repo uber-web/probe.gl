@@ -206,7 +206,7 @@ function runCalibrationTests({tests}) {
 function logEntry(test, opts) {
   const priority = (globalThis.probe && globalThis.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
-    opts = {...test, ...test.opts, ...opts};
+    opts = {...test, ...test.opts, ...opts, id: test.id};
     delete opts.opts;
     test.opts.log(opts);
   }
