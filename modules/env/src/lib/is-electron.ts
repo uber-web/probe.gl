@@ -15,7 +15,8 @@ export default function isElectron(mockUserAgent?: string): boolean {
   if (
     typeof process !== 'undefined' &&
     typeof process.versions === 'object' &&
-    Boolean(process.versions.electron)
+    // eslint-disable-next-line
+    Boolean(process.versions['electron'])
   ) {
     return true;
   }

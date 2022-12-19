@@ -6,45 +6,79 @@ import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
 
 const noop = () => {};
 
-const TIME_THRESHOLD_MS = 80; // Minimum number of milliseconds to iterate each bench test
-const TIME_COOLDOWN_MS = 5; // milliseconds of "cooldown" between tests
-const MIN_ITERATIONS = 3; // Increase if OK to let slow benchmarks take long time
+export type LogEntryType = 'group' | 'test' | 'complete';
 
+/** @deprecated - Just use string constants */
 export const LOG_ENTRY = {
   GROUP: 'group',
   TEST: 'test',
   COMPLETE: 'complete'
 };
 
-function assert(condition: unknown, message?: string) {
-  if (!condition) {
-    throw new Error(message || 'Assertion failed');
-  }
-}
+export type LogEntry = {
+  entry: LogEntryType;
+  id: string;
+  message: string;
+  itersPerSecond: string;
+  unit: string;
+  error: any;
+  time: number;
+};
 
-export type BenchOptions = {
+export type Logger = (entry: LogEntry) => void;
+
+/** Properties for benchmark suite */
+export type BenchProps = {
+  /** Id of suite. @note Used as key for regression (storing/loading results in browser storage) */
   id?: string;
-  log?: any;
+  /** Log object */
+  log?: Logger | null;
+  /** Minimum number of milliseconds to iterate each bench test */
   time?: number;
+  /** milliseconds of idle time, or "cooldown" between tests */
   delay?: number;
+  /** Increase if OK to let slow benchmarks take long time, potentially produces more stable results */
   minIterations?: number;
 };
 
+const DEFAULT_BENCH_OPTIONS: Required<BenchProps> = {
+  id: '',
+  log: null,
+  time: 80,
+  delay: 5,
+  minIterations: 3
+};
+
+/** One test in the suite */
+type BenchTest = {
+  id: string;
+  priority?: number;
+  message?: string;
+  initFunc?: Function;
+  testFunc?: Function;
+  group?: boolean;
+  async?: boolean;
+  once?: boolean;
+  opts: BenchProps & {
+    multipler?: number;
+    unit?: string;
+  };
+};
+
+/**
+ * A benchmark suite.
+ * Test cases can be added and then benchmarks can be run/
+ */
 export default class Bench {
   id: string;
-  opts: Required<BenchOptions>;
-  tests = {};
-  results = {};
-  table = {};
+  opts: Required<BenchProps>;
+  tests: Record<string, BenchTest> = {};
+  results: Record<string, unknown> = {};
+  table: Record<string, any> = {};
 
-  constructor(options: BenchOptions = {}) {
-    const {
-      id = '', // Name is needed for regression (storing/loading)
-      log = null,
-      time = TIME_THRESHOLD_MS,
-      delay = TIME_COOLDOWN_MS,
-      minIterations = MIN_ITERATIONS
-    } = options;
+  constructor(props: BenchProps = {}) {
+    this.opts = {...DEFAULT_BENCH_OPTIONS, ...props};
+    const {id, log, time, delay, minIterations} = this.opts;
 
     let logger = log;
     if (!logger) {
@@ -58,10 +92,12 @@ export default class Bench {
     Object.seal(this);
   }
 
-  calibrate(id?, func1?, func2?, opts?): this {
+  /** Not yet implemented */
+  calibrate(id?: string, func1?: Function, func2?: Function, opts?: {}): this {
     return this;
   }
 
+  /** Runs the test suite */
   async run(): Promise<void> {
     const timeStart = getHiResTimestamp();
 
@@ -71,29 +107,38 @@ export default class Bench {
     await runTests({tests, onBenchmarkComplete});
 
     const elapsed = (getHiResTimestamp() - timeStart) / 1000;
-    logEntry(this, {entry: LOG_ENTRY.COMPLETE, time: elapsed, message: 'Complete'});
+    logEntry(this, {entry: 'complete', time: elapsed, message: 'Complete'});
     this.onSuiteComplete();
   }
 
-  group(id): this {
-    assert(!this.tests[id], 'tests need unique id strings');
+  /** Adds a group to the test suite */
+  group(id: string): this {
+    if (this.tests[id]) {
+      throw new Error('tests need unique id strings');
+    }
     this.tests[id] = {id, group: true, opts: this.opts};
     return this;
   }
 
-  add(priority, id, func1, func2): this {
+  add(priority, id, func1?, func2?): this {
     this._add(priority, id, func1, func2);
     return this;
   }
 
   // Mark test as async (returns promise)
-  addAsync(priority, id, func1, func2): this {
+  addAsync(priority, id, func1?, func2?): this {
     const test = this._add(priority, id, func1, func2);
     test.async = true;
     return this;
   }
 
-  onBenchmarkComplete({id, time, iterations, itersPerSecond}): void {
+  onBenchmarkComplete(params: {
+    id: string;
+    time: number;
+    iterations: number;
+    itersPerSecond: number;
+  }): void {
+    const {id, time, iterations, itersPerSecond} = params;
     // calculate iterations per second, save as numeric value
     const current = Math.round(iterations / time);
     // Format as human readable strings
@@ -106,14 +151,14 @@ export default class Bench {
   }
 
   onSuiteComplete(): void {
-    const localStorage = new LocalStorage(this.id);
+    const localStorage = new LocalStorage<Record<string, any>>(this.id, {});
     const saved = localStorage.getConfiguration();
     const current = this.updateTable(this.table, saved);
-    localStorage.updateConfiguration(current);
+    localStorage.setConfiguration(current);
     console.table(current);
   }
 
-  updateTable(current, saved) {
+  updateTable(current: Record<string, any>, saved: Record<string, any>): Record<string, any> {
     for (const id in this.table) {
       if (saved[id] && saved[id].max !== undefined) {
         current[id].max = Math.max(current[id].current, saved[id].max);
@@ -134,7 +179,7 @@ export default class Bench {
   //  add(priority, id, initFunc, testFunc)
   //  add(id, initFunc, testFunc)
 
-  _add(priority, id, func1, func2) {
+  _add(priority: number | string, id: string | Function, func1: Function, func2?: Function) {
     let options = {};
 
     if (typeof priority === 'number') {
@@ -147,13 +192,14 @@ export default class Bench {
       priority = 0;
     } else if (typeof priority === 'string') {
       func2 = func1;
-      func1 = id;
+      func1 = id as FunctionConstructor;
       id = priority;
       priority = 0;
     }
 
-    assert(typeof id === 'string');
-    assert(typeof func1 === 'function');
+    if (typeof id !== 'string' || typeof func1 !== 'function') {
+      throw new Error('_add');
+    }
 
     // @ts-expect-error
     let initFunc = options.initialize;
@@ -172,7 +218,10 @@ export default class Bench {
       ...options
     };
 
-    assert(!this.tests[id], 'tests need unique id strings');
+    if (this.tests[id]) {
+      throw new Error('tests need unique id strings');
+    }
+
     this.tests[id] = {
       id,
       priority,
@@ -187,13 +236,13 @@ export default class Bench {
 // Helper methods
 
 // Helper function to promisify setTimeout
-function addDelay(timeout): Promise<void> {
+function addDelay(timeout: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(() => resolve(), timeout);
   });
 }
 
-function runCalibrationTests({tests}) {
+function runCalibrationTests({tests}: {tests: Record<string, BenchTest>}): void {
   // Beat JIT - run each test once
   for (const id in tests) {
     const test = tests[id];
@@ -203,7 +252,7 @@ function runCalibrationTests({tests}) {
   }
 }
 
-function logEntry(test, opts) {
+function logEntry(test: Bench, opts: any): void {
   const priority = (globalThis.probe && globalThis.probe.priority) | 10;
   if ((opts.priority | 0) <= priority) {
     opts = {...test, ...test.opts, ...opts, id: test.id};
@@ -222,7 +271,7 @@ async function runTests({tests, onBenchmarkComplete = noop}) {
   for (const id in tests) {
     const test = tests[id];
     if (test.group) {
-      logEntry(test, {entry: LOG_ENTRY.GROUP, message: test.id});
+      logEntry(test, {entry: 'group', message: test.id});
     } else {
       await runTest({test, onBenchmarkComplete});
     }
@@ -241,7 +290,7 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
 
   if (!silent) {
     logEntry(test, {
-      entry: LOG_ENTRY.TEST,
+      entry: 'test',
       itersPerSecond,
       time,
       error,

@@ -18,7 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// @ts-ignore require
 const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
 enableDOMLogging(true);
 
+// @ts-ignore require
 require('./index');
