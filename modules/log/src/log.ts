@@ -35,7 +35,7 @@ type Table = Record<string, any>;
 
 // Instrumentation in other packages may override console methods, so preserve them here
 const originalConsole = {
-  debug: isBrowser ? console.debug || console.log : console.log,
+  debug: isBrowser() ? console.debug || console.log : console.log,
   log: console.log,
   info: console.info,
   warn: console.warn,
@@ -220,10 +220,15 @@ in a later version. Use \`${newUsage}\` instead`);
   /** Logs an object as a table */
   table(logLevel, table?, columns?): LogFunction {
     if (table) {
-      // @ts-expect-error Not clear how this works, columns being passed as arguments
-      return this._getLogFunction(logLevel, table, console.table || noop, columns && [columns], {
-        tag: getTableHeader(table)
-      });
+      return this._getLogFunction(
+        logLevel,
+        table,
+        console.table || noop,
+        (columns && [columns]) as unknown as IArguments,
+        {
+          tag: getTableHeader(table)
+        }
+      );
     }
     return noop;
   }
@@ -245,7 +250,7 @@ in a later version. Use \`${newUsage}\` instead`);
     if (!this._shouldLog(logLevel || priority)) {
       return noop;
     }
-    return isBrowser
+    return isBrowser()
       ? logImageInBrowser({image, message, scale})
       : logImageInNode({image, message, scale});
   }
@@ -328,7 +333,7 @@ in a later version. Use \`${newUsage}\` instead`);
 
       const tag = opts.tag || opts.message;
 
-      if (opts.once) {
+      if (opts.once && tag) {
         if (!cache[tag]) {
           cache[tag] = getHiResTimestamp();
         } else {

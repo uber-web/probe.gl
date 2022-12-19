@@ -1,24 +1,10 @@
-/* eslint-disable no-restricted-globals */
-const globals = {
-  self: typeof self !== 'undefined' && self,
-  window: typeof window !== 'undefined' && window,
-  global: typeof global !== 'undefined' && global,
-  document: typeof document !== 'undefined' && document,
-  process: typeof process === 'object' && process
-};
-
-const global_ = globalThis;
-const self_ = globals.self || globals.window || globals.global;
-const window_ = globals.window || globals.self || globals.global;
-const document_ = globals.document || {};
-const process_ = globals.process || {};
-const console_ = console;
-
-export {
-  self_ as self,
-  window_ as window,
-  global_ as global,
-  document_ as document,
-  process_ as process,
-  console_ as console
-};
+export const global = globalThis;
+// eslint-disable-next-line consistent-this
+export const self = globalThis.self || globalThis.window || globalThis.global;
+export const window = (globalThis.window ||
+  globalThis.self ||
+  globalThis.global) as unknown as Window;
+export const document = globalThis.document || ({} as Document);
+export const process = globalThis.process || ({} as NodeJS.Process);
+export const console = globalThis.console;
+export const navigator = globalThis.navigator || ({} as Navigator);

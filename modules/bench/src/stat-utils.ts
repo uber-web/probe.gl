@@ -6,16 +6,15 @@ export function mean(numbers: number[]): number {
 }
 
 /** standard deviation */
-export function std(numbers: number[], _mean?: number): number {
+export function std(numbers: number[], precalculatedMean?: number): number {
   if (numbers.length <= 1) {
     return 0;
   }
 
-  if (_mean === undefined) {
-    _mean = mean(numbers);
-  }
+  const meanValue = precalculatedMean === undefined ? mean(numbers) : precalculatedMean;
+
   return Math.sqrt(
-    numbers.reduce((d, x) => d + (x - _mean) * (x - _mean), 0) / (numbers.length - 1)
+    numbers.reduce((d, x) => d + (x - meanValue) * (x - meanValue), 0) / (numbers.length - 1)
   );
 }
 

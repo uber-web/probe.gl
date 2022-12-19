@@ -20,7 +20,7 @@ function getSISuffix(multipleOf3: number): string {
     '-3': 'n'
   };
   const key = String(multipleOf3);
-  return key in SI_SUFFIXES ? SI_SUFFIXES[key] : `e${multipleOf3 * 3}`;
+  return key in SI_SUFFIXES ? SI_SUFFIXES[key] || '' : `e${multipleOf3 * 3}`;
 }
 
 // Breaks a number into a normalized base and an exponent
