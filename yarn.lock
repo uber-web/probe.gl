@@ -2168,6 +2168,31 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
+"@probe.gl/env@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/env/-/env-3.6.0.tgz#33343fd9041a14d21374c1911826d4a2f9d9a35d"
+  integrity sha512-4tTZYUg/8BICC3Yyb9rOeoKeijKbZHRXBEKObrfPmX4sQmYB15ZOUpoVBhAyJkOYVAM8EkPci6Uw5dLCwx2BEQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+
+"@probe.gl/log@3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/log/-/log-3.6.0.tgz#c645bfd22b4769dc65161caa17f13bd2b231e413"
+  integrity sha512-hjpyenpEvOdowgZ1qMeCJxfRD4JkKdlXz0RC14m42Un62NtOT+GpWyKA4LssT0+xyLULCByRAtG2fzZorpIAcA==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    "@probe.gl/env" "3.6.0"
+
+"@probe.gl/test-utils@^3.5.4":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/test-utils/-/test-utils-3.6.0.tgz#4c3dc04061896456935dc2ecf6ed79ef8de9c33a"
+  integrity sha512-BK6NkeNVN9CVC9Dbp7+Unvu8bAwWOLm3TV/WcyLd1ysI23xkrnPgUeN/PGNOqIqHkq32ijZwew7gX4Euc3Du3g==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    "@probe.gl/log" "3.6.0"
+    pixelmatch "^4.0.2"
+    puppeteer "*"
+
 "@rollup/pluginutils@^4.2.0":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-4.2.1.tgz#e6c6c3aba0744edce3fb2074922d3776c0af2a6d"
