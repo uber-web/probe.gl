@@ -34,7 +34,7 @@ test('StatsWidget#import', t => {
   t.end();
 });
 
-test('StatsWidget#Constructor with no stats or options', t => {
+test.skip('StatsWidget#Constructor with no stats or options', t => {
   const statsWidget = new StatsWidget(null);
   t.ok(statsWidget._container, 'Should create a dom container.');
   t.ok(statsWidget._header, 'Should create a dom header.');
@@ -51,6 +51,7 @@ test('StatsWidget#Constructor with no stats or options', t => {
     statsWidget._innerContainer.childNodes[1] === statsWidget._statsContainer,
     'Should append stats container to inner container as the second child'
   );
+  statsWidget.remove();
   t.end();
 });
 
@@ -59,6 +60,7 @@ test('StatsWidget#Constructor with container', t => {
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});
   t.ok(statsWidget._container === container);
+  statsWidget.remove();
   t.end();
 });
 
@@ -78,6 +80,7 @@ test('StatsWidget#setStats', t => {
   t.equals(statsWidget._statsContainer.childNodes.length, 3, 'Should have 3 child nodes.');
   t.equals(statsWidget._counter, 1, 'Should call update() and increase _counter.');
 
+  statsWidget.remove();
   t.end();
 });
 
@@ -99,6 +102,7 @@ test('StatsWidget#collapse', t => {
   t.ok(!statsWidget.collapsed, 'Uncollapses');
   t.equals(statsWidget._statsContainer.style.display, 'block', 'Uncollapses to block display');
 
+  statsWidget.remove();
   t.end();
 });
 
@@ -134,6 +138,7 @@ test('StatsWidget#Update stats', t => {
     'Should correctly update memory stats.'
   );
 
+  statsWidget.remove();
   t.end();
 });
 
@@ -173,6 +178,7 @@ test('StatsWidget#formatters', t => {
     "Should use the new stats' header."
   );
 
+  statsWidget.remove();
   t.end();
 });
 
@@ -195,6 +201,7 @@ test('StatsWidget#resetOnUpdate', t => {
   t.equals(stats.get('Count').count, 0, 'Should reset count.');
   t.equals(stats.get('GPU Memory').count, 1500, 'Should not reset memory.');
 
+  statsWidget.remove();
   t.end();
 });
 

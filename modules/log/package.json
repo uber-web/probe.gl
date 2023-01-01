@@ -2,6 +2,7 @@
   "name": "@probe.gl/log",
   "description": "JavaScript debug logging for browser and Node",
   "license": "MIT",
+  "type": "module",
   "version": "3.5.4",
   "keywords": [
     "javascript",
@@ -14,8 +15,15 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "types": "dist/index.d.ts",
-  "main": "dist/es5/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist",
     "src"

@@ -31,7 +31,7 @@ test('BrowserTestDriver#import', t => {
   t.end();
 });
 
-test('BrowserTestDriver#ImageDiff', t => {
+test('BrowserTestDriver#ImageDiff', async t => {
   // @ts-expect-error
   if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
@@ -48,36 +48,33 @@ test('BrowserTestDriver#ImageDiff', t => {
     region: {x: 0, y: 0, width: 40, height: 40}
   };
 
-  window
+  try {
     // @ts-expect-error
-    .browserTestDriver_captureAndDiffScreen(diffSettings)
-    .then(result => {
-      if (result.success) {
-        t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
-      } else if (result.error) {
-        t.fail(`Image diff throws error: ${result.error}`);
-      } else {
-        t.fail(`Screenshot should match golden image: ${result.matchPercentage}`);
-      }
-    })
-    .then(() => {
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ff0';
-      ctx.fillRect(10, 10, 12, 12);
-      // @ts-expect-error
-      return window.browserTestDriver_captureAndDiffScreen(diffSettings);
-    })
-    .then(result => {
-      if (result.success) {
-        t.fail(`Screenshot should not match golden image: ${result.matchPercentage}`);
-      } else if (result.error) {
-        t.fail(`Image diff throws error: ${result.error}`);
-      } else {
-        t.pass(`Screenshot does not match golden image: ${result.matchPercentage}`);
-      }
-    })
-    .finally(() => {
-      document.body.removeChild(canvas);
-      t.end();
-    });
+    let result = await window.browserTestDriver_captureAndDiffScreen(diffSettings);
+    if (result.success) {
+      t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
+    } else if (result.error) {
+      t.fail(`Image diff throws error: ${result.error}`);
+    } else {
+      t.fail(`Screenshot should match golden image: ${result.matchPercentage}`);
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ff0';
+    ctx.fillRect(10, 10, 12, 12);
+    // @ts-expect-error
+    result = await window.browserTestDriver_captureAndDiffScreen(diffSettings);
+    if (result.success) {
+      t.fail(`Screenshot should not match golden image: ${result.matchPercentage}`);
+    } else if (result.error) {
+      t.fail(`Image diff throws error: ${result.error}`);
+    } else {
+      t.pass(`Screenshot does not match golden image: ${result.matchPercentage}`);
+    }
+  } catch (ex) {
+    t.fail(`Unexpected error: ${ex}`);
+  }
+
+  document.body.removeChild(canvas);
+  t.end();
 });

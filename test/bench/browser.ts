@@ -18,9 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// @ts-ignore require
-const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
+import {_enableDOMLogging as enableDOMLogging} from '@probe.gl/test-utils';
+import {Bench} from '@probe.gl/bench';
+import addBenchmarks from './samples.bench';
+
 enableDOMLogging(true);
 
-// @ts-ignore require
-require('./index');
+const suite = new Bench();
+
+addBenchmarks(suite, false);
+
+suite
+  // Calibrate performance
+  .calibrate()
+  .run()
+  .then(() => {
+    // @ts-expect-error TS2339: Property 'browserTestDriver_finish' does not exist
+    window.browserTestDriver_finish();
+  });

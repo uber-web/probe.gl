@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
+    "module": "esnext",
     "jsx": "react",
     "allowJs": true,
     "checkJs": true,
@@ -35,8 +36,6 @@
     // END TYPE CHECK SETTINGS
 
     "paths": {
-      "@probe.gl/main/*": ["modules/main/src/*"],
-      "@probe.gl/main/test/*": ["modules/main/test/*"],
       "@probe.gl/bench/*": ["modules/bench/src/*"],
       "@probe.gl/bench/test/*": ["modules/bench/test/*"],
       "@probe.gl/env/*": ["modules/env/src/*"],

@@ -17,12 +17,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-require('@babel/register')({
-  extensions: ['.js', '.jsx', '.ts', '.tsx']
-});
 
 // Polyfill with JSDOM
-const {JSDOM} = require('jsdom');
+import {JSDOM} from 'jsdom';
 const dom = new JSDOM(`<!DOCTYPE html>`);
 // These globals are required by @jupyter-widgets/base
 globalThis.window = dom.window;
@@ -30,4 +27,4 @@ globalThis.document = dom.window.document;
 globalThis.Element = dom.window.Element;
 globalThis.__JSDOM__ = true;
 
-require('./test-index');
+import './test-index';
