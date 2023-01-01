@@ -3,11 +3,7 @@
   "description": "JavaScript benchmarking utility",
   "license": "MIT",
   "type": "module",
-<<<<<<< HEAD
-  "version": "3.6.0",
-=======
   "version": "4.0.0-alpha.1",
->>>>>>> b0ccf49 (v4.0.0-alpha.1)
   "keywords": [
     "bench",
     "benchmark",
@@ -33,11 +29,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-<<<<<<< HEAD
-    "@probe.gl/log": "3.6.0"
-=======
     "@probe.gl/log": "4.0.0-alpha.1"
->>>>>>> b0ccf49 (v4.0.0-alpha.1)
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
