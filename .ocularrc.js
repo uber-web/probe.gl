@@ -1,4 +1,8 @@
 export default {
+  typescript: {
+    project: 'tsconfig.modules.json'
+  },
+
   lint: {
     paths: ['modules', 'examples', 'test']
   },

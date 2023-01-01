@@ -29,10 +29,8 @@
   },
   "scripts": {
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
-    "clean": "ocular-clean && npm run tsclean",
-    "build": "npm run clean && time npm run tsbuild && time ocular-build",
-    "tsclean": "find . -name tsconfig.tsbuildinfo -exec rm {} \\;",
-    "tsbuild": "tsc -b tsconfig.modules.json",
+    "clean": "ocular-clean",
+    "build": "npm run clean && time ocular-build",
     "lint": "tsc && ocular-lint",
     "publish": "ocular-publish",
     "test": "ocular-test",
@@ -43,7 +41,7 @@
     "@types/tape-promise": "^4.0.1",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^16.5.0",
-    "ocular-dev-tools": "2.0.0-alpha.4",
+    "ocular-dev-tools": "2.0.0-alpha.5",
     "pre-commit": "^1.2.2",
     "react-dom": "^16.13.1",
     "url-loader": "^1.0.1"

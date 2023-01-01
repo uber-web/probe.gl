@@ -4,10 +4,7 @@ module.exports = getESLintConfig({
   react: '16.8.2',
   overrides: {
     parserOptions: {
-      project: ['./tsconfig.json'],
-      babelOptions: {
-        configFile: './babel.config.cjs'
-      }
+      project: ['./tsconfig.json']
     },
 
     env: {
