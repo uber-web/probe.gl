@@ -1,4 +1,8 @@
-const config = {
+export default {
+  typescript: {
+    project: 'tsconfig.modules.json'
+  },
+
   lint: {
     paths: ['modules', 'examples', 'test']
   },
@@ -6,13 +10,8 @@ const config = {
   entry: {
     test: 'test/node.js',
     'test-browser': 'test/browser.js',
-    bench: 'test/bench/index.js',
-    'bench-browser': 'test/bench/browser.js',
-    size: {
-      log: 'test/size/log.js',
-      stat: 'test/size/stat.js'
-    }
+    bench: 'test/bench/index.ts',
+    'bench-browser': 'test/bench/browser.ts',
+    size: ['test/size/log.js', 'test/size/stat.js']
   }
 };
-
-module.exports = config;

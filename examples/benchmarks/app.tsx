@@ -5,7 +5,7 @@ import {render} from 'react-dom';
 import {Bench} from '@probe.gl/bench';
 import {BenchResults} from '@probe.gl/react-bench';
 
-import addBenchmarks from '../../test/bench';
+import addBenchmarks from '../../test/bench/samples.bench';
 
 type LogItem = {
   id: string;
