@@ -1,6 +1,10 @@
 # CHANGELOG
 
-v3.5.5 - Jan 1, 2023
+v4.0.0-alpha.1 - Jan 1, 2023
+
+- Pure ES Modules
+
+v3.6.0 - Jan 1, 2023
 
 - chore(log): remove asciify-image dependency (#214)
 - chore: stricter typescript settings (#213)
