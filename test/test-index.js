@@ -24,6 +24,3 @@ import '@probe.gl/stats/test';
 import '@probe.gl/stats-widget/test';
 import '@probe.gl/bench/test';
 import '@probe.gl/test-utils/test';
-
-// DEPRECATED
-import 'probe.gl/test';

@@ -2,6 +2,7 @@
   "name": "probe.gl-monorepo",
   "description": "JavaScript Console Instrumentation and Benchmarking for Browser and Node",
   "license": "MIT",
+  "type": "module",
   "private": true,
   "keywords": [
     "javascript",
@@ -20,12 +21,16 @@
   "browser": {
     "jsdom": false
   },
+  "resolutions_comments": {
+    "esbuild": "https://github.com/evanw/esbuild/issues/2762"
+  },
+  "resolutions": {
+    "esbuild": "0.16.7"
+  },
   "scripts": {
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
-    "clean": "ocular-clean && npm run tsclean",
-    "build": "ocular-clean && time ocular-build && npm run tsclean && time npm run tsbuild",
-    "tsclean": "find . -name tsconfig.tsbuildinfo -exec rm {} \\;",
-    "tsbuild": "tsc -b tsconfig.modules.json",
+    "clean": "ocular-clean",
+    "build": "npm run clean && time ocular-build",
     "lint": "tsc && ocular-lint",
     "publish": "ocular-publish",
     "test": "ocular-test",
@@ -33,18 +38,12 @@
     "version": "ocular-build core"
   },
   "devDependencies": {
-    "@probe.gl/test-utils": "^3.5.4",
     "@types/tape-promise": "^4.0.1",
-    "coveralls": "^2.13.0",
-    "eslint-import-resolver-webpack": "^0.11.1",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-react": "^7.10",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^16.5.0",
-    "ocular-dev-tools": "1.0.0-alpha.7",
+    "ocular-dev-tools": "2.0.0-alpha.5",
     "pre-commit": "^1.2.2",
     "react-dom": "^16.13.1",
-    "reify": "^0.18.1",
     "url-loader": "^1.0.1"
   },
   "pre-commit": [

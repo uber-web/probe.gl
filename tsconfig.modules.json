@@ -17,7 +17,6 @@
     {"path": "modules/bench"},
     {"path": "modules/env"},
     {"path": "modules/log"},
-    {"path": "modules/main"},
     {"path": "modules/react-bench"},
     {"path": "modules/seer"},
     {"path": "modules/stats"},

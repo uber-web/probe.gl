@@ -8,6 +8,6 @@
     "outDir": "dist"
   },
   "references": [
-    {"path": "../main"}
+    {"path": "../log"}
   ]
 }

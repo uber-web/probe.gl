@@ -17,22 +17,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-require('@probe.gl/log'); // ensure probe gets access to pure console first
+import '@probe.gl/log'; // ensure probe gets access to pure console first
 
-const test = require('tape');
-const {_enableDOMLogging: enableDOMLogging} = require('@probe.gl/test-utils');
+import test from 'tape';
+import {_enableDOMLogging as enableDOMLogging} from '@probe.gl/test-utils';
 
 let failed = false;
 test.onFailure(() => {
   failed = true;
   globalThis.browserTestDriver_fail();
 });
-test.onFinish(globalThis.browserTestDriver_finish || (() => {}));
+test.onFinish(globalThis.browserTestDriver_finish);
 
 // tap-browser-color alternative
 enableDOMLogging({
   getStyle: message => ({background: failed ? '#F28E82' : '#8ECA6C'})
 });
 
-require('./test-index');
-require('@probe.gl/stats-widget/test');
+import './test-index';
