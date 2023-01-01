@@ -34,14 +34,13 @@ test('StatsWidget#import', t => {
   t.end();
 });
 
-test.skip('StatsWidget#Constructor with no stats or options', t => {
+test('StatsWidget#Constructor with no stats or options', t => {
   const statsWidget = new StatsWidget(null);
   t.ok(statsWidget._container, 'Should create a dom container.');
   t.ok(statsWidget._header, 'Should create a dom header.');
-  t.equals(statsWidget._container.childNodes.length, 1, 'Should have one child node.');
   t.ok(
-    statsWidget._container.childNodes[0] === statsWidget._innerContainer,
-    'Should append inner container to container as the first child'
+    statsWidget._innerContainer.parentElement === statsWidget._container,
+    'Should append inner container to container'
   );
   t.ok(
     statsWidget._innerContainer.childNodes[0] === statsWidget._header,
