@@ -1,6 +1,8 @@
 # CHANGELOG
 
-v3.6.0-alpha.1 (TBD)
+v4.0.0-alpha.1 - Jan 1, 2023
+
+- Pure ES Modules
 
 v3.5.4 - Dec 18, 2022
 

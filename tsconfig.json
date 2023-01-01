@@ -1,4 +1,8 @@
 {
+  "ts-node": {
+    // It is faster to skip typechecking. Remove if you want ts-node to do typechecking.
+    "transpileOnly": true
+  },
   "compilerOptions": {
     "target": "es2020",
     "module": "esnext",
