@@ -400,7 +400,7 @@ export function normalizeArguments(opts: {
   logLevel;
   message;
   collapsed?: boolean;
-  args?: IArguments;
+  args?: IArguments | undefined;
   opts?;
 }): {
   logLevel: number;
