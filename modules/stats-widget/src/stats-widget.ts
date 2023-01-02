@@ -168,17 +168,16 @@ export default class StatsWidget {
 
     // the widget is contained in a <div>
     if (!this._container) {
-      this._container = document.createElement('div');
-      for (const name in this._css) {
-        this._container.style[name] = this._css[name];
-      }
-      document.body.appendChild(this._container);
+      this._container = document.body;
     }
 
     // When adding the widget to an existing element, make sure there
     // is a container for this widget specifically, so that multiple widgets
     // can be added to the same container.
     this._innerContainer = document.createElement('div');
+    for (const name in this._css) {
+      this._innerContainer.style[name] = this._css[name];
+    }
     this._container.appendChild(this._innerContainer);
 
     // Create the contents of the stats widget, starting with the header
