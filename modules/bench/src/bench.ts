@@ -12,12 +12,24 @@ import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
 
 const noop = () => {};
 
+/** Properties for benchmark suite */
+export type BenchProps = {
+  /** Id of suite. @note Used as key for regression (storing/loading results in browser storage) */
+  id?: string;
+  /** Log object */
+  log?: Logger | null;
+  /** Minimum number of milliseconds to iterate each bench test */
+  time?: number;
+  /** milliseconds of idle time, or "cooldown" between tests */
+  delay?: number;
+  /** Increase if OK to let slow benchmarks take long time, potentially produces more stable results */
+  minIterations?: number;
+};
+
 /** Type of benchmark log entry */
 export type LogEntryType = 'group' | 'test' | 'complete';
 
-/**
- * @deprecated - Use string constants instead
- */
+/** @deprecated - Use string constants instead */
 export const LOG_ENTRY = {
   GROUP: 'group',
   TEST: 'test',
@@ -37,20 +49,6 @@ export type LogEntry = {
 
 export type Logger = (entry: LogEntry) => void;
 
-/** Properties for benchmark suite */
-export type BenchProps = {
-  /** Id of suite. @note Used as key for regression (storing/loading results in browser storage) */
-  id?: string;
-  /** Log object */
-  log?: Logger | null;
-  /** Minimum number of milliseconds to iterate each bench test */
-  time?: number;
-  /** milliseconds of idle time, or "cooldown" between tests */
-  delay?: number;
-  /** Increase if OK to let slow benchmarks take long time, potentially produces more stable results */
-  minIterations?: number;
-};
-
 const DEFAULT_BENCH_OPTIONS: Required<BenchProps> = {
   id: '',
   log: null,
@@ -60,19 +58,21 @@ const DEFAULT_BENCH_OPTIONS: Required<BenchProps> = {
 };
 
 /** One test in the suite */
-type BenchTest = {
+type BenchTestCase = {
   id: string;
   priority?: number;
   message?: string;
-  initFunc?: Function;
+  initFunc?: Function | undefined;
   testFunc?: Function;
   group?: boolean;
   async?: boolean;
   once?: boolean;
   opts: BenchProps & {
-    multipler?: number;
+    multiplier?: number;
     unit?: string;
+    _throughput?: number;
   };
+  context?: any;
 };
 
 /**
@@ -82,7 +82,7 @@ type BenchTest = {
 export default class Bench {
   id: string;
   opts: Required<BenchProps>;
-  tests: Record<string, BenchTest> = {};
+  tests: Record<string, BenchTestCase> = {};
   results: Record<string, unknown> = {};
   table: Record<string, any> = {};
 
@@ -114,7 +114,7 @@ export default class Bench {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     const {tests, onBenchmarkComplete} = this;
     // @ts-expect-error
-    await runTests({tests, onBenchmarkComplete});
+    await runTests({bench: this, tests, onBenchmarkComplete});
 
     const elapsed = (getHiResTimestamp() - timeStart) / 1000;
     logEntry(this, {entry: 'complete', time: elapsed, message: 'Complete'});
@@ -131,13 +131,13 @@ export default class Bench {
   }
 
   add(priority, id, func1?, func2?): this {
-    this._add(priority, id, func1, func2);
+    this._addTestCase(priority, id, func1, func2);
     return this;
   }
 
   // Mark test as async (returns promise)
   addAsync(priority, id, func1?, func2?): this {
-    const test = this._add(priority, id, func1, func2);
+    const test = this._addTestCase(priority, id, func1, func2);
     test.async = true;
     return this;
   }
@@ -189,8 +189,14 @@ export default class Bench {
   //  add(priority, id, initFunc, testFunc)
   //  add(id, initFunc, testFunc)
 
-  _add(priority: number | string, id: string | Function, func1: Function, func2?: Function) {
-    let options = {};
+  _addTestCase(
+    priority: number | string,
+    id: string | Function,
+    func1: Function,
+    func2?: Function
+  ): BenchTestCase {
+    type TestCaseOptions = {initialize?: Function | undefined};
+    let options: TestCaseOptions = {};
 
     if (typeof priority === 'number') {
       console.warn('`priority` argument is deprecated, use `options.priority` instead');
@@ -208,10 +214,9 @@ export default class Bench {
     }
 
     if (typeof id !== 'string' || typeof func1 !== 'function') {
-      throw new Error('_add');
+      throw new Error('_addTestCase');
     }
 
-    // @ts-expect-error
     let initFunc = options.initialize;
     let testFunc = func1;
     if (typeof func2 === 'function') {
@@ -232,14 +237,17 @@ export default class Bench {
       throw new Error('tests need unique id strings');
     }
 
-    this.tests[id] = {
+    const test: BenchTestCase = {
       id,
       priority,
       initFunc,
       testFunc,
       opts
     };
-    return this.tests[id];
+
+    this.tests[id] = test;
+
+    return test;
   }
 }
 
@@ -252,12 +260,11 @@ function addDelay(timeout: number): Promise<void> {
   });
 }
 
-function runCalibrationTests({tests}: {tests: Record<string, BenchTest>}): void {
+function runCalibrationTests({tests}: {tests: Record<string, BenchTestCase>}): void {
   // Beat JIT - run each test once
-  for (const id in tests) {
-    const test = tests[id];
+  for (const test of Object.values(tests)) {
     if (!test.group) {
-      runBenchTestIterations(test, 1);
+      runBenchTestCaseIterations(test, 1);
     }
   }
 }
@@ -267,39 +274,58 @@ function logEntry(test: Bench, opts: any): void {
   if ((opts.priority | 0) <= priority) {
     opts = {...test, ...test.opts, ...opts, id: test.id};
     delete opts.opts;
-    test.opts.log(opts);
+    test.opts.log?.(opts);
   }
 }
 
 // Run a list of bench test case asynchronously (with short timeouts inbetween)
-async function runTests({tests, onBenchmarkComplete = noop}) {
+async function runTests({
+  bench,
+  tests,
+  onBenchmarkComplete = noop
+}: {
+  bench: Bench;
+  tests: BenchTestCase[];
+  onBenchmarkComplete?: Function;
+}) {
   // Run default warm up and calibration tests
   // @ts-expect-error
   runCalibrationTests({tests, onBenchmarkComplete});
 
   // Run the suite tests
-  for (const id in tests) {
-    const test = tests[id];
+  for (const test of Object.values(tests)) {
     if (test.group) {
-      logEntry(test, {entry: 'group', message: test.id});
+      logEntry(bench, {entry: 'group', message: test.id});
     } else {
-      await runTest({test, onBenchmarkComplete});
+      await runTest({bench, test, onBenchmarkComplete});
     }
   }
 }
 
-async function runTest({test, onBenchmarkComplete, silent = false}) {
+async function runTest({
+  bench,
+  test,
+  onBenchmarkComplete,
+  silent = false
+}: {
+  bench: Bench;
+  test: BenchTestCase;
+  onBenchmarkComplete?: Function;
+  silent?: boolean;
+}) {
   // Inject a small delay between each test. System cools and DOM console updates...
-  await addDelay(test.opts.delay);
+  if (test.opts.delay) {
+    await addDelay(test.opts.delay);
+  }
 
-  const result = await runBenchTestAsync(test);
+  const result = await runBenchTestCaseAsync(test);
 
   const {iterationsPerSecond, time, iterations, error} = result;
 
   const itersPerSecond = formatSI(iterationsPerSecond);
 
   if (!silent) {
-    logEntry(test, {
+    logEntry(bench, {
       entry: 'test',
       itersPerSecond,
       time,
@@ -321,25 +347,27 @@ async function runTest({test, onBenchmarkComplete, silent = false}) {
 
 // Test runners
 
-async function runBenchTestAsync(test) {
-  const results = [];
+async function runBenchTestCaseAsync(test: BenchTestCase) {
+  const results: number[] = [];
   let totalTime = 0;
   let totalIterations = 0;
 
-  for (let i = 0; i < test.opts.minIterations; i++) {
+  const minIterations: number = test.opts?.minIterations || 1;
+
+  for (let i = 0; i < minIterations; i++) {
     let time;
     let iterations;
     // Runs "test._throughput" parallel test cases
     if (test.async && test.opts._throughput) {
       const {_throughput} = test.opts;
-      ({time, iterations} = await runBenchTestParallelIterationsAsync(test, _throughput));
+      ({time, iterations} = await runBenchTestCaseParallelIterationsAsync(test, _throughput));
     } else {
-      ({time, iterations} = await runBenchTestForMinimumTimeAsync(test, test.opts.time));
+      ({time, iterations} = await runBenchTestCaseForMinimumTimeAsync(test, test.opts.time || 0));
     }
 
     // Test options can have `multiplier` to return a more semantic number
     // (e.g. number of bytes, lines, points or pixels decoded per iteration)
-    iterations *= test.opts.multiplier;
+    iterations *= test.opts.multiplier || 1;
 
     const iterationsPerSecond = iterations / time;
     results.push(iterationsPerSecond);
@@ -356,7 +384,10 @@ async function runBenchTestAsync(test) {
 }
 
 // Run a test func for an increasing amount of iterations until time threshold exceeded
-async function runBenchTestForMinimumTimeAsync(test, minTime) {
+async function runBenchTestCaseForMinimumTimeAsync(
+  test: BenchTestCase,
+  minTime: number
+): Promise<{time: number; iterations: number}> {
   let iterations = 1;
   let elapsedMillis = 0;
 
@@ -364,14 +395,14 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
   while (elapsedMillis < minTime) {
     let multiplier = 10;
     if (elapsedMillis > 10) {
-      multiplier = (test.opts.time / elapsedMillis) * 1.25;
+      multiplier = ((test.opts.time || 0) / elapsedMillis) * 1.25;
     }
     iterations *= multiplier;
     const timeStart = getHiResTimestamp();
     if (test.async) {
-      await runBenchTestIterationsAsync(test, iterations);
+      await runBenchTestCaseIterationsAsync(test, iterations);
     } else {
-      runBenchTestIterations(test, iterations);
+      runBenchTestCaseIterations(test, iterations);
     }
     elapsedMillis = getHiResTimestamp() - timeStart;
   }
@@ -385,16 +416,19 @@ async function runBenchTestForMinimumTimeAsync(test, minTime) {
 }
 
 // Run a test func for a specific amount of parallel iterations
-async function runBenchTestParallelIterationsAsync(test, iterations) {
+async function runBenchTestCaseParallelIterationsAsync(
+  test: BenchTestCase,
+  iterations: number
+): Promise<{time: number; iterations: number}> {
   const testArgs = test.initFunc && test.initFunc();
 
   const timeStart = getHiResTimestamp();
 
-  const promises = [];
+  const promises: Promise<unknown>[] = [];
 
   const {context, testFunc} = test;
   for (let i = 0; i < iterations; i++) {
-    promises.push(testFunc.call(context, testArgs));
+    promises.push(testFunc?.call(context, testArgs));
   }
 
   await Promise.all(promises);
@@ -408,29 +442,32 @@ async function runBenchTestParallelIterationsAsync(test, iterations) {
 }
 
 // Run a test func for a specific amount of iterations
-async function runBenchTestIterationsAsync(test, iterations) {
+async function runBenchTestCaseIterationsAsync(
+  test: BenchTestCase,
+  iterations: number
+): Promise<void> {
   const testArgs = test.initFunc && test.initFunc();
   const {context, testFunc} = test;
   for (let i = 0; i < iterations; i++) {
-    await testFunc.call(context, testArgs);
+    await testFunc?.call(context, testArgs);
   }
 }
 
 // Sync tests
 
 // Run a test func for a specific amount of iterations
-function runBenchTestIterations(test, iterations) {
+function runBenchTestCaseIterations(test: BenchTestCase, iterations: number): void {
   const testArgs = test.initFunc && test.initFunc();
 
   // When running sync, avoid overhead of parameter passing if not needed
   const {context, testFunc} = test;
   if (context && testArgs) {
     for (let i = 0; i < iterations; i++) {
-      testFunc.call(context, testArgs);
+      testFunc?.call(context, testArgs);
     }
   } else {
     for (let i = 0; i < iterations; i++) {
-      testFunc.call(context);
+      testFunc?.call(context);
     }
   }
 }
