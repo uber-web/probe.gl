@@ -33,6 +33,6 @@ suite
   .calibrate()
   .run()
   .then(() => {
-    // @ts-expect-error TS2339: Property 'browserTestDriver_finish' does not exist
+    // @ts-expect-error
     window.browserTestDriver_finish();
   });

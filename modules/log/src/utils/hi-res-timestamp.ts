@@ -5,7 +5,7 @@ import {window, process, isBrowser} from '@probe.gl/env';
 /** Get best timer available. */
 export function getHiResTimestamp() {
   let timestamp;
-  if (isBrowser && 'performance' in window) {
+  if (isBrowser() && window.performance) {
     timestamp = window?.performance?.now?.();
   } else if ('hrtime' in process) {
     // @ts-ignore

@@ -2,7 +2,7 @@
 
 export type StorageType = 'sessionStorage' | 'localStorage';
 
-function getStorage(type: StorageType): Storage {
+function getStorage(type: StorageType): Storage | null {
   try {
     const storage: Storage = window[type];
     const x = '__storage_test__';
@@ -16,7 +16,7 @@ function getStorage(type: StorageType): Storage {
 
 // Store keys in local storage via simple interface
 export class LocalStorage<Configuration extends {}> {
-  storage: Storage;
+  storage: Storage | null;
   id: string;
   config: Required<Configuration>;
 

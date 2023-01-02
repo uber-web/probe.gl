@@ -28,8 +28,10 @@ const DEFAULT_CSS = {
 
 export type StatFormatter = (stat: Stat) => string;
 
+const DEFAULT_COUNT_FORMATTER = stat => `${stat.name}: ${stat.count}`;
+
 export const DEFAULT_FORMATTERS: Record<string, StatFormatter> = {
-  count: stat => `${stat.name}: ${stat.count}`,
+  count: DEFAULT_COUNT_FORMATTER,
   averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
   totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
   fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
@@ -47,40 +49,40 @@ export type StatWidgetProps = {
 
 export default class StatsWidget {
   stats: Stats;
-  title: string;
+  title: string | undefined;
   collapsed: boolean = false;
   _framesPerUpdate: number;
   _formatters = DEFAULT_FORMATTERS;
   _css;
   _headerCSS;
   _itemCSS;
-  _container: HTMLElement | null = null;
-  _innerContainer: HTMLElement = null;
-  _statsContainer: HTMLElement = null;
-  _header: HTMLElement = null;
+  _container: HTMLElement = document.body;
+  _innerContainer: HTMLElement | null = null;
+  _statsContainer: HTMLElement | null = null;
+  _header: HTMLElement | null = null;
   _resetOnUpdate: Record<string, boolean> = {};
   _counter: number = 0;
   _items = {};
   _added: boolean = false;
 
-  constructor(stats: Stats, options?: StatWidgetProps) {
+  constructor(stats: Stats, props?: StatWidgetProps) {
     this.stats = stats;
-    this.title = options?.title;
+    this.title = props?.title;
 
-    this._framesPerUpdate = Math.round(Math.max(options?.framesPerUpdate || 1, 1));
+    this._framesPerUpdate = Math.round(Math.max(props?.framesPerUpdate || 1, 1));
 
-    this._initializeFormatters(options);
-    this._initializeUpdateConfigs(options);
+    this._initializeFormatters(props);
+    this._initializeUpdateConfigs(props);
 
     // UI
-    this._css = Object.assign({}, DEFAULT_CSS.css, options?.css);
+    this._css = Object.assign({}, DEFAULT_CSS.css, props?.css);
     this._headerCSS = Object.assign({}, DEFAULT_CSS.headerCSS, this._css.header);
     this._itemCSS = Object.assign({}, DEFAULT_CSS.itemCSS, this._css.item);
 
     delete this._css.header;
     delete this._css.item;
 
-    this._createDOM(options?.container);
+    this._createDOM(props?.container);
     this._createDOMStats();
   }
 
@@ -114,7 +116,9 @@ export default class StatsWidget {
   remove(): void {
     // if re-adding the stats widget is needed, a code path to
     // re-add the _innerContainer should be added, e.g. in _update.
-    this._container.removeChild(this._innerContainer);
+    if (this._innerContainer) {
+      this._container.removeChild(this._innerContainer);
+    }
   }
 
   setCollapsed(collapsed: boolean): void {
@@ -137,39 +141,36 @@ export default class StatsWidget {
     });
   }
 
-  _initializeFormatters(options?: StatWidgetProps): void {
-    if (options?.formatters) {
-      for (const name in options.formatters) {
-        let formatter = options.formatters[name];
+  _initializeFormatters(props?: StatWidgetProps): void {
+    if (props?.formatters) {
+      for (const name in props.formatters) {
+        let formatter = props.formatters[name];
 
         if (typeof formatter === 'string') {
           formatter = DEFAULT_FORMATTERS[formatter];
         }
 
-        this._formatters[name] = formatter;
+        if (formatter) {
+          this._formatters[name] = formatter;
+        }
       }
     }
   }
 
-  _initializeUpdateConfigs(options?: StatWidgetProps): void {
-    if (options?.resetOnUpdate) {
-      for (const name in options.resetOnUpdate) {
-        this._resetOnUpdate[name] = options.resetOnUpdate[name];
+  _initializeUpdateConfigs(props?: StatWidgetProps): void {
+    if (props?.resetOnUpdate) {
+      for (const name in props.resetOnUpdate) {
+        this._resetOnUpdate[name] = props.resetOnUpdate[name] || false;
       }
     }
   }
 
-  _createDOM(container: HTMLElement) {
+  _createDOM(container: HTMLElement = document.body) {
     if (typeof document === 'undefined' || !document) {
       return;
     }
 
     this._container = container;
-
-    // the widget is contained in a <div>
-    if (!this._container) {
-      this._container = document.body;
-    }
 
     // When adding the widget to an existing element, make sure there
     // is a container for this widget specifically, so that multiple widgets
@@ -197,7 +198,7 @@ export default class StatsWidget {
         this._header.style[name] = this._headerCSS[name];
       }
       this._header.onclick = this._toggleCollapsed.bind(this);
-      this._innerContainer.appendChild(this._header);
+      this._innerContainer?.appendChild(this._header);
     }
 
     this._setHeaderContent();
@@ -240,9 +241,10 @@ export default class StatsWidget {
   }
 
   _getLines(stat: Stat): string[] {
-    const formatter =
+    const formatter: StatFormatter =
       // eslint-disable-next-line
-      this._formatters[stat.name] || this._formatters[stat.type] || DEFAULT_FORMATTERS['count'];
-    return formatter(this.stats.get(stat.name)).split('\n');
+      this._formatters[stat.name] || this._formatters[stat.type || ''] || DEFAULT_COUNT_FORMATTER;
+    // const stat = this.stats.get(stat.name);
+    return stat ? formatter(stat).split('\n') : [];
   }
 }

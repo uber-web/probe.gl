@@ -58,7 +58,7 @@ test('StatsWidget#Constructor with container', t => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});
-  t.ok(statsWidget._container === container);
+  t.equal(statsWidget._container, container, 'container has been set');
   statsWidget.remove();
   t.end();
 });
