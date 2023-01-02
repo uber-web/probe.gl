@@ -2,14 +2,14 @@ import getHiResTimestamp from '../utils/hi-res-timestamp';
 
 export default class Stat {
   readonly name: string;
-  readonly type: string;
+  readonly type: string | undefined;
   sampleSize: number = 1;
-  time: number;
-  count: number;
-  samples: number;
-  lastTiming: number;
-  lastSampleTime: number;
-  lastSampleCount: number;
+  time: number = 0;
+  count: number = 0;
+  samples: number = 0;
+  lastTiming: number = 0;
+  lastSampleTime: number = 0;
+  lastSampleCount: number = 0;
 
   _count: number = 0;
   _time: number = 0;
@@ -21,6 +21,22 @@ export default class Stat {
     this.name = name;
     this.type = type;
     this.reset();
+  }
+
+  reset(): this {
+    this.time = 0;
+    this.count = 0;
+    this.samples = 0;
+    this.lastTiming = 0;
+    this.lastSampleTime = 0;
+    this.lastSampleCount = 0;
+    this._count = 0;
+    this._time = 0;
+    this._samples = 0;
+    this._startTime = 0;
+    this._timerPending = false;
+
+    return this;
   }
 
   setSampleSize(samples: number): this {
@@ -116,22 +132,6 @@ export default class Stat {
   /** Calculate counts per second */
   getHz(): number {
     return this.time > 0 ? this.samples / (this.time / 1000) : 0;
-  }
-
-  reset(): this {
-    this.time = 0;
-    this.count = 0;
-    this.samples = 0;
-    this.lastTiming = 0;
-    this.lastSampleTime = 0;
-    this.lastSampleCount = 0;
-    this._count = 0;
-    this._time = 0;
-    this._samples = 0;
-    this._startTime = 0;
-    this._timerPending = false;
-
-    return this;
   }
 
   _checkSampling(): void {

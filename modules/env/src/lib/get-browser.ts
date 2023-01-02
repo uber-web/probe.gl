@@ -23,6 +23,7 @@
 
 import isBrowser from './is-browser';
 import isElectron from './is-electron';
+import {navigator} from './globals';
 
 declare global {
   var chrome: boolean; // eslint-disable-line no-var
@@ -50,9 +51,7 @@ export default function getBrowser(
     return 'Electron';
   }
 
-  const navigator_ = typeof navigator !== 'undefined' ? navigator : {};
-  // @ts-expect-error
-  const userAgent = mockUserAgent || navigator_.userAgent || '';
+  const userAgent = mockUserAgent || navigator.userAgent || '';
   // const appVersion = navigator_.appVersion || '';
 
   // NOTE: Order of tests matter, as many agents list Chrome etc.
