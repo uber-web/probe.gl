@@ -1,20 +1,30 @@
+// probe.gl, MIT license
+
 /* eslint-disable no-console */
 import {autobind, LocalStorage, getHiResTimestamp} from '@probe.gl/log';
 import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
 
+// declare global {
+//   let probe: {markdown?: boolean; priority?: number};
+// }
+
 const noop = () => {};
 
+/** Type of benchmark log entry */
 export type LogEntryType = 'group' | 'test' | 'complete';
 
-/** @deprecated - Just use string constants */
+/**
+ * @deprecated - Use string constants instead
+ */
 export const LOG_ENTRY = {
   GROUP: 'group',
   TEST: 'test',
   COMPLETE: 'complete'
 };
 
+/** One benchmark log entry */
 export type LogEntry = {
   entry: LogEntryType;
   id: string;

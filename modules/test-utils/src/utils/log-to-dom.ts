@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 const {document, console} = globalThis;
 
-let old = null;
+let old: typeof console.log | null = null;
 
 // Can log a (not too long) number of messages to a div in the DOM
 // Set options to false to disable
-export function enableDOMLogging(options = {}) {
+export function enableDOMLogging(options = {}): void {
   // First time, add a log div
   if (options && !old) {
     old = console.log.bind(console);
@@ -21,9 +21,9 @@ export function enableDOMLogging(options = {}) {
   }
 }
 
-let logDiv = null;
+let logDiv: HTMLElement | null = null;
 
-function logLineToDOM(options, message) {
+function logLineToDOM(options, message: string): void {
   logDiv = options.container || logDiv;
 
   if (!logDiv) {

@@ -7,7 +7,7 @@ export function formatSI(number: number, precision: number = 3): string {
 }
 
 function getSISuffix(multipleOf3: number): string {
-  const SI_SUFFIXES = {
+  const SI_SUFFIXES: Record<string, string> = {
     0: '',
     1: 'K',
     2: 'M',

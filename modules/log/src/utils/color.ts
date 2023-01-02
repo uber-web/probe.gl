@@ -20,20 +20,30 @@ export enum COLOR {
   BRIGHT_WHITE = 97
 }
 
-function getColor(color): number {
-  return typeof color === 'string' ? COLOR[color.toUpperCase()] || COLOR.WHITE : color;
+const BACKGROUND_INCREMENT = 10;
+
+function getColor(color: string | COLOR): number {
+  if (typeof color !== 'string') {
+    return color;
+  }
+  color = color.toUpperCase();
+  return COLOR[color] || COLOR.WHITE;
 }
 
-export function addColor(string, color, background?): string {
+export function addColor(
+  string: string,
+  color: string | COLOR,
+  background?: string | COLOR
+): string {
   if (!isBrowser && typeof string === 'string') {
     if (color) {
-      color = getColor(color);
-      string = `\u001b[${color}m${string}\u001b[39m`;
+      const colorCode = getColor(color);
+      string = `\u001b[${colorCode}m${string}\u001b[39m`;
     }
     if (background) {
       // background colors values are +10
-      color = getColor(background);
-      string = `\u001b[${background + 10}m${string}\u001b[49m`;
+      const colorCode = getColor(background);
+      string = `\u001b[${colorCode + BACKGROUND_INCREMENT}m${string}\u001b[49m`;
     }
   }
   return string;

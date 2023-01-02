@@ -1,8 +1,9 @@
 // probe.gl, MIT license
 
-function getStorage(type): Storage {
+export type StorageType = 'sessionStorage' | 'localStorage';
+
+function getStorage(type: StorageType): Storage {
   try {
-    // @ts-expect-error
     const storage: Storage = window[type];
     const x = '__storage_test__';
     storage.setItem(x, x);
@@ -19,7 +20,11 @@ export class LocalStorage<Configuration extends {}> {
   id: string;
   config: Required<Configuration>;
 
-  constructor(id: string, defaultConfig: Required<Configuration>, type = 'sessionStorage') {
+  constructor(
+    id: string,
+    defaultConfig: Required<Configuration>,
+    type: StorageType = 'sessionStorage'
+  ) {
     this.storage = getStorage(type);
     this.id = id;
     this.config = defaultConfig;
