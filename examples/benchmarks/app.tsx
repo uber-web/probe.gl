@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {render} from 'react-dom';
 
-import {Bench} from '@probe.gl/bench';
+import {Bench, LogEntry} from '@probe.gl/bench';
 import {BenchResults} from '@probe.gl/react-bench';
 
 import addBenchmarks from '../../test/bench/samples.bench';
@@ -16,13 +16,7 @@ type LogItem = {
 
 const addReferenceBenchmarks = false;
 
-const LOG_ENTRY = {
-  GROUP: 'group',
-  TEST: 'test',
-  COMPLETE: 'complete'
-};
-
-function parseSIPrefix(itersPerSecond) {
+function parseSIPrefix(itersPerSecond: string): number {
   const value = parseFloat(itersPerSecond);
   const prefix = itersPerSecond[itersPerSecond.length - 1];
   switch (prefix) {
@@ -35,8 +29,10 @@ function parseSIPrefix(itersPerSecond) {
   }
 }
 
-export default class App extends PureComponent {
-  constructor(props) {
+type AppProps = {};
+
+export default class App extends PureComponent<AppProps> {
+  constructor(props: AppProps) {
     super(props);
 
     addBenchmarks(this.suite, addReferenceBenchmarks);
@@ -55,14 +51,14 @@ export default class App extends PureComponent {
   suite: Bench = new Bench({log: this._addResultToLog.bind(this)});
   log: LogItem[] = [];
 
-  _addResultToLog(result) {
+  _addResultToLog(result: LogEntry) {
     const {entry, id, itersPerSecond, error} = result;
 
     switch (entry) {
-      case LOG_ENTRY.GROUP:
+      case 'group':
         this.log.push({id});
         break;
-      case LOG_ENTRY.TEST:
+      case 'test':
         const value = parseSIPrefix(itersPerSecond);
         // log.push(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
         this.log.push({
@@ -72,7 +68,7 @@ export default class App extends PureComponent {
           formattedError: `${(error * 100).toFixed(2)}%`
         });
         break;
-      case LOG_ENTRY.COMPLETE:
+      case 'complete':
         break;
       default:
     }

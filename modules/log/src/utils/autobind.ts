@@ -25,10 +25,13 @@
 export function autobind(obj: object, predefined = ['constructor']): void {
   const proto = Object.getPrototypeOf(obj);
   const propNames = Object.getOwnPropertyNames(proto);
+
+  const object = obj as Record<string, unknown>;
   for (const key of propNames) {
-    if (typeof obj[key] === 'function') {
+    const value = object[key];
+    if (typeof value === 'function') {
       if (!predefined.find(name => key === name)) {
-        obj[key] = obj[key].bind(obj);
+        object[key] = value.bind(obj);
       }
     }
   }

@@ -18,9 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+declare global {
+  var __SEER_INITIALIZED__: boolean; // eslint-disable-line no-var
+}
+
+type Callback = (...args: unknown[]) => unknown;
+type Listener = any;
+
 const isBrowser = typeof window !== 'undefined' && window.addEventListener;
 
 const timers = new Map();
+
+
+const listeners = new Map<string, Listener>();
 
 /**
  * Ready check for Seer initialization
@@ -83,8 +93,6 @@ const send = (type: string, data: unknown = {}): void => {
   }
 };
 
-const listeners = new Map();
-
 const listener = (message: any): void => {
   if (!message || !message.data || message.data.source !== 'seer-core') {
     return;
@@ -93,7 +101,7 @@ const listener = (message: any): void => {
 
   const typeListeners = listeners.get(type);
   if (typeListeners) {
-    typeListeners.forEach(cb => cb(payload));
+    typeListeners.forEach((cb: Callback) => cb(payload));
   }
 };
 
@@ -133,7 +141,7 @@ const clean = (): void => {
  * @param type The unique tab key
  * @param cb A callback that will receive the message payload
  */
-const listenFor = (type: string, cb: Function): void => {
+const listenFor = (type: string, cb: Callback): void => {
   if (!isBrowser) {
     return;
   }
@@ -155,11 +163,11 @@ const listenFor = (type: string, cb: Function): void => {
  *
  * @param cb The callback to remove
  */
-const removeListener = (cb: Function): void => {
+const removeListener = (cb: Callback): void => {
   listeners.forEach((typeListeners, key) => {
     listeners.set(
       key,
-      typeListeners.filter(l => l !== cb)
+      typeListeners.filter((l: Listener) => l !== cb)
     );
   });
 };

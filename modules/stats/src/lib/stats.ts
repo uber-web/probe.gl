@@ -1,4 +1,13 @@
+// probe.gl, MIT license
+
 import Stat from './stat';
+
+type TableEntry = {
+  time: number;
+  count: number;
+  average: number;
+  hz: number;
+};
 
 /** A "bag" of `Stat` objects, can be visualized using `StatsWidget` */
 export default class Stats {
@@ -38,16 +47,8 @@ export default class Stats {
     }
   }
 
-  getTable(): Record<
-    string,
-    {
-      time: number;
-      count: number;
-      average: number;
-      hz: number;
-    }
-    > {
-    const table = {};
+  getTable(): Record<string, TableEntry> {
+    const table: Record<string, TableEntry> = {};
     this.forEach(stat => {
       table[stat.name] = {
         time: stat.time || 0,
@@ -64,7 +65,7 @@ export default class Stats {
     stats.forEach(stat => this._getOrCreate(stat));
   }
 
-  _getOrCreate(stat): Stat {
+  _getOrCreate(stat: Stat | {name: string, type?: string}): Stat {
     if (!stat || !stat.name) {
       return null;
     }
