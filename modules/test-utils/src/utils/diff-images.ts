@@ -3,6 +3,8 @@ import fs from 'fs';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
+type ImageType = unknown;
+
 export type DiffImagesOptions = {
   threshold?: number; // 0.99,
   createDiffImage?: boolean; // false,
@@ -91,7 +93,7 @@ function countNonEmptyPixels(data1, data2) {
 }
 
 // TODO - replace pngjs with @loaders.gl/images
-function parsePNG(source) {
+function parsePNG(source: string | Buffer): ImageType {
   const image = new PNG();
   if (typeof source === 'string') {
     // url or local path
@@ -115,7 +117,7 @@ function parsePNG(source) {
   return Promise.reject(new Error('Unknown image source'));
 }
 
-function encodePNG(image) {
+function encodePNG(image: ImageType): string {
   if (!image) {
     return null;
   }

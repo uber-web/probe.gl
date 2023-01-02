@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types, import/no-unresolved */
-import React, {Component} from 'react';
+import React, {Component, FC, PropsWithChildren} from 'react';
 
 import ReactTable from 'react-table';
 import '../react-table.css';
 
-function getPercent(score) {
+function getPercent(score: number): number {
   // Log scale between 100K - 100M, 0-3
   const logScore = Math.min(Math.max(Math.log10(score) - 5, 0), 5);
   const percent = Math.min(Math.max(logScore * 33.3333333, 5), 100);
@@ -19,7 +19,9 @@ function Star() {
   return <span style={{fontSize: '100%', color: 'yellow'}}>★</span>;
 }
 
-function BarCell({color, percent, stars = 0, children = []}) {
+type BarCellProps = {color: string; percent: number; stars?: number};
+
+const BarCell: FC<PropsWithChildren<BarCellProps>> = ({color, percent, stars = 0, children}) => {
   return (
     <div
       style={{
@@ -45,10 +47,10 @@ function BarCell({color, percent, stars = 0, children = []}) {
       </div>
     </div>
   );
-}
+};
 
 // eslint-disable-next-line react/prop-types
-function PerformanceBarCell({row}) {
+function PerformanceBarCell({row}: {row: {score: number}}) {
   // eslint-disable-next-line react/prop-types
   const {score} = row;
   const percent = getPercent(score);
@@ -82,12 +84,10 @@ export class BenchResults extends Component<BenchResultsProps> {
             &lt; 1M iterations/s
           </BarCell>
           <div style={{width: 20}} />
-          {/* @ts-expect-error */}
           <BarCell color={ORANGE} percent={100}>
             1M - 10M iterations/s
           </BarCell>
           <div style={{width: 20}} />
-          {/* @ts-expect-error */}
           <BarCell color={GREEN} percent={100}>
             &gt; 10M iterations/s
           </BarCell>

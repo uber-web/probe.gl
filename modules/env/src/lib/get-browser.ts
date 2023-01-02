@@ -24,6 +24,12 @@
 import isBrowser from './is-browser';
 import isElectron from './is-electron';
 
+declare global {
+  var chrome: boolean; // eslint-disable-line no-var
+  var safari: boolean; // eslint-disable-line no-var
+  var mozInnerScreenX: number; // eslint-disable-line no-var
+}
+
 const window = globalThis;
 
 export function isMobile(): boolean {

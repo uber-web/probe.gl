@@ -1,10 +1,12 @@
-// mean
-export function mean(numbers) {
+// probe.gl, MIT license
+
+/** mean */
+export function mean(numbers: number[]): number {
   return numbers.reduce((sum, x) => sum + x, 0) / numbers.length;
 }
 
-// standard deviation
-export function std(numbers, _mean) {
+/** standard deviation */
+export function std(numbers: number[], _mean?: number): number {
   if (numbers.length <= 1) {
     return 0;
   }
@@ -17,8 +19,8 @@ export function std(numbers, _mean) {
   );
 }
 
-// coefficient of variation
-export function cv(numbers) {
+/** coefficient of variation */
+export function cv(numbers: number[]): number {
   const _mean = mean(numbers);
   const _std = std(numbers, _mean);
   return _std / _mean;

@@ -4,13 +4,13 @@
 import {ScreenshotOptions} from 'puppeteer';
 import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
-import diffImages from '../utils/diff-images';
+import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
 import BrowserDriver from './browser-driver';
 
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
-type BrowserTestConfig = {
+type BrowserTestDriverProps = {
   title?: string;
   headless?: boolean;
   maxConsoleMessageLength?: number;
@@ -26,6 +26,14 @@ type BrowserTestConfig = {
   url?: string;
 };
 
+export type DiffImageResult = {
+  headless: boolean;
+  match: string | number;
+  matchPercentage: string;
+  success: boolean;
+  error: Error | string | null;
+};
+
 export default class BrowserTestDriver extends BrowserDriver {
   title: string;
   headless: boolean = false;
@@ -33,7 +41,7 @@ export default class BrowserTestDriver extends BrowserDriver {
   failures: number = 0;
   maxConsoleMessageLength = MAX_CONSOLE_MESSAGE_LENGTH;
 
-  run(config: BrowserTestConfig = {}): Promise<void> {
+  run(config: BrowserTestDriverProps = {}): Promise<void> {
     const {
       title = 'Browser Test',
       headless = false,
@@ -61,12 +69,12 @@ export default class BrowserTestDriver extends BrowserDriver {
       });
   }
 
-  _openPage(url, config: BrowserTestConfig = {}) {
+  _openPage(url: string, config: BrowserTestDriverProps = {}): Promise<string> {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
     return this.startBrowser(browserConfig).then(
       _ =>
-        new Promise((resolve, reject) => {
+        new Promise<string>((resolve, reject) => {
           const exposeFunctions = Object.assign({}, config.exposeFunctions, {
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
@@ -109,7 +117,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     );
   }
 
-  _startServer(config: BrowserTestConfig) {
+  _startServer(config: BrowserTestDriverProps): Promise<string> {
     if (!config) {
       return null;
     }
@@ -153,7 +161,7 @@ export default class BrowserTestDriver extends BrowserDriver {
   }
   /* eslint-enable no-console */
 
-  _onFinish(message) {
+  _onFinish(message: string): void {
     const elapsed = ((Date.now() - this.time) / 1000).toFixed(1);
     this.logger.log({
       message: `${this.title} completed in ${elapsed}s.`,
@@ -167,7 +175,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     }
   }
 
-  _pass(message) {
+  _pass(message: string): void {
     this.logger.log({
       message: `${this.title} successful: ${message}`,
       color: COLOR.BRIGHT_GREEN
@@ -178,7 +186,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     }
   }
 
-  _fail(message) {
+  _fail(message: string): void {
     this.logger.log({
       message: `${this.title} failed: ${message}`,
       color: COLOR.BRIGHT_RED
@@ -198,7 +206,9 @@ export default class BrowserTestDriver extends BrowserDriver {
     throw new Error(`Unknown event: ${event.type}`);
   }
 
-  _captureAndDiff(opts) {
+  _captureAndDiff(
+    opts: DiffImagesOptions & {goldenImage?: string; region?: any; saveAs?: string}
+  ): Promise<DiffImageResult> {
     if (!opts.goldenImage) {
       return Promise.reject(new Error('Must supply golden image for image diff'));
     }

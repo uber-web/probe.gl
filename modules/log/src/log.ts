@@ -9,22 +9,17 @@ import {autobind} from './utils/autobind';
 import assert from './utils/assert';
 import {getHiResTimestamp} from './utils/hi-res-timestamp';
 
-// Instrumentation in other packages may override console methods, so preserve them here
-const originalConsole = {
-  debug: isBrowser ? console.debug || console.log : console.log,
-  log: console.log,
-  info: console.info,
-  warn: console.warn,
-  error: console.error
+/** "Global" log configuration settings */
+type LogConfiguration = {
+  enabled?: boolean;
+  level?: number;
+  [key: string]: unknown;
 };
 
-type Table = Record<string, any>;
-
-type LogFunction = () => void;
-
+/** Options when logging a message */
 type LogOptions = {
-  method?;
-  time?;
+  method?: Function;
+  time?: boolean;
   total?: number;
   delta?: number;
   tag?: string;
@@ -34,13 +29,20 @@ type LogOptions = {
   args?: any;
 };
 
-type LogSettings = {
-  enabled?: boolean;
-  level?: number;
-  [key: string]: any;
+type LogFunction = () => void;
+
+type Table = Record<string, any>;
+
+// Instrumentation in other packages may override console methods, so preserve them here
+const originalConsole = {
+  debug: isBrowser ? console.debug || console.log : console.log,
+  log: console.log,
+  info: console.info,
+  warn: console.warn,
+  error: console.error
 };
 
-const DEFAULT_SETTINGS: Required<LogSettings> = {
+const DEFAULT_LOG_CONFIGURATION: Required<LogConfiguration> = {
   enabled: true,
   level: 0
 };
@@ -49,11 +51,6 @@ function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 
 const cache = {};
 const ONCE = {once: true};
-
-type LogConfiguration = {
-  enabled?: boolean;
-  level?: number;
-};
 
 /** A console wrapper */
 
@@ -73,7 +70,10 @@ export class Log {
   constructor({id} = {id: ''}) {
     this.id = id;
     this.userData = {};
-    this._storage = new LocalStorage<LogConfiguration>(`__probe-${this.id}__`, DEFAULT_SETTINGS);
+    this._storage = new LocalStorage<LogConfiguration>(
+      `__probe-${this.id}__`,
+      DEFAULT_LOG_CONFIGURATION
+    );
 
     this.timeStamp(`${this.id} started`);
 
@@ -160,13 +160,13 @@ export class Log {
   }
 
   /** Warn, but only once, no console flooding */
-  warn(message: string, ...args): LogFunction;
+  warn(message: string, ...args: unknown[]): LogFunction;
   warn(message: string): LogFunction {
     return this._getLogFunction(0, message, originalConsole.warn, arguments, ONCE);
   }
 
   /** Print an error */
-  error(message: string, ...args): LogFunction;
+  error(message: string, ...args: unknown[]): LogFunction;
   error(message: string): LogFunction {
     return this._getLogFunction(0, message, originalConsole.error, arguments);
   }
@@ -185,7 +185,7 @@ in a later version. Use \`${newUsage}\` instead`);
   // Conditional logging
 
   /** Log to a group */
-  probe(logLevel, message?, ...args): LogFunction;
+  probe(logLevel, message?, ...args: unknown[]): LogFunction;
   probe(logLevel, message?): LogFunction {
     return this._getLogFunction(logLevel, message, originalConsole.log, arguments, {
       time: true,
@@ -194,20 +194,20 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   /** Log a debug message */
-  log(logLevel, message?, ...args): LogFunction;
+  log(logLevel, message?, ...args: unknown[]): LogFunction;
   log(logLevel, message?): LogFunction {
     return this._getLogFunction(logLevel, message, originalConsole.debug, arguments);
   }
 
   /** Log a normal message */
-  info(logLevel, message?, ...args): LogFunction;
+  info(logLevel, message?, ...args: unknown[]): LogFunction;
   info(logLevel, message?): LogFunction {
     return this._getLogFunction(logLevel, message, console.info, arguments);
   }
 
   /** Log a normal message, but only once, no console flooding */
-  once(logLevel, message?, ...args): LogFunction;
-  once(logLevel, message?, ...args) {
+  once(logLevel, message?, ...args: unknown[]): LogFunction;
+  once(logLevel, message?) {
     return this._getLogFunction(
       logLevel,
       message,
@@ -229,7 +229,19 @@ in a later version. Use \`${newUsage}\` instead`);
   }
 
   /** logs an image under Chrome */
-  image({logLevel, priority, image, message = '', scale = 1}): LogFunction {
+  image({
+    logLevel,
+    priority,
+    image,
+    message = '',
+    scale = 1
+  }: {
+    logLevel?: number;
+    priority?: number;
+    image: any;
+    message?: string;
+    scale?: number;
+  }): LogFunction {
     if (!this._shouldLog(logLevel || priority)) {
       return noop;
     }

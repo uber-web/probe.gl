@@ -1,4 +1,14 @@
-// TODO: Currently unused, keeping in case we want it later for log formatting
+// probe.gl, MIT license
+
+export type FormatValueOptions = {
+  isInteger?: boolean;
+  maxElts?: number;
+  size?: number;
+};
+
+/**
+ * Format time
+ */
 export function formatTime(ms: number): string {
   let formatted;
   if (ms < 10) {
@@ -23,11 +33,11 @@ export function rightPad(string: string, length: number = 8): string {
   return `${string}${' '.repeat(padLength)}`;
 }
 
-export function formatValue(v: unknown, opts: {isInteger?: boolean} = {}): string {
+export function formatValue(v: unknown, options: FormatValueOptions = {}): string {
   const EPSILON = 1e-16;
-  const {isInteger = false} = opts;
+  const {isInteger = false} = options;
   if (Array.isArray(v) || ArrayBuffer.isView(v)) {
-    return formatArrayValue(v, opts);
+    return formatArrayValue(v, options);
   }
   if (!Number.isFinite(v)) {
     return String(v);
@@ -52,21 +62,24 @@ export function formatValue(v: unknown, opts: {isInteger?: boolean} = {}): strin
 }
 
 /** Helper to formatValue */
-function formatArrayValue(v, opts) {
-  const {maxElts = 16, size = 1} = opts;
+function formatArrayValue(v: any, options: FormatValueOptions) {
+  const {maxElts = 16, size = 1} = options;
   let string = '[';
   for (let i = 0; i < v.length && i < maxElts; ++i) {
     if (i > 0) {
       string += `,${i % size === 0 ? ' ' : ''}`;
     }
-    string += formatValue(v[i], opts);
+    string += formatValue(v[i], options);
   }
   const terminator = v.length > maxElts ? '...' : ']';
   return `${string}${terminator}`;
 }
 
-/** Inspired by https://github.com/hughsk/console-image (MIT license) */
-export function formatImage(image, message, scale, maxWidth = 600) {
+/**
+ * Log an image to the console (uses browser specific console formatting styles)
+ * Inspired by https://github.com/hughsk/console-image (MIT license)
+ */
+export function formatImage(image: any, message: string, scale: number, maxWidth: number = 600) {
   const imageUrl = image.src.replace(/\(/g, '%28').replace(/\)/g, '%29');
 
   if (image.width > maxWidth) {

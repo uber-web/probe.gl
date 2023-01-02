@@ -1,6 +1,8 @@
-// @ts-nocheck
+// probe.gl, MIT license
 
-async function functionKeysDown(page, {shiftKey, ctrlKey, metaKey}) {
+import type {Page} from 'puppeteer';
+
+async function functionKeysDown(page: Page, {shiftKey, ctrlKey, metaKey}) {
   if (shiftKey) {
     await page.keyboard.down('Shift');
   }
@@ -12,7 +14,7 @@ async function functionKeysDown(page, {shiftKey, ctrlKey, metaKey}) {
   }
 }
 
-async function functionKeysUp(page, {shiftKey, ctrlKey, metaKey}) {
+async function functionKeysUp(page: Page, {shiftKey, ctrlKey, metaKey}) {
   if (shiftKey) {
     await page.keyboard.up('Shift');
   }
@@ -36,7 +38,7 @@ async function functionKeysUp(page, {shiftKey, ctrlKey, metaKey}) {
  * keys:
  * https://github.com/GoogleChrome/puppeteer/blob/master/lib/USKeyboardLayout.js
  */
-export async function keypress(page, event) {
+export async function keypress(page: Page, event) {
   await functionKeysDown(page, event);
   await page.keyboard.press(event.key, {delay: event.delay || 0});
   await functionKeysUp(page, event);
@@ -54,7 +56,7 @@ export async function keypress(page, event) {
      metaKey: false
    }
  */
-export async function click(page, event) {
+export async function click(page: Page, event) {
   await functionKeysDown(page, event);
   await page.mouse.click(event.x, event.y, {
     button: event.button || 'left',
@@ -71,7 +73,7 @@ export async function click(page, event) {
      steps: 1
    }
  */
-export async function mousemove(page, event) {
+export async function mousemove(page: Page, event) {
   await page.mouse.move(event.x, event.y, {
     steps: event.steps || 1
   });
@@ -91,7 +93,7 @@ export async function mousemove(page, event) {
      metaKey: false
    }
  */
-export async function drag(page, event) {
+export async function drag(page: Page, event) {
   await functionKeysDown(page, event);
   await page.mouse.move(event.startX, event.startY);
   await page.mouse.down(event.button || 'left');
