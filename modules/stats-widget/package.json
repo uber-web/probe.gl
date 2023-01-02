@@ -3,7 +3,7 @@
   "description": "DOM widgets for testing and profiling",
   "license": "MIT",
   "type": "module",
-  "version": "3.6.0",
+  "version": "4.0.0-alpha.1",
   "keywords": [
     "javascript",
     "profiling",
