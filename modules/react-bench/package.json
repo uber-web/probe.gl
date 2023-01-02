@@ -2,7 +2,7 @@
   "name": "@probe.gl/react-bench",
   "description": "A React component to run and visualize `@probe.gl/bench` benchmarks.",
   "license": "MIT",
-  "version": "3.5.4",
+  "version": "3.6.0",
   "keywords": [
     "javascript",
     "bench",

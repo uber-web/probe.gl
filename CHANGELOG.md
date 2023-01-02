@@ -1,6 +1,9 @@
 # CHANGELOG
 
-v3.6.0-alpha.1 (TBD)
+v3.5.5 - Jan 1, 2023
+
+- chore(log): remove asciify-image dependency (#214)
+- chore: stricter typescript settings (#213)
 
 v3.5.4 - Dec 18, 2022
 
