@@ -1,3 +1,4 @@
+import {Bench} from '@probe.gl/bench';
 import ParseColor from './utils/parse-color';
 const {parseColor} = ParseColor;
 
@@ -8,7 +9,7 @@ const COLOR_TYPED_ARRAY = new Uint8ClampedArray(COLOR_ARRAY);
 const COLOR_ARRAY_4 = [222, 222, 222, 255];
 const COLOR_TYPED_ARRAY_4 = new Uint8ClampedArray(COLOR_ARRAY_4);
 
-export default function benchColor(suite) {
+export default function benchColor(suite: Bench): Bench {
   return suite
 
     .group('Parse Color: from color array, write into target array')
@@ -58,11 +59,15 @@ export default function benchColor(suite) {
       {priority: 1, initialize: () => []},
       target => parseColor(COLOR_STRING_4, target)
     )
-    .add(1, 'color#parseColor (string), no target', () => parseColor(COLOR_STRING))
+    .add('color#parseColor (string), no target', {priority: 1}, () => parseColor(COLOR_STRING))
 
     .group('Parse Color: from Array, no target')
     .add('color#parseColor (4 element array)', () => parseColor(COLOR_ARRAY_4))
-    .add(1, 'color#parseColor (4 element typed array)', () => parseColor(COLOR_TYPED_ARRAY_4))
-    .add(1, 'color#parseColor (3 element array)', () => parseColor(COLOR_ARRAY))
-    .add(1, 'color#parseColor (3 element typed array)', () => parseColor(COLOR_TYPED_ARRAY));
+    .add('color#parseColor (4 element typed array)', {priority: 1}, () =>
+      parseColor(COLOR_TYPED_ARRAY_4)
+    )
+    .add('color#parseColor (3 element array)', {priority: 1}, () => parseColor(COLOR_ARRAY))
+    .add('color#parseColor (3 element typed array)', {priority: 1}, () =>
+      parseColor(COLOR_TYPED_ARRAY)
+    );
 }

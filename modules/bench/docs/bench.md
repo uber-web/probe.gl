@@ -1,7 +1,12 @@
 # Bench
 
-Bench is a benchmark harness class that allows you to organize a number of benchmarks / performance tests into a Benchmark suite that can be executed with a single comment. Each test is registered with and `id` which allows `Bench` to do compare results across runs and perform limited regression testing.
+Bench is a benchmark harness that allows you to organize a number of 
+benchmarks / performance tests into a Benchmark suite that can be executed 
+with a single command. 
 
+Each test must be registered with a unique `id` which allows `Bench` to do compare results across runs and perform limited regression testing.
+
+> Precise, repeatable performance measuring on a modern multi-tasking OS is hard, as subsequent runs might be scheduled different by the OS. The consistency between repeated benchmark tests tend to be within +- 10-15% and is generally sufficient for verifying incremental improvements.
 
 ## Usage
 
@@ -21,8 +26,6 @@ bench.run();
 ### constructor
 
 `new Bench({})`
-* timeouts = true,
-* log = console.log.bind(console)
 
 ### group(id)
 
@@ -34,8 +37,8 @@ Adds a group header.
 
 Adds a test case. Supports multiple signatures:
 
-`bench.add(id : String, options : Object, testFunc: () => void)`
-`bench.add(id : String, testFunc: () => void)`
+`bench.add(id: string, testCaseProps: TestCaseProps, testFunc: () => unknown)`
+`bench.add(id: string, testFunc: () => unknown)`
 
 Parameters
 
@@ -55,6 +58,9 @@ Returns: itself for chaining.
 ## addAsync
 
 Adds an async test case. Use when `testFunc` returns a promise. Supports same signatures as `add`. 
+
+`bench.add(id: string, testCaseProps: TestCaseProps, testFunc: () => Promise<unknown>)`
+`bench.add(id: string, testFunc: () => Promise<unknown>)`
 
 When using `addAsync`, `testFunc` is expected to return a promise.
 
