@@ -1,3 +1,5 @@
+import {Bench} from '@probe.gl/bench';
+
 const LENGTH = 1000000;
 
 const ARRAY = new Array(LENGTH).fill(0).map((_, i) => i);
@@ -14,7 +16,7 @@ async function* asyncIterator(length) {
   }
 }
 
-export default function coreBench(bench) {
+export default function coreBench(bench: Bench): Bench {
   return bench
     .group('Core Module - Async Iteration')
     .add('for (let i=0; ...)', {multiplier: LENGTH}, () => {

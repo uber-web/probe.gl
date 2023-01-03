@@ -1,5 +1,5 @@
-import {Bench} from '@probe.gl/bench';
 import test from 'tape-promise/tape';
+import {Bench} from '@probe.gl/bench';
 
 import iteratorBench from './iterator.bench';
 import parseColorBench from './parse-color.bench';
@@ -27,17 +27,6 @@ test('Bench#run', t => {
       t.fail();
     }
   });
-
-  suite.add(
-    'initFunc as param (deprecated)',
-    () => 1,
-    value => {
-      // @ts-expect-error
-      if (!value === 1) {
-        t.fail();
-      }
-    }
-  );
 
   iteratorBench(suite);
   parseColorBench(suite);
