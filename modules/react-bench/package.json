@@ -3,11 +3,7 @@
   "description": "A React component to run and visualize `@probe.gl/bench` benchmarks.",
   "license": "MIT",
   "type": "module",
-<<<<<<< HEAD
-  "version": "3.6.0",
-=======
   "version": "4.0.0-alpha.1",
->>>>>>> b0ccf49 (v4.0.0-alpha.1)
   "keywords": [
     "javascript",
     "bench",
@@ -41,7 +37,7 @@
     "style-loader": "^1.1.3"
   },
   "peerDependencies": {
-    "@probe.gl/bench": "3.5.1",
+    "@probe.gl/bench": "4.0.0-alpha.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0"
   },
