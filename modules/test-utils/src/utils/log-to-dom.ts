@@ -12,7 +12,9 @@ export function enableDOMLogging(options = {}): void {
     console.log = (...args) => {
       // @ts-expect-error
       logLineToDOM(options, ...args);
-      old?.(...args);
+      if (old) {
+        old(...args);
+      }
     };
   }
   if (!options && old) {

@@ -51,21 +51,19 @@ export default class App extends PureComponent<AppProps> {
   suite: Bench = new Bench({log: this._addResultToLog.bind(this)});
   log: LogItem[] = [];
 
-  _addResultToLog(result: LogEntry) {
-    const {entry, id, itersPerSecond, error} = result;
-
-    switch (entry) {
+  _addResultToLog(logEntry: LogEntry) {
+    switch (logEntry.type) {
       case 'group':
-        this.log.push({id});
+        this.log.push({id: logEntry.id});
         break;
       case 'test':
-        const value = parseSIPrefix(itersPerSecond);
+        const value = parseSIPrefix(logEntry.itersPerSecond);
         // log.push(`├─ ${id}: ${itersPerSecond} iterations/s ±${(error * 100).toFixed(2)}%`);
         this.log.push({
-          id,
+          id: logEntry.id,
           value,
-          formattedValue: itersPerSecond,
-          formattedError: `${(error * 100).toFixed(2)}%`
+          formattedValue: logEntry.itersPerSecond,
+          formattedError: `${(logEntry.error * 100).toFixed(2)}%`
         });
         break;
       case 'complete':

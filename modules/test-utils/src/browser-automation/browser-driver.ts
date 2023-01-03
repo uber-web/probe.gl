@@ -10,7 +10,17 @@ type BrowserDriverProps = {
   id?: string;
 };
 
-const DEFAULT_SERVER_CONFIG = {
+type ServerConfig = {
+  command?: string;
+  arguments?: string[];
+  port?: number | 'auto';
+  wait?: number;
+  options?: {
+    maxBuffer?: number; // TODO - not a recognized spawn option
+  };
+};
+
+const DEFAULT_SERVER_CONFIG: Required<ServerConfig> = {
   command: 'webpack-dev-server',
   arguments: [],
   port: 'auto',
@@ -31,10 +41,10 @@ function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 export default class BrowserDriver {
   readonly id: string;
   logger: Log;
-  server: ChildProcess.ChildProcessWithoutNullStreams = null;
-  port: number | 'auto' = null;
-  browser: Browser = null;
-  page: Page = null;
+  server: ChildProcess.ChildProcessWithoutNullStreams | null = null;
+  port: number | 'auto' | null = null;
+  browser: Browser | null = null;
+  page: Page | null = null;
 
   constructor(options?: BrowserDriverProps) {
     const {id = 'browser-driver'} = options || {};
@@ -42,21 +52,22 @@ export default class BrowserDriver {
     this.logger = new Log({id});
   }
 
-  async startBrowser(options?: {
+  async startBrowser(puppeteerOptions?: {
     headless?: boolean;
     defaultViewport?: {width: number; height: number};
   }): Promise<void> {
-    options = Object.assign({}, DEFAULT_PUPPETEER_OPTIONS, options);
     if (this.browser) {
       return;
     }
+    const options = {...DEFAULT_PUPPETEER_OPTIONS, ...puppeteerOptions};
     this.browser = await puppeteer.launch(options);
-    console.log(await this.browser.version()); // eslint-disable-line
+    const browserVersion = await this.browser.version();
+    this.logger.log(`Launched browser version ${browserVersion}`);
   }
 
   async openPage(options?: {
     url?: string;
-    exposeFunctions?: object;
+    exposeFunctions?: Record<string, Function>;
     onLoad?: (...args: any) => any;
     onConsole?: (...args: any) => any;
     onError?: (...args: any) => any;
@@ -83,9 +94,9 @@ export default class BrowserDriver {
     this.page.on('console', onConsole);
     this.page.on('error', onError);
 
-    const promises: Promise<any>[] = [];
-    for (const name in exposeFunctions) {
-      promises.push(this.page.exposeFunction(name, exposeFunctions[name]));
+    const promises: Promise<void>[] = [];
+    for (const [name, functionToExpose] of Object.entries(exposeFunctions)) {
+      promises.push(this.page.exposeFunction(name, functionToExpose));
     }
     await Promise.all(promises);
 
@@ -93,34 +104,35 @@ export default class BrowserDriver {
   }
 
   async stopBrowser(): Promise<void> {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = null;
+    if (!this.browser) {
+      return;
     }
+    await this.browser.close();
+    this.browser = null;
   }
 
   /** Starts a web server with the provided configs.
    * Resolves to the bound url if successful
    */
-  async startServer(config?: {
-    port?: number | 'auto';
-    command?: string;
-    options?: object;
-  }): Promise<string> {
-    // @ts-expect-error
-    config = normalizeServerConfig(config, this.logger);
+  async startServer(
+    serverConfig: {
+      port?: number | 'auto';
+      command?: string;
+      options?: object;
+    } = {}
+  ): Promise<string> {
+    const config = normalizeServerConfig(serverConfig, this.logger);
 
-    const port = config.port === 'auto' ? await getAvailablePort(AUTO_PORT_START) : config.port;
+    const port = config.port === 'auto' ? await getAvailablePort(AUTO_PORT_START) : config?.port;
 
-    // @ts-expect-error
     const args = [...config.arguments];
     if (port) {
-      args.push('--port', port);
+      args.push('--port', String(port));
     }
 
-    const server = ChildProcess.spawn(config.command, args, config.options);
+    const server = ChildProcess.spawn(config.command, args, config.options as any); // TODO invalid spawn options
     this.server = server;
-    this.port = port;
+    this.port = port || null;
 
     return await new Promise((resolve, reject) => {
       server.stderr.on('data', onError);
@@ -138,7 +150,6 @@ export default class BrowserDriver {
         })();
 
         resolve(url);
-        // @ts-expect-error
       }, config.wait);
 
       function onError(error) {
@@ -168,21 +179,11 @@ export default class BrowserDriver {
   }
 }
 
-function normalizeServerConfig(config, logger) {
-  const result = Object.assign({}, DEFAULT_SERVER_CONFIG);
+function normalizeServerConfig(config: ServerConfig, logger: Log): Required<ServerConfig> {
+  const result: Required<ServerConfig> = {...DEFAULT_SERVER_CONFIG, ...config};
 
-  // Handle legacy configs
-  if (config.process) {
-    result.command = config.process;
-    logger.deprecated('process', 'command');
-  }
-  if (config.parameters) {
-    result.arguments = config.parameters;
-    logger.deprecated('parameters', 'arguments');
-  }
-
-  Object.assign(result, config, {
-    options: Object.assign({}, result.options, config.options)
+  Object.assign(result, {
+    options: {...result.options, ...config.options}
   });
 
   return result;

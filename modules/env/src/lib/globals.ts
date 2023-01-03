@@ -5,6 +5,6 @@ export const window = (globalThis.window ||
   globalThis.self ||
   globalThis.global) as unknown as Window;
 export const document = globalThis.document || ({} as Document);
-export const process = globalThis.process || ({} as NodeJS.Process);
+export const process = globalThis.process || {};
 export const console = globalThis.console;
 export const navigator = globalThis.navigator || ({} as Navigator);
