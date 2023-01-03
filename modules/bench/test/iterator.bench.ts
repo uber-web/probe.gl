@@ -48,6 +48,6 @@ export default function coreBench(bench: Bench): Bench {
       return sum;
     })
     .addAsync('parallel wait for 1000 promises', {_throughput: LENGTH}, async () => {
-      return await 1;
+      return await 1; // eslint-disable-line @typescript-eslint/await-thenable
     });
 }

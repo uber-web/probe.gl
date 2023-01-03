@@ -6,9 +6,13 @@ import {formatSI} from './format-utils';
 import {mean, cv} from './stat-utils';
 import {logResultsAsMarkdownTable, logResultsAsTree} from './bench-loggers';
 
-// declare global {
-//   let probe: {markdown?: boolean; priority?: number};
-// }
+declare global {
+  // eslint-disable-next-line no-var
+  var probe: {
+    priority?: number;
+    markdown?: boolean;
+  };
+}
 
 const noop = () => {};
 
@@ -102,6 +106,7 @@ type BenchTestCase = {
   context: any;
 };
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const DEFAULT_BENCH_OPTIONS: Required<BenchProps> = {
   id: '',
   log: undefined!,
@@ -127,6 +132,7 @@ const DEFAULT_BENCH_TEST_CASE: BenchTestCase = {
   _throughput: undefined!,
   context: null
 };
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 /**
  * A benchmark suite.
@@ -186,13 +192,15 @@ export class Bench {
   add(id: string, test: BenchTestFunction): this;
   add(id: string, testCase: BenchTestCaseProps, test: BenchTestFunction): this;
 
-  add(id, testCase?, test?) {
+  add(
+    id: string,
+    testCase: BenchTestCaseProps | BenchTestFunction,
+    test?: BenchTestFunction
+  ): this {
     if (test) {
       this._addTestCase({...testCase, id, test});
-    } else if (testCase) {
-      this._addTestCase({id, test: testCase});
     } else {
-      throw new Error('add');
+      this._addTestCase({id, test: testCase as BenchTestFunction});
     }
     return this;
   }
@@ -201,13 +209,15 @@ export class Bench {
   addAsync(id: string, test: BenchTestFunction): this;
   addAsync(id: string, testCase: BenchTestCaseProps, test: BenchTestFunction): this;
 
-  addAsync(id, testCase?, test?) {
+  addAsync(
+    id: string,
+    testCase: BenchTestCaseProps | BenchTestFunction,
+    test?: BenchTestFunction
+  ): this {
     if (test) {
       this._addTestCase({...testCase, id, test, async: true});
-    } else if (testCase) {
-      this._addTestCase({id, test: testCase, async: true});
     } else {
-      throw new Error('addAsync');
+      this._addTestCase({id, test: testCase as BenchTestFunction, async: true});
     }
     return this;
   }
@@ -285,7 +295,7 @@ function logEntry(
   testCase: BenchTestCase | null,
   logEntry: LogEntry
 ): void {
-  const priority = (globalThis.probe && globalThis.probe.priority) | 10;
+  const priority = globalThis.probe.priority || 10;
   if ((testCase?.priority || 0) <= priority) {
     logFunction({...logEntry});
   }
