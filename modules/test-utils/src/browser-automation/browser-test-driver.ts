@@ -6,7 +6,7 @@ import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
-import BrowserDriver from './browser-driver';
+import BrowserDriver, {ServerConfiguration} from './browser-driver';
 
 declare global {
   function browserTestDriver_fail(): void;
@@ -21,10 +21,7 @@ type BrowserTestDriverProps = {
   title?: string;
   headless?: boolean;
   maxConsoleMessageLength?: number;
-  server?: {
-    command?: string;
-    arguments?: string[];
-  };
+  server?: ServerConfiguration;
   command?: string;
   arguments?: string[];
   browser?: object;
@@ -80,7 +77,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     try {
-      const url = await this._startServer(config.server);
+      const url = await this.startServer(config.server);
       if (!url) {
         return;
       }
@@ -136,10 +133,6 @@ export default class BrowserTestDriver extends BrowserDriver {
           });
         })
     );
-  }
-
-  _startServer(config: BrowserTestDriverProps): Promise<string | null> {
-    return this.startServer(config);
   }
 
   /* eslint-disable no-console */

@@ -6,11 +6,11 @@ import ChildProcess from 'child_process';
 import {COLOR, Log} from '@probe.gl/log';
 import {getAvailablePort} from '../utils/process-utils';
 
-type BrowserDriverProps = {
+export type BrowserDriverProps = {
   id?: string;
 };
 
-type ServerConfig = {
+export type ServerConfiguration = {
   command?: string;
   arguments?: string[];
   port?: number | 'auto';
@@ -20,7 +20,7 @@ type ServerConfig = {
   };
 };
 
-const DEFAULT_SERVER_CONFIG: Required<ServerConfig> = {
+const DEFAULT_SERVER_CONFIG: Required<ServerConfiguration> = {
   command: 'webpack-dev-server',
   arguments: [],
   port: 'auto',
@@ -114,14 +114,8 @@ export default class BrowserDriver {
   /** Starts a web server with the provided configs.
    * Resolves to the bound url if successful
    */
-  async startServer(
-    serverConfig: {
-      port?: number | 'auto';
-      command?: string;
-      options?: object;
-    } = {}
-  ): Promise<string> {
-    const config = normalizeServerConfig(serverConfig, this.logger);
+  async startServer(serverConfig: ServerConfiguration = {}): Promise<string> {
+    const config = normalizeServerConfiguration(serverConfig, this.logger);
 
     const port = config.port === 'auto' ? await getAvailablePort(AUTO_PORT_START) : config?.port;
 
@@ -179,8 +173,11 @@ export default class BrowserDriver {
   }
 }
 
-function normalizeServerConfig(config: ServerConfig, logger: Log): Required<ServerConfig> {
-  const result: Required<ServerConfig> = {...DEFAULT_SERVER_CONFIG, ...config};
+function normalizeServerConfiguration(
+  config: ServerConfiguration,
+  logger: Log
+): Required<ServerConfiguration> {
+  const result: Required<ServerConfiguration> = {...DEFAULT_SERVER_CONFIG, ...config};
 
   Object.assign(result, {
     options: {...result.options, ...config.options}
