@@ -3,8 +3,6 @@ import fs from 'fs';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
-type ImageType = unknown;
-
 export type DiffImagesOptions = {
   threshold?: number; // 0.99,
   createDiffImage?: boolean; // false,
@@ -47,7 +45,15 @@ export default async function diffImages(
   }
 }
 
-function diffPNGs(image1, image2, options) {
+type DiffPngOptions = {
+  threshold?: number;
+  createDiffImage?: boolean;
+  tolerance?: number;
+  includeAA?: boolean;
+  includeEmpty?: boolean;
+};
+
+function diffPNGs(image1: PNG, image2: PNG, options: DiffPngOptions) {
   const {width, height} = image1;
   if (width !== image2.width || height !== image2.height) {
     throw new Error('Image sizes do not match');
@@ -86,7 +92,7 @@ function diffPNGs(image1, image2, options) {
   };
 }
 
-function countNonEmptyPixels(data1, data2) {
+function countNonEmptyPixels(data1: Buffer, data2: Buffer): number {
   const pixels1 = new Uint8Array(data1.buffer);
   const pixels2 = new Uint8Array(data2.buffer);
   let count = 0;
@@ -100,8 +106,8 @@ function countNonEmptyPixels(data1, data2) {
   return count;
 }
 
-// TODO - replace pngjs with @loaders.gl/images
-function parsePNG(source: string | Buffer): ImageType {
+/** @todo - replace pngjs with @loaders.gl/images */
+function parsePNG(source: string | Buffer): Promise<PNG> {
   const image = new PNG();
   if (typeof source === 'string') {
     // url or local path
@@ -125,7 +131,7 @@ function parsePNG(source: string | Buffer): ImageType {
   return Promise.reject(new Error('Unknown image source'));
 }
 
-function encodePNG(image: ImageType): string | null {
+function encodePNG(image: PNG): string | null {
   if (!image) {
     return null;
   }
