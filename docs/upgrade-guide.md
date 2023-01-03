@@ -1,5 +1,15 @@
 # Upgrade Guide
 
+**`Bench` class**
+
+The `Bench` class has been overhauled for maintainability and type safety:
+
+- `Bench.add()` / `Bench.addAsync()` - The number of overloads has been reduced so some existing benchmark suites may need to be updated. When specifying priority and options, simply supply a property object instead of position arguments.
+
+- Custom logging
+    - the type of each `LogEntry` is now controlled by the `type` field instead of the `entry` field.
+    - For `LogEntry.type`, the LOG_ENTRY export is removed in favor of simple string constants.
+
 ## Upgrading from v3.4 to v3.5 
 
 - From v3.5, the `probe.gl` module is being deprecated in favor of importing sub modules `@probe.gl/...`. 
