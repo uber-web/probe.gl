@@ -33,6 +33,5 @@ suite
   .calibrate()
   .run()
   .then(() => {
-    // @ts-expect-error
     window.browserTestDriver_finish();
   });

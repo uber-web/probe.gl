@@ -35,6 +35,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0",
     "@probe.gl/log": "4.0.0-alpha.1",
+    "@types/pngjs": "^6.0.1",
     "pixelmatch": "^4.0.2",
     "puppeteer": "*"
   },

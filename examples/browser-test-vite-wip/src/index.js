@@ -2,9 +2,7 @@
 import test from 'tape';
 
 // Add BrowserTestDriver hooks
-// @ts-expect-error
 test.onFailure(window.browserTestDriver_fail);
-// @ts-expect-error
 test.onFinish(window.browserTestDriver_finish);
 
 test('A test', t => {
@@ -14,16 +12,15 @@ test('A test', t => {
   const app = document.getElementById('app');
 
   window
-    // @ts-expect-error
     .browserTestDriver_captureAndDiffScreen({
       threshold: 0.99,
       goldenImage: 'test/golden-image-error.png',
-      region: app.getBoundingClientRect(),
+      region: app?.getBoundingClientRect(),
       saveOnFail: true
     })
     .then(result => {
       if (result.error) {
-        t.fail(result.error);
+        t.fail(String(result.error));
       } else {
         t.ok(result.success, `Render test matched ${result.matchPercentage}`);
       }
