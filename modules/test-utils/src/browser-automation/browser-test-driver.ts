@@ -49,6 +49,14 @@ export type DiffImageResult = {
   error: Error | string | null;
 };
 
+declare global {
+  function browserTestDriver_fail(): void;
+  function browserTestDriver_finish(): string;
+  function browserTestDriver_emulateInput(event: unknown): void;
+  function browserTestDriver_captureAndDiffScreen(opts: DiffImagesOpts): Promise<DiffImageResult>;
+}
+
+/** A test driver that starts a browser instance and runs tests inside it */
 export default class BrowserTestDriver extends BrowserDriver {
   title: string = '';
   headless: boolean = false;
@@ -72,8 +80,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     try {
-      // TODO - Backward compatibility: if `server` is not defined, fallback to config object
-      const url = await this._startServer(config.server || config);
+      const url = await this._startServer(config.server);
       if (!url) {
         return;
       }
@@ -131,13 +138,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     );
   }
 
-  _startServer(config: BrowserTestDriverProps | Function): Promise<string | null> {
-    if (!config) {
-      return Promise.resolve(null);
-    }
-    if (typeof config === 'function') {
-      return config();
-    }
+  _startServer(config: BrowserTestDriverProps): Promise<string | null> {
     return this.startServer(config);
   }
 
