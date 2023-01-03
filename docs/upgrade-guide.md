@@ -1,5 +1,9 @@
 # Upgrade Guide
 
+## Upgrading to v4.0
+
+- The `probe.gl` "umbrella" module is no longer available as of 4.0, per the previously announced deprecation plan. Simply replace `probe.gl` with the scoped `@probe.gl/...` modules you are actually using.
+
 **`Bench` class**
 
 The `Bench` class has been overhauled for maintainability and type safety:
@@ -10,7 +14,7 @@ The `Bench` class has been overhauled for maintainability and type safety:
     - the type of each `LogEntry` is now controlled by the `type` field instead of the `entry` field.
     - For `LogEntry.type`, the LOG_ENTRY export is removed in favor of simple string constants.
 
-## Upgrading from v3.4 to v3.5 
+## Upgrading to v3.5 
 
 - From v3.5, the `probe.gl` module is being deprecated in favor of importing sub modules `@probe.gl/...`. 
 - The `probe.gl` module may be removed in probe.gl v4.0, but for backwards compatibility, this module will still be present in v3.x.

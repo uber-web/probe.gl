@@ -1,5 +1,18 @@
 # What's New
 
+## v4.0 (In development)
+
+Target Release Date: Q1, 2023
+
+- probe.gl is now published as a suite of ES modules. 
+- ES modules are technically a major breaking change, but efforts have been made to remain compatible with `require` usage.
+- Code base has received a deep typescript overhaul to improve maintainability, quality and the ability to more easily accept external PRs.
+
+**`probe.gl`** (Removed module)
+
+The `probe.gl` "umbrella" module is no longer available as of 4.0, per the previously announced deprecation plan. 
+Simply replace `probe.gl` with the scoped `@probe.gl/...` modules you are actually using.
+
 ## v3.5
 
 Release Date: Dec 12, 2021
