@@ -8,6 +8,13 @@ import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
 import BrowserDriver from './browser-driver';
 
+declare global {
+  function browserTestDriver_fail(): void;
+  function browserTestDriver_finish(): string;
+  function browserTestDriver_emulateInput(event: unknown): void;
+  function browserTestDriver_captureAndDiffScreen(opts: DiffImagesOpts): Promise<DiffImageResult>;
+}
+
 const MAX_CONSOLE_MESSAGE_LENGTH = 500;
 
 type BrowserTestDriverProps = {
@@ -26,6 +33,14 @@ type BrowserTestDriverProps = {
   url?: string;
 };
 
+export type DiffImagesOpts = DiffImagesOptions & {
+  goldenImage: string;
+  region?: any;
+  saveOnFail?: boolean;
+  saveAs?: string;
+};
+
+/** @todo this seems like just a light repackaging of the underlying result type. Reuse or better separation of types? */
 export type DiffImageResult = {
   headless: boolean;
   match: string | number;
@@ -35,13 +50,13 @@ export type DiffImageResult = {
 };
 
 export default class BrowserTestDriver extends BrowserDriver {
-  title: string;
+  title: string = '';
   headless: boolean = false;
   time: number = Date.now();
   failures: number = 0;
   maxConsoleMessageLength = MAX_CONSOLE_MESSAGE_LENGTH;
 
-  run(config: BrowserTestDriverProps = {}): Promise<void> {
+  async run(config: BrowserTestDriverProps = {}): Promise<void> {
     const {
       title = 'Browser Test',
       headless = false,
@@ -56,17 +71,20 @@ export default class BrowserTestDriver extends BrowserDriver {
       color: COLOR.BRIGHT_YELLOW
     })();
 
-    // Backward compatibility: if `server` is not defined, fallback to config object
-    return this._startServer(config.server || config)
-      .then(url => {
-        return this._openPage(url, config);
-      })
-      .then(result => {
-        return this._onFinish(result);
-      })
-      .catch(error => {
-        this._fail(error.message || error);
-      });
+    try {
+      // TODO - Backward compatibility: if `server` is not defined, fallback to config object
+      const url = await this._startServer(config.server || config);
+      if (!url) {
+        return;
+      }
+
+      const result = await this._openPage(url, config);
+      if (result) {
+        this._onFinish(result);
+      }
+    } catch (error: unknown) {
+      this._fail((error as Error).message || 'puppeteer run failes');
+    }
   }
 
   _openPage(url: string, config: BrowserTestDriverProps = {}): Promise<string> {
@@ -75,23 +93,19 @@ export default class BrowserTestDriver extends BrowserDriver {
     return this.startBrowser(browserConfig).then(
       _ =>
         new Promise<string>((resolve, reject) => {
-          const exposeFunctions = Object.assign({}, config.exposeFunctions, {
+          const exposeFunctions = {
+            ...config.exposeFunctions,
             browserTestDriver_fail: () => this.failures++,
             browserTestDriver_finish: message => resolve(message),
             browserTestDriver_emulateInput: event => this._emulateInput(event),
             browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts)
-          });
+          };
 
           // Puppeteer can only inject functions, not values, into the global scope
           // In headless mode, we inject the function so it's truthy
           // In non-headless mode, we don't inject the function so it's undefined
           if (this.headless) {
             exposeFunctions.browserTestDriver_isHeadless = () => true;
-          }
-
-          // Legacy config
-          if (config.exposeFunction) {
-            this.logger.removed('exposeFunction', 'browserTestDriver_sendMessage');
           }
 
           this.logger.log({
@@ -117,12 +131,11 @@ export default class BrowserTestDriver extends BrowserDriver {
     );
   }
 
-  _startServer(config: BrowserTestDriverProps): Promise<string> {
+  _startServer(config: BrowserTestDriverProps | Function): Promise<string | null> {
     if (!config) {
-      return null;
+      return Promise.resolve(null);
     }
     if (typeof config === 'function') {
-      // @ts-expect-error
       return config();
     }
     return this.startServer(config);
@@ -206,9 +219,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     throw new Error(`Unknown event: ${event.type}`);
   }
 
-  _captureAndDiff(
-    opts: DiffImagesOptions & {goldenImage?: string; region?: any; saveAs?: string}
-  ): Promise<DiffImageResult> {
+  async _captureAndDiff(opts: DiffImagesOpts): Promise<DiffImageResult> {
     if (!opts.goldenImage) {
       return Promise.reject(new Error('Must supply golden image for image diff'));
     }
@@ -223,35 +234,36 @@ export default class BrowserTestDriver extends BrowserDriver {
     } else {
       screenshotOptions.fullPage = true;
     }
-    return this.page
-      .screenshot(screenshotOptions)
-      .then(image => diffImages(image, opts.goldenImage, opts))
-      .then(result => {
+
+    try {
+      const image = await this.page?.screenshot(screenshotOptions);
+      if (!image) {
+        throw new Error('screenshot failed');
+      }
+      const result = await diffImages(image, opts.goldenImage, opts);
+      if (!result.success && opts.saveOnFail && result.source1) {
+        let filename = opts.saveAs || '[name]-failed.png';
+        filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
+        this._saveScreenshot(filename, result.source1);
+      }
+      return {
+        headless: this.headless,
+        match: result.match || 0,
+        matchPercentage: result.matchPercentage || 'N/A',
+        success: result.success,
         // @ts-expect-error
-        if (!result.success && opts.saveOnFail && result.source1) {
-          let filename = opts.saveAs || '[name]-failed.png';
-          filename = filename.replace('[name]', opts.goldenImage.replace(/\.\w+$/, ''));
-          // @ts-expect-error
-          this._saveScreenshot(filename, result.source1);
-        }
-        return {
-          headless: this.headless,
-          match: result.match || 0,
-          matchPercentage: result.matchPercentage || 'N/A',
-          success: result.success,
-          diffImage: result.diffImage || null,
-          error: result.error || null
-        };
-      })
-      .catch(error => {
-        return {
-          headless: this.headless,
-          match: 0,
-          matchPercentage: 'N/A',
-          success: false,
-          error: error.message
-        };
-      });
+        diffImage: result.diffImage || null,
+        error: result.error || null
+      };
+    } catch (error: unknown) {
+      return {
+        headless: this.headless,
+        match: 0,
+        matchPercentage: 'N/A',
+        success: false,
+        error: (error as Error).message
+      };
+    }
   }
 
   _saveScreenshot(filename, data) {

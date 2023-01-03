@@ -3,8 +3,6 @@ import fs from 'fs';
 import {PNG} from 'pngjs';
 import pixelmatch from 'pixelmatch';
 
-type ImageType = unknown;
-
 export type DiffImagesOptions = {
   threshold?: number; // 0.99,
   createDiffImage?: boolean; // false,
@@ -13,34 +11,49 @@ export type DiffImagesOptions = {
   includeEmpty?: boolean; // true
 };
 
-export default function diffImages(
-  source1,
-  source2,
-  options: DiffImagesOptions = {}
-): Promise<{
+export type DiffImagesResult = {
   success: boolean;
-  match: string;
+  error?: string;
+  match: number;
   matchPercentage: string;
   diffImage: any;
-  error: string;
-}> {
-  // @ts-expect-error
-  return Promise.all([parsePNG(source1), parsePNG(source2)])
-    .then(([image1, image2]) => diffPNGs(image1, image2, options))
-    .catch(error => ({
+  source1: string | Buffer;
+  source2: string;
+  options: unknown;
+};
+
+export default async function diffImages(
+  source1: string | Buffer,
+  source2: string,
+  options: DiffImagesOptions = {}
+): Promise<DiffImagesResult> {
+  try {
+    const [image1, image2] = await Promise.all([parsePNG(source1), parsePNG(source2)]);
+    const result = diffPNGs(image1, image2, options);
+    return {
+      ...result,
+      source1,
+      source2,
+      options
+    };
+  } catch (error: unknown) {
+    // @ts-expect-error - partially populated result
+    return {
       success: false,
-      error: error.message
-    }))
-    .then(result =>
-      Object.assign(result, {
-        source1,
-        source2,
-        options
-      })
-    );
+      error: (error as Error).message
+    };
+  }
 }
 
-function diffPNGs(image1, image2, options) {
+type DiffPngOptions = {
+  threshold?: number;
+  createDiffImage?: boolean;
+  tolerance?: number;
+  includeAA?: boolean;
+  includeEmpty?: boolean;
+};
+
+function diffPNGs(image1: PNG, image2: PNG, options: DiffPngOptions) {
   const {width, height} = image1;
   if (width !== image2.width || height !== image2.height) {
     throw new Error('Image sizes do not match');
@@ -79,21 +92,22 @@ function diffPNGs(image1, image2, options) {
   };
 }
 
-function countNonEmptyPixels(data1, data2) {
+function countNonEmptyPixels(data1: Buffer, data2: Buffer): number {
   const pixels1 = new Uint8Array(data1.buffer);
   const pixels2 = new Uint8Array(data2.buffer);
   let count = 0;
   for (let i = 3; i < pixels1.length; i += 4) {
     // Exclude a pixel if it's empty in both images
-    if (pixels1[i] > 0 || pixels2[i] > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    if ((pixels1[i] as number) > 0 || (pixels2[i] as number) > 0) {
       count++;
     }
   }
   return count;
 }
 
-// TODO - replace pngjs with @loaders.gl/images
-function parsePNG(source: string | Buffer): ImageType {
+/** @todo - replace pngjs with @loaders.gl/images */
+function parsePNG(source: string | Buffer): Promise<PNG> {
   const image = new PNG();
   if (typeof source === 'string') {
     // url or local path
@@ -117,7 +131,7 @@ function parsePNG(source: string | Buffer): ImageType {
   return Promise.reject(new Error('Unknown image source'));
 }
 
-function encodePNG(image: ImageType): string {
+function encodePNG(image: PNG): string | null {
   if (!image) {
     return null;
   }
