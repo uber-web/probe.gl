@@ -2,17 +2,19 @@
 
 ## Upgrading to v4.0
 
-- The `probe.gl` "umbrella" module is no longer available as of 4.0, per the previously announced deprecation plan. Simply replace `probe.gl` with the scoped `@probe.gl/...` modules you are actually using.
 
-**`Bench` class**
+**ES Modules**
+- probe.gl is used to test transition to ES Modules for all the vis.gl frameworks including deck.gl.
+- You are welcome report any issues in the probe.gl repo.
 
-The `Bench` class has been overhauled for maintainability and type safety:
-
+**`@probe.gl/bench`**
 - `Bench.add()` / `Bench.addAsync()` - The number of overloads has been reduced so some existing benchmark suites may need to be updated. When specifying priority and options, simply supply a property object instead of position arguments.
-
 - Custom logging
     - the type of each `LogEntry` is now controlled by the `type` field instead of the `entry` field.
     - For `LogEntry.type`, the LOG_ENTRY export is removed in favor of simple string constants.
+
+**`probe.gl`**
+- The `probe.gl` "umbrella" module is no longer available as of 4.0. Simply replace `probe.gl` with the scoped `@probe.gl/...` modules you are actually using.
 
 ## Upgrading to v3.5 
 

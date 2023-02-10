@@ -61,9 +61,6 @@ test('BrowserTestDriver#ImageDiff', async t => {
     }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      throw new Error('context');
-    }
     ctx.fillStyle = '#ff0';
     ctx.fillRect(10, 10, 12, 12);
     result = await window.browserTestDriver_captureAndDiffScreen(diffSettings);

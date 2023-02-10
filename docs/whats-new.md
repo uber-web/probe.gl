@@ -1,12 +1,21 @@
 # What's New
 
-## v4.0 (In development)
+## v4.0
 
-Target Release Date: Q1, 2023
+Release Date: Feb 10, 2023
 
-- probe.gl is now published as a suite of ES modules. 
-- ES modules are technically a major breaking change, but efforts have been made to remain compatible with `require` usage.
-- Code base has received a deep typescript overhaul to improve maintainability, quality and the ability to more easily accept external PRs.
+
+**ES Modules**
+- probe.gl is now published as a set of ES modules (`type: module` is set in package.json).
+- ES Modules by design only support `import` syntax, however efforts have been made to remain compatible with `require`.
+- A set of `package.json` `exports` are provided to avoid issues that arise when mixing ES modules and traditional JS modules.
+
+**TypeScript**
+- Improved TypesSript typing enables us to more easily accept PRs.
+
+**`@probe.gl/bench`**
+- The `Bench class API has been updated for TypeScript with improved type safety. 
+- Some overloads are no longer supported, refer to the upgrade guide for advice on how to update your code.
 
 **`probe.gl`** (Removed module)
 
