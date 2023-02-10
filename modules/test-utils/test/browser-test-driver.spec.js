@@ -35,7 +35,6 @@ test('BrowserTestDriver#import', t => {
 });
 
 test('BrowserTestDriver#ImageDiff', async t => {
-  // @ts-expect-error
   if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
     t.end();
@@ -52,7 +51,6 @@ test('BrowserTestDriver#ImageDiff', async t => {
   };
 
   try {
-    // @ts-expect-error
     let result = await window.browserTestDriver_captureAndDiffScreen(diffSettings);
     if (result.success) {
       t.pass(`Screenshot matches golden image: ${result.matchPercentage}`);
@@ -65,7 +63,6 @@ test('BrowserTestDriver#ImageDiff', async t => {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ff0';
     ctx.fillRect(10, 10, 12, 12);
-    // @ts-expect-error
     result = await window.browserTestDriver_captureAndDiffScreen(diffSettings);
     if (result.success) {
       t.fail(`Screenshot should not match golden image: ${result.matchPercentage}`);
