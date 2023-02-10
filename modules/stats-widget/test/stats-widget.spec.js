@@ -34,7 +34,7 @@ test('StatsWidget#import', t => {
   t.end();
 });
 
-test.skip('StatsWidget#Constructor with no stats or options', t => {
+test('StatsWidget#Constructor with no stats or options', t => {
   const statsWidget = new StatsWidget(null);
   t.ok(statsWidget._container, 'Should create a dom container.');
   t.ok(statsWidget._header, 'Should create a dom header.');
