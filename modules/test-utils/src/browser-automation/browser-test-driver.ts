@@ -6,7 +6,7 @@ import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
-import BrowserDriver from './browser-driver';
+import BrowserDriver, {ServerConfiguration} from './browser-driver';
 
 declare global {
   function browserTestDriver_fail(): void;
@@ -21,10 +21,7 @@ type BrowserTestDriverProps = {
   title?: string;
   headless?: boolean;
   maxConsoleMessageLength?: number;
-  server?: {
-    command?: string;
-    arguments?: string[];
-  };
+  server?: ServerConfiguration;
   command?: string;
   arguments?: string[];
   browser?: object;
@@ -49,6 +46,14 @@ export type DiffImageResult = {
   error: Error | string | null;
 };
 
+declare global {
+  function browserTestDriver_fail(): void;
+  function browserTestDriver_finish(): string;
+  function browserTestDriver_emulateInput(event: unknown): void;
+  function browserTestDriver_captureAndDiffScreen(opts: DiffImagesOpts): Promise<DiffImageResult>;
+}
+
+/** A test driver that starts a browser instance and runs tests inside it */
 export default class BrowserTestDriver extends BrowserDriver {
   title: string = '';
   headless: boolean = false;
@@ -72,8 +77,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     })();
 
     try {
-      // TODO - Backward compatibility: if `server` is not defined, fallback to config object
-      const url = await this._startServer(config.server || config);
+      const url = await this.startServer(config.server);
       if (!url) {
         return;
       }
@@ -129,16 +133,6 @@ export default class BrowserTestDriver extends BrowserDriver {
           });
         })
     );
-  }
-
-  _startServer(config: BrowserTestDriverProps | Function): Promise<string | null> {
-    if (!config) {
-      return Promise.resolve(null);
-    }
-    if (typeof config === 'function') {
-      return config();
-    }
-    return this.startServer(config);
   }
 
   /* eslint-disable no-console */
