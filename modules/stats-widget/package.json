@@ -3,7 +3,7 @@
   "description": "DOM widgets for testing and profiling",
   "license": "MIT",
   "type": "module",
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0",
   "keywords": [
     "javascript",
     "profiling",
@@ -36,7 +36,7 @@
     "@probe.gl/stats": "4.0.0-alpha.1"
   },
   "devDependencies": {
-    "@probe.gl/stats": "4.0.0-alpha.1"
+    "@probe.gl/stats": "4.0.0"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
