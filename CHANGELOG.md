@@ -1,9 +1,14 @@
 # CHANGELOG
 
-## v4.0
+## v4.0.1
+
+- Fix Stats.get typing (#227)
+
+## v4.0.0
 
 - chore(bench): Flatten internal structures, simplify typing (#223)
 - chore(test-utils): Strict null checks (#222)
+
 ## v4.0.0-alpha.1 - Jan 1, 2023
 
 - chore(bench): Enable all typescript checks on `bench` module (#220)

@@ -1,6 +1,6 @@
 {
   "name": "browser-test-webpack-example",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
   "private": true,
@@ -10,7 +10,7 @@
     "test-browser": "node test/start.js"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "4.0.0",
+    "@probe.gl/test-utils": "4.0.1",
     "tape": "^4.5.1"
   },
   "devDependencies": {
