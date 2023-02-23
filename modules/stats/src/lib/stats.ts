@@ -24,7 +24,7 @@ export default class Stats {
   }
 
   /** Acquire a stat. Create if it doesn't exist. */
-  get(name: string, type: string = 'count'): Stat | null {
+  get(name: string, type: string = 'count'): Stat {
     return this._getOrCreate({name, type});
   }
 
@@ -65,19 +65,17 @@ export default class Stats {
     stats.forEach(stat => this._getOrCreate(stat));
   }
 
-  _getOrCreate(stat: Stat | {name: string, type?: string}): Stat | null {
-    if (!stat || !stat.name) {
-      return null;
-    }
-
+  _getOrCreate(stat: Stat | {name: string, type?: string}): Stat {
     const {name, type} = stat;
-    if (!this.stats[name]) {
+    let result = this.stats[name];
+    if (!result) {
       if (stat instanceof Stat) {
-        this.stats[name] = stat;
+        result = stat;
       } else {
-        this.stats[name] = new Stat(name, type);
+        result = new Stat(name, type);
       }
+      this.stats[name] = result;
     }
-    return this.stats[name] || null;
+    return result;
   }
 }
