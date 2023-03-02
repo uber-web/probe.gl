@@ -33,7 +33,7 @@
     "@babel/runtime": "^7.0.0"
   },
   "peerDependencies": {
-    "@probe.gl/stats": "4.0.0-alpha.1"
+    "@probe.gl/stats": "^4.0.0"
   },
   "devDependencies": {
     "@probe.gl/stats": "4.0.1"
