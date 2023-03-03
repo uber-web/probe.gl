@@ -1,0 +1,73 @@
+[
+  {
+    "type": "category",
+    "label": "Overview",
+    "items": [
+      "README",
+      "whats-new",
+      "upgrade-guide"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "Getting Started",
+    "items": [
+      "get-started/README",
+      "get-started/adding-probes"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "Developer Guide",
+    "items": [
+      "articles/about-logging",
+      "articles/about-benchmarking",
+      "articles/about-testing"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "API Reference",
+    "items": [
+      {
+        "type": "category",
+        "label": "@probe.gl/log",
+        "items": [
+          "modules/log/log"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/stats",
+        "items": [
+          "modules/stats/stat",
+          "modules/stats/stats"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/stats-widget",
+        "items": [
+          "modules/stats-widget/stats-widget"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/bench",
+        "items": [
+          "modules/bench/bench"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/test-utils",
+        "items": [
+          "modules/test-utils/browser-driver",
+          "modules/test-utils/browser-test-driver",
+          "modules/test-utils/make-spy",
+          "modules/test-utils/log-to-dom"
+        ]
+      }
+    ]
+  }
+]

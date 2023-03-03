@@ -36,7 +36,7 @@ Retrieve a stat tracker. Create it if it doesn't already exist.
 * `name` (`String`, required) - the name of the stat tracker.
 * `type` (`String`, optional) - the type of the stat tracker. Default is `count`.
 
-Supported types are described in [Stat](/docs/api-reference/log/stat.md)
+Supported types are described in [Stat](/docs/modules/stats/stat)
 
 Returns the `Stat` object identified by `name`.
 

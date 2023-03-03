@@ -1,11 +1,11 @@
-# BrowserTestDriver (Test Automation Class)
+# BrowserTestDriver
 
 <p class="badges">
   <img src="https://img.shields.io/badge/Node.js-v8.0-blue.svg?style=flat-square" alt="Node" />
   <img src="https://img.shields.io/badge/Chrome-v64+-blue.svg?style=flat-square" alt="Node" />
 </p>
 
-A higher level helper class that inherits the [`BrowserDriver`](./docs/api-reference/test/browser-task-status). Primarily intended for automating browser tests from Node.js shell scripts.
+A higher level helper class that inherits the [`BrowserDriver`](/docs/modules/test-utils/browser-driver). Primarily intended for automating browser tests from Node.js shell scripts.
 
 A `BrowserTestDriver` starts a Chromium browser instance and a server and opens a page with a URL that loads a script from the server. The script that runs in the browser is expected to report test results back using predefined global functions.
 
@@ -69,10 +69,10 @@ Parameters:
 * `title` (String) - name of the test, e.g. `'Unit tests'`. Default `'Browser Test'`.
 * `headless` (Boolean) - whether to run the test in headless mode. If `true`, all console outputs from the test app will be piped to the shell. If `false`, the browser window will remain open for debugging.
 * `server` (Object|Function|`false`)
-  - If an object is supplied: used as options to create a dev server. Passed to [BroserDriver.startServer](/docs/api-reference/test-utils/browser-driver.md).
+  - If an object is supplied: used as options to create a dev server. Passed to [BroserDriver.startServer](/docs/modules/test-utils/browser-driver).
   - If a function is supplied: will be called to create a dev server. Should return a `Promise` that resolves to the service URL.
   - If `false`: no dev server.
-* `browser` (Object) - options to user for creating the Puppeteer instance. Passed to [BroserDriver.startBrowser](/docs/api-reference/test-utils/browser-driver.md).
+* `browser` (Object) - options to user for creating the Puppeteer instance. Passed to [BroserDriver.startBrowser](/docs/modules/test-utils/browser-driver).
 * `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
 * `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 * `maxConsoleMessageLength` (Number) - used in `headless: true` mode to crop log messages that are piped to the console. Default `500`.
