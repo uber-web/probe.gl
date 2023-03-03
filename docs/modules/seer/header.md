@@ -4,7 +4,7 @@ This library provides an abstraction around the [Window.postMessage API](https:/
 to interact with the Seer extension.
 
 How the communication is done exactly relies on the bridge, that you can checkout
-in its dedicated [directory](../src/bridge). The following schema represent the
+in its dedicated directory. The following schema represent the
 complete data flow:
 
 <img src="https://cdn.pbrd.co/images/92al0O7cY.png" height="300" />
