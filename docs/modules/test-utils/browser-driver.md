@@ -1,4 +1,4 @@
-# BrowserDriver (Test Automation Class)
+# BrowserDriver
 
 <p class="badges">
   <img src="https://img.shields.io/badge/Node.js-v8.0+-blue.svg?style=flat-square" alt="Node" />

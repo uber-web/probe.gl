@@ -4,13 +4,13 @@ A collection of JavaScript front-end debugging tools provided as a set of separa
 
 | probe.gl module | Description |
 | --- | --- |
-| `@probe.gl/log`  | A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications. |
-| `@probe.gl/env`  | Basic environment detection (Browser, Node, Electron etc). | 
-| `@probe.gl/stats`  | A minimal bag of performance related stats that applications or frameworks can populate. | 
-| `@probe.gl/stats-widget`  | An HTML widget that helps applications display the contests of `@probe.gl/stats` objects. | 
-| `@probe.gl/bench` | A benchmark rig to help measure and track regressions of critical functions. |
-| `@probe.gl/react-bench` | A React component that displays the output of `@probe.gl/bench`. |
-| `@probe.gl/test-utils` | Test "Drivers" for running automated browser testing from Node via `puppeteer`. |
+| **`@probe.gl/log`**    | A JavaScript logging library focused on facilitating debugging and performance instrumentation of front-end applications. |
+| **`@probe.gl/env`**    | Basic environment detection (Browser, Node, Electron etc). | 
+| **`@probe.gl/stats`**  | A minimal bag of performance related stats that applications or frameworks can populate. | 
+| **`@probe.gl/stats-widget`** | An HTML widget that helps applications display the contests of `@probe.gl/stats` objects. | 
+| **`@probe.gl/bench`**  | A benchmark rig to help measure and track regressions of critical functions. |
+| **`@probe.gl/react-bench`**  | A React component that displays the output of `@probe.gl/bench`. |
+| **`@probe.gl/test-utils`**   | Test "Drivers" for running automated browser testing from Node via `puppeteer`. |
 
 ## Comparison with other Logging Solutions
 

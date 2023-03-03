@@ -1,6 +1,6 @@
 # StatsWidget
 
-A widget that displays the state of a probe.gl [Stats](/docs/api-reference/log/stats.md) object to screen.
+A widget that displays the state of a probe.gl [Stats](/docs/modules/stats/stats) object to screen.
 
 ## Usage
 
@@ -50,7 +50,7 @@ class App extends Component {
 
 `new StatsWidget(stats, options)`
 
-* `stats` (`Stats`) - a probe.gl [Stats](/docs/api-reference/log/stats.md) instance.
+* `stats` (`Stats`) - a probe.gl [Stats](/docs/modules/stats/stats) instance.
 * `options`: (`Object`)
   - `title` (`String`) - header text for the widget. Defaults to the `id` of the `Stats` object.
   - `framesPerUpdate` (`Number`) - number of times `update` must be called before the widget is re-rendered. Allows the application

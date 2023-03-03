@@ -3,69 +3,69 @@
     "type": "category",
     "label": "Overview",
     "items": [
-      "docs",
-      "docs/whats-new",
-      "docs/upgrade-guide"
+      "README",
+      "whats-new",
+      "upgrade-guide"
     ]
   },
   {
     "type": "category",
     "label": "Getting Started",
     "items": [
-      "docs/get-started",
-      "docs/get-started/adding-probes"
+      "get-started/README",
+      "get-started/adding-probes"
     ]
   },
   {
     "type": "category",
     "label": "Developer Guide",
     "items": [
-      "docs/articles/about-logging",
-      "docs/articles/about-benchmarking",
-      "docs/articles/about-testing"
+      "articles/about-logging",
+      "articles/about-benchmarking",
+      "articles/about-testing"
     ]
   },
   {
     "type": "category",
     "label": "API Reference",
-    "chapters": [
+    "items": [
       {
         "type": "category",
         "label": "@probe.gl/log",
         "items": [
-          "docs/modules/log/log"
+          "modules/log/log"
         ]
       },
       {
         "type": "category",
         "label": "@probe.gl/stats",
         "items": [
-          "docs/modules/stats/stat",
-          "docs/modules/stats/stats"
+          "modules/stats/stat",
+          "modules/stats/stats"
         ]
       },
       {
         "type": "category",
         "label": "@probe.gl/stats-widget",
         "items": [
-          "docs/modules/stats-widget/stats-widget"
+          "modules/stats-widget/stats-widget"
         ]
       },
       {
         "type": "category",
         "label": "@probe.gl/bench",
         "items": [
-          "docs/modules/bench/bench"
+          "modules/bench/bench"
         ]
       },
       {
         "type": "category",
         "label": "@probe.gl/test-utils",
         "items": [
-          "docs/modules/test-utils/browser-driver",
-          "docs/modules/test-utils/browser-test-driver",
-          "docs/modules/test-utils/make-spy",
-          "docs/modules/test-utils/log-to-dom"
+          "modules/test-utils/browser-driver",
+          "modules/test-utils/browser-test-driver",
+          "modules/test-utils/make-spy",
+          "modules/test-utils/log-to-dom"
         ]
       }
     ]

@@ -12,8 +12,8 @@ const config = {
   tagline: 'JavaScript Console Logging, Instrumentation, Benchmarking and Test Utilities',
   url: 'https://probe.gl',
   baseUrl: '/probe.gl',
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'throw',
   favicon: '/favicon.png',
   organizationName: 'uber-web', // Usually your GitHub org/user name.
   projectName: 'probe.gl', // Usually your repo name.
@@ -110,15 +110,15 @@ const config = {
         },
         items: [
           {
-            to: '/examples',
-            position: 'left',
-            label: 'Examples',
-          },
-          {
             to: '/docs',
             position: 'left',
             label: 'Docs',
           },
+          // {
+          //   to: '/examples',
+          //   position: 'left',
+          //   label: 'Examples',
+          // },
           // {
           //   to: '/showcase',
           //   position: 'left',
