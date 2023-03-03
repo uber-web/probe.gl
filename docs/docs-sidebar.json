@@ -1,0 +1,73 @@
+[
+  {
+    "type": "category",
+    "label": "Overview",
+    "items": [
+      "docs",
+      "docs/whats-new",
+      "docs/upgrade-guide"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "Getting Started",
+    "items": [
+      "docs/get-started",
+      "docs/get-started/adding-probes"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "Developer Guide",
+    "items": [
+      "docs/articles/about-logging",
+      "docs/articles/about-benchmarking",
+      "docs/articles/about-testing"
+    ]
+  },
+  {
+    "type": "category",
+    "label": "API Reference",
+    "chapters": [
+      {
+        "type": "category",
+        "label": "@probe.gl/log",
+        "items": [
+          "docs/modules/log/log"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/stats",
+        "items": [
+          "docs/modules/stats/stat",
+          "docs/modules/stats/stats"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/stats-widget",
+        "items": [
+          "docs/modules/stats-widget/stats-widget"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/bench",
+        "items": [
+          "docs/modules/bench/bench"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "@probe.gl/test-utils",
+        "items": [
+          "docs/modules/test-utils/browser-driver",
+          "docs/modules/test-utils/browser-test-driver",
+          "docs/modules/test-utils/make-spy",
+          "docs/modules/test-utils/log-to-dom"
+        ]
+      }
+    ]
+  }
+]
