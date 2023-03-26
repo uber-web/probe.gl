@@ -50,38 +50,21 @@ const config = {
           alias: {
             'website-examples': resolve('../examples'),
 
-            '@probe.gl/types': resolve('../modules/types/src'),
-            '@probe.gl/core': resolve('../modules/core/src'),
-            '@probe.gl/culling': resolve('../modules/culling/src'),
-            '@probe.gl/geospatial': resolve('../modules/geospatial/src'),
-            '@probe.gl/geoid': resolve('../modules/geoid/src'),
-            '@probe.gl/polygon': resolve('../modules/polygon/src'),
-            '@probe.gl/proj4': resolve('../modules/proj4/src'),
-            '@probe.gl/web-mercator': resolve('../modules/web-mercator/src'),
-            '@probe.gl/sun': resolve('../modules/sun/src'),
-            '@probe.gl/geohash': resolve('../modules/mapbox/geohash'),
-            '@probe.gl/quadkey': resolve('../modules/quadkey/src'),
-            '@probe.gl/s2': resolve('../modules/s2/src'),
-
-            '@probe.gl/bench': resolve('../node_modules/@probe.gl/bench')
+            '@probe.gl/bench': resolve('../modules/bench'),
+            '@probe.gl/env': resolve('../modules/env'),
+            '@probe.gl/log': resolve('../modules/log'),
+            '@probe.gl/react-bench': resolve('../modules/bench'),
+            '@probe.gl/seer': resolve('../modules/seer'),
+            '@probe.gl/stats': resolve('../modules/stats'),
+            '@probe.gl/stats-widget': resolve('../modules/widget'),
+            '@probe.gl/test-utils': resolve('../modules/utils')
           }
         },
         plugins: [
           // new webpack.EnvironmentPlugin(['MapboxAccessToken', 'GoogleMapsAPIKey', 'GoogleMapsMapId']),
-          // These modules break server side bundling
-          new webpack.IgnorePlugin({
-            resourceRegExp: /asciify-image/
-          })
         ],
         module: {
           rules: [
-            // https://github.com/Esri/calcite-components/issues/2865
-            {
-              test: /\.m?js/,
-              resolve: {
-                fullySpecified: false
-              }
-            }
           ]
         }
       }
