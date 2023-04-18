@@ -79,6 +79,33 @@ const config = {
         breadcrumbs: false,
         docItemComponent: resolve('./src/components/example/doc-item-component.jsx')
       },
+    ],
+    [
+      require.resolve('@cmfcmf/docusaurus-search-local'),
+      {
+        // Options here
+      }
+    ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        createRedirects(existingPath) {
+          // docs/modules/*/api-reference <= modules/*/docs/api-reference
+          if (existingPath.includes('/documentation/overview')) {
+            return existingPath.replace('/docs');
+          }
+
+          if (existingPath.includes('/docs/modules/')) {
+            return [
+              existingPath
+                .replace('/docs/modules/', '/modules/')
+                // Replaces api-reference if present
+                .replace('/api-reference/', '/docs/api-reference/')
+            ];
+          }
+          return undefined; // Return a falsy value: no redirect created
+        }
+      }
     ]
   ],
 
@@ -135,7 +162,7 @@ const config = {
               },
               {
                 label: 'deck.gl',
-                href: 'https:/deck.gl',
+                href: 'https://deck.gl',
               },
               {
                 label: 'vis.gl',
