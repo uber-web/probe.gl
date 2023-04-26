@@ -15,17 +15,11 @@
     "url": "https://github.com/uber-web/probe.gl.git"
   },
   "workspaces": [
-    "examples/**",
+    "examples/*",
     "modules/*"
   ],
   "browser": {
     "jsdom": false
-  },
-  "resolutions_comments": {
-    "esbuild": "https://github.com/evanw/esbuild/issues/2762"
-  },
-  "resolutions": {
-    "esbuild": "0.16.7"
   },
   "scripts": {
     "bootstrap": "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn && ocular-bootstrap",
@@ -41,7 +35,7 @@
     "@types/tape-promise": "^4.0.1",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^16.5.0",
-    "ocular-dev-tools": "2.0.0-alpha.8",
+    "ocular-dev-tools": "2.0.0-alpha.11",
     "pre-commit": "^1.2.2",
     "react-dom": "^16.13.1",
     "url-loader": "^1.0.1"
