@@ -3,7 +3,7 @@
   "description": "Stats object for reporting performance statistics",
   "license": "MIT",
   "type": "module",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "keywords": [
     "javascript",
     "profiling",

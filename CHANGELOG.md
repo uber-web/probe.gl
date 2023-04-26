@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v4.0.2
+
+- Fix globals bundle error (#229)
+- Fix peerDependency versions (#228)
+
 ## v4.0.1
 
 - Fix Stats.get typing (#227)
