@@ -2,8 +2,13 @@
 
 ## v4.0
 
+## v4.0.0-alpha.2 - Apr 26, 2023
+
 - chore(bench): Flatten internal structures, simplify typing (#223)
 - chore(test-utils): Strict null checks (#222)
+- chore(test-utils): Clean up test driver (#224)
+- Fix globals bundle error (#229)
+
 ## v4.0.0-alpha.1 - Jan 1, 2023
 
 - chore(bench): Enable all typescript checks on `bench` module (#220)

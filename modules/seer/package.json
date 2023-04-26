@@ -1,6 +1,6 @@
 {
   "name": "seer",
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0-alpha.2",
   "description": "A customizable devtool solution",
   "license": "MIT",
   "type": "module",
