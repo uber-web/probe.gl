@@ -10,22 +10,19 @@ export type BrowserDriverProps = {
   id?: string;
 };
 
+type ServerInstance = {
+  url: string;
+  stop: () => void;
+};
+
 export type ServerConfiguration = {
   command?: string;
   arguments?: string[];
   port?: number | 'auto';
   wait?: number;
-  options?: {
-    maxBuffer?: number; // TODO - not a recognized spawn option
-  };
-};
-
-const DEFAULT_SERVER_CONFIG: Required<ServerConfiguration> = {
-  command: 'webpack-dev-server',
-  arguments: [],
-  port: 'auto',
-  wait: 2000,
-  options: {maxBuffer: 5000 * 1024}
+  options?: any;
+  /** Callback to start the server */
+  start?: (config: ServerConfiguration) => Promise<ServerInstance>;
 };
 
 // https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions
@@ -41,7 +38,7 @@ function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
 export default class BrowserDriver {
   readonly id: string;
   logger: Log;
-  server: ChildProcess.ChildProcessWithoutNullStreams | null = null;
+  server: ServerInstance | null = null;
   port: number | 'auto' | null = null;
   browser: Browser | null = null;
   page: Page | null = null;
@@ -114,48 +111,31 @@ export default class BrowserDriver {
   /** Starts a web server with the provided configs.
    * Resolves to the bound url if successful
    */
-  async startServer(serverConfig: ServerConfiguration = {}): Promise<string> {
-    const config = normalizeServerConfiguration(serverConfig, this.logger);
+  async startServer(serverConfig: ServerConfiguration = {}): Promise<string | null> {
+    const {port, start = startServerCLI} = serverConfig;
+    const config = {...serverConfig};
 
-    const port = config.port === 'auto' ? await getAvailablePort(AUTO_PORT_START) : config?.port;
-
-    const args = [...config.arguments];
-    if (port) {
-      args.push('--port', String(port));
+    if (port === 'auto') {
+      config.port = await getAvailablePort(AUTO_PORT_START);
     }
+    const server = await start(config);
+    if (server) {
+      this.server = server;
+      this.port = config.port || null;
 
-    const server = ChildProcess.spawn(config.command, args, config.options as any); // TODO invalid spawn options
-    this.server = server;
-    this.port = port || null;
+      this.logger.log({
+        message: `Started server at ${this.server.url}`,
+        color: COLOR.BRIGHT_GREEN
+      })();
 
-    return await new Promise((resolve, reject) => {
-      server.stderr.on('data', onError);
-      server.on('error', onError);
-      server.on('close', () => () => {
-        this.server = null;
-      });
-
-      const successTimer = setTimeout(() => {
-        const url = `http://localhost:${this.port}`;
-
-        this.logger.log({
-          message: `Started ${config.command} at ${url}`,
-          color: COLOR.BRIGHT_GREEN
-        })();
-
-        resolve(url);
-      }, config.wait);
-
-      function onError(error) {
-        clearTimeout(successTimer);
-        reject(error);
-      }
-    });
+      return server.url;
+    }
+    return null;
   }
 
   async stopServer(): Promise<void> {
     if (this.server) {
-      this.server.kill();
+      this.server.stop();
       this.server = null;
     }
   }
@@ -173,15 +153,32 @@ export default class BrowserDriver {
   }
 }
 
-function normalizeServerConfiguration(
-  config: ServerConfiguration,
-  logger: Log
-): Required<ServerConfiguration> {
-  const result: Required<ServerConfiguration> = {...DEFAULT_SERVER_CONFIG, ...config};
+/** Default implementation of serverConfig.start */
+async function startServerCLI(config: ServerConfiguration): Promise<ServerInstance> {
+  const {arguments: args = [], command = 'webpack-dev-server', port} = config;
 
-  Object.assign(result, {
-    options: {...result.options, ...config.options}
+  if (port) {
+    args.push('--port', String(port));
+  }
+
+  const server = ChildProcess.spawn(command, args);
+
+  return await new Promise((resolve, reject) => {
+    server.stderr.on('data', onError);
+    server.on('error', onError);
+
+    const successTimer = setTimeout(() => {
+      const url = port ? `http://localhost:${port}` : 'http://localhost';
+
+      resolve({
+        url,
+        stop: () => server.kill()
+      });
+    }, config.wait);
+
+    function onError(error) {
+      clearTimeout(successTimer);
+      reject(error);
+    }
   });
-
-  return result;
 }
