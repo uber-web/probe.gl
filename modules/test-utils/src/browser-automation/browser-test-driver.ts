@@ -83,9 +83,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       }
 
       const result = await this._openPage(url, config);
-      if (result) {
-        this._onFinish(result);
-      }
+      this._onFinish(result);
     } catch (error: unknown) {
       this._fail((error as Error).message || 'puppeteer run failes');
     }
@@ -121,7 +119,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           const pageUrl: string = config.url
             ? config.url.startsWith('http')
               ? config.url
-              : `${url}/${config.url.replace(/^\//, '')}`
+              : `${url.replace(/\/$/, '')}/${config.url.replace(/^\//, '')}`
             : url;
 
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
