@@ -87,9 +87,19 @@ export default class BrowserDriver {
     this.page.setDefaultNavigationTimeout(0);
 
     // attach events
-    this.page.on('load', onLoad);
+    const onRequestFail = evt => {
+      onError(new Error(`cannot load ${evt.url()}`));
+    };
     this.page.on('console', onConsole);
+    // If the page crashes. consider the operation failed
     this.page.on('error', onError);
+    // If any page resource fail to load, consider the operation failed
+    this.page.on('requestfailed', onRequestFail);
+    this.page.on('load', () => {
+      // Once the page loads, ignore script-initiated http requests
+      this.page?.off('requestfailed', onRequestFail);
+      onLoad();
+    });
 
     const promises: Promise<void>[] = [];
     for (const [name, functionToExpose] of Object.entries(exposeFunctions)) {
