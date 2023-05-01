@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.3
+
+- feat(test-utils) BrowserDriver support custom server implementation (#235)
+
 ## v4.0.2
 
 - Fix globals bundle error (#229)
