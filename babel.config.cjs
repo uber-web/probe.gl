@@ -7,6 +7,10 @@ module.exports = getBabelConfig({
     ignore: [
       // babel can't process .d.ts
       /\.d\.ts$/
-    ]
+    ],
+    assumptions: {
+      setClassMethods: true,
+      setPublicClassFields: true
+    }
   }
 });
