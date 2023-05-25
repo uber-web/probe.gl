@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.4
+
+-  Update babel config (#237)
+
 ## v4.0.3
 
 - feat(test-utils) BrowserDriver support custom server implementation (#235)
