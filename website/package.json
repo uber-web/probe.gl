@@ -38,16 +38,21 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
-    "@docusaurus/core": "^2.2.0",
-    "@docusaurus/plugin-content-docs": "^2.2.0",
-    "@docusaurus/preset-classic": "^2.2.0",
+    "@docusaurus/core": "^3.1.0",
+    "@docusaurus/plugin-content-docs": "^3.1.0",
+    "@docusaurus/preset-classic": "^3.1.0",
     "@mdx-js/react": "^1.6.22",
     "babel-plugin-styled-components": "^2.0.0",
-    "prism-react-renderer": "^1.2.1",
+    "docusaurus-mdx-checker": "^3.0.0",
+    "prism-react-renderer": "^2.1.0",
     "ts-node": "~10.9.1"
   },
   "browserslist": [
     ">0.2% and supports async-functions",
     "not dead"
-  ]
+  ],
+  "volta": {
+    "node": "18.18.2",
+    "yarn": "1.22.19"
+  }
 }

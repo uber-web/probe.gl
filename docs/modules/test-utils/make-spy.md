@@ -3,7 +3,7 @@
 A spy utility that wraps a function. The wrapper is invisible: when called the wrapper calls the original function and returns the return value.
 
 However it also updates certain metadata that can be inspected later, that:
-* lets you determine if the wrapped function or method was actually called during exectution of other code.
+* lets you determine if the wrapped function or method was actually called during execution of other code.
 * allows you to inspect how many times it was called.
 
 Spies also have facilities for mocking, allowing the test suite to override the functions return value to trigger certain conditions.
@@ -14,13 +14,12 @@ There are also `restore` and `reset` methods that allows you to reset the test s
 ## Usage
 
 Override function return value
-```js
+```ts
 import {makeSpy} from '@probe.gl/test-utils';
 const spy = makeSpy(Class, 'method');
 spy.returns(false);
 // Call code that calls the wrapped method.
 ```
-
 
 ## Function
 
@@ -40,27 +39,31 @@ Attach a spy to the function. The spy has the following methods and fields
 
 ## Methods and fields on the Wrapped Function
 
-### spy.called
+### called
 
 Boolean, true if function was called
 
-
-### spy.callCount
+### callCount
 
 Number, number of times spy was called, `0` if not called
 
-
-### spy.reset()
+### reset()
 
 Resets the `called` and `callCount` flags (to `false` and `0`).
 
+### returns
 
-### spy.returns(returnValue)
+```ts
+spy.returns(returnValue)
+```
 
 Makes the wrapper function return the given value without calling the wrapped function.
 
+### restore
 
-### spy.restore()
+```ts
+spy.restore()
+```
 
 Removes the spy from the function being spied on.
 

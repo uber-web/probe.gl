@@ -1,21 +1,22 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const webpack = require('webpack');
 const {resolve} = require('path');
+
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'probe.gl',
   tagline: 'JavaScript Console Logging, Instrumentation, Benchmarking and Test Utilities',
-  url: 'https://probe.gl',
+  url: 'https://visgl.github.io',
   baseUrl: '/probe.gl',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
   favicon: '/favicon.png',
-  organizationName: 'uber-web', // Usually your GitHub org/user name.
+  organizationName: 'visgl', // Usually your GitHub org/user name.
   projectName: 'probe.gl', // Usually your repo name.
   trailingSlash: false,
 
@@ -28,7 +29,7 @@ const config = {
           path: '../docs',
           sidebarPath: resolve('./src/docs-sidebar.js'),
           // Point to to the website directory in your repo.
-          editUrl: 'https://github.com/uber-web/probe.gl/tree/master/website',
+          editUrl: 'https://github.com/visgl/probe.gl/tree/master/website',
         },
         theme: {
           customCss: [
@@ -113,7 +114,7 @@ const config = {
             position: 'left'
           },
           {
-            href: 'https://github.com/uber-web/probe.gl',
+            href: 'https://github.com/visgl/probe.gl',
             label: 'GitHub',
             position: 'right',
           },
@@ -156,7 +157,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/uber-web/probe.gl',
+                href: 'https://github.com/visgl/probe.gl',
               },
             ],
           },
