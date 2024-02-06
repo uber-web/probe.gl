@@ -1,4 +1,5 @@
-const test = require('tape');
+import test from 'tape';
+import {render} from './app.js';
 
 // Add BrowserTestDriver hooks
 test.onFailure(window.browserTestDriver_fail);
@@ -8,7 +9,7 @@ test('A test', t => {
   // Default tape test timeout is 500ms - allow enough time for render and screenshot
   t.timeoutAfter(2000);
 
-  const app = require('./app').render();
+  const app = render();
 
   window
     .browserTestDriver_captureAndDiffScreen({
