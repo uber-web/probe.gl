@@ -1,6 +1,6 @@
 // probe.gl, MIT license
 
-import puppeteer, {Browser, Page} from 'puppeteer';
+import puppeteer, {Browser, Page, PuppeteerLaunchOptions, ConsoleMessage} from 'puppeteer';
 import ChildProcess from 'child_process';
 
 import {COLOR, Log} from '@probe.gl/log';
@@ -25,12 +25,6 @@ export type ServerConfiguration = {
   start?: (config: ServerConfiguration) => Promise<ServerInstance>;
 };
 
-// https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#puppeteerlaunchoptions
-const DEFAULT_PUPPETEER_OPTIONS = {
-  headless: false,
-  defaultViewport: {width: 800, height: 600}
-};
-
 const AUTO_PORT_START = 5000;
 
 function noop() {} // eslint-disable-line @typescript-eslint/no-empty-function
@@ -39,7 +33,6 @@ export default class BrowserDriver {
   readonly id: string;
   logger: Log;
   server: ServerInstance | null = null;
-  port: number | 'auto' | null = null;
   browser: Browser | null = null;
   page: Page | null = null;
 
@@ -49,15 +42,11 @@ export default class BrowserDriver {
     this.logger = new Log({id});
   }
 
-  async startBrowser(puppeteerOptions?: {
-    headless?: boolean;
-    defaultViewport?: {width: number; height: number};
-  }): Promise<void> {
+  async startBrowser(puppeteerOptions?: PuppeteerLaunchOptions): Promise<void> {
     if (this.browser) {
       return;
     }
-    const options = {...DEFAULT_PUPPETEER_OPTIONS, ...puppeteerOptions};
-    this.browser = await puppeteer.launch(options);
+    this.browser = await puppeteer.launch(puppeteerOptions);
     const browserVersion = await this.browser.version();
     this.logger.log(`Launched browser version ${browserVersion}`);
   }
@@ -65,9 +54,9 @@ export default class BrowserDriver {
   async openPage(options?: {
     url?: string;
     exposeFunctions?: Record<string, Function>;
-    onLoad?: (...args: any) => any;
-    onConsole?: (...args: any) => any;
-    onError?: (...args: any) => any;
+    onLoad?: () => void;
+    onConsole?: (e: ConsoleMessage) => void;
+    onError?: (e: Error) => void;
   }): Promise<void> {
     const {
       url = 'http://localhost',
@@ -121,7 +110,7 @@ export default class BrowserDriver {
   /** Starts a web server with the provided configs.
    * Resolves to the bound url if successful
    */
-  async startServer(serverConfig: ServerConfiguration = {}): Promise<string | null> {
+  async startServer(serverConfig: ServerConfiguration): Promise<string | null> {
     const {port, start = startServerCLI} = serverConfig;
     const config = {...serverConfig};
 
@@ -131,10 +120,9 @@ export default class BrowserDriver {
     const server = await start(config);
     if (server) {
       this.server = server;
-      this.port = config.port || null;
 
       this.logger.log({
-        message: `Started server at ${this.server.url}`,
+        message: `Started server at ${server.url}`,
         color: COLOR.BRIGHT_GREEN
       })();
 
@@ -174,8 +162,13 @@ async function startServerCLI(config: ServerConfiguration): Promise<ServerInstan
   const server = ChildProcess.spawn(command, args);
 
   return await new Promise((resolve, reject) => {
-    server.stderr.on('data', onError);
-    server.on('error', onError);
+    server.stdout.on('data', data => {
+      console.log(data.toString());
+    });
+    server.stderr.on('data', data => {
+      console.error(data.toString());
+    });
+    server.on('close', onClose);
 
     const successTimer = setTimeout(() => {
       const url = port ? `http://localhost:${port}` : 'http://localhost';
@@ -186,9 +179,11 @@ async function startServerCLI(config: ServerConfiguration): Promise<ServerInstan
       });
     }, config.wait);
 
-    function onError(error) {
-      clearTimeout(successTimer);
-      reject(error);
+    function onClose(code) {
+      if (!code) {
+        clearTimeout(successTimer);
+        reject();
+      }
     }
   });
 }
