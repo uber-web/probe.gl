@@ -21,12 +21,9 @@ type BrowserTestDriverProps = {
   title?: string;
   headless?: boolean;
   maxConsoleMessageLength?: number;
-  server?: ServerConfiguration;
-  command?: string;
-  arguments?: string[];
+  server: ServerConfiguration;
   browser?: object;
   exposeFunctions?: any;
-  exposeFunction?: boolean;
   url?: string;
 };
 
@@ -61,7 +58,7 @@ export default class BrowserTestDriver extends BrowserDriver {
   failures: number = 0;
   maxConsoleMessageLength = MAX_CONSOLE_MESSAGE_LENGTH;
 
-  async run(config: BrowserTestDriverProps = {}): Promise<void> {
+  async run(config: BrowserTestDriverProps): Promise<void> {
     const {
       title = 'Browser Test',
       headless = false,
@@ -89,7 +86,7 @@ export default class BrowserTestDriver extends BrowserDriver {
     }
   }
 
-  _openPage(url: string, config: BrowserTestDriverProps = {}): Promise<string> {
+  _openPage(url: string, config: BrowserTestDriverProps): Promise<string> {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
     return this.startBrowser(browserConfig).then(
