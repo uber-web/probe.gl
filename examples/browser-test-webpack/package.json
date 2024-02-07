@@ -1,6 +1,6 @@
 {
   "name": "browser-test-webpack-example",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
   "type": "module",
@@ -11,11 +11,11 @@
     "test-browser": "node test/start.js"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "4.0.4",
-    "tape": "^4.5.1",
+    "@probe.gl/test-utils": "4.0.5",
     "path-browserify": "1.0.1",
     "process": "0.11.10",
-    "stream-browserify": "3.0.0"
+    "stream-browserify": "3.0.0",
+    "tape": "^4.5.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^5.6.0",

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.5
+
+- [test-utils] Upgrade puppeteer (#244)
+
 ## v4.0.4
 
 -  Update babel config (#237)
