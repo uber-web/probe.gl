@@ -53,6 +53,7 @@ export default class BrowserDriver {
 
   async openPage(options?: {
     url?: string;
+    coverage?: boolean;
     exposeFunctions?: Record<string, Function>;
     onLoad?: () => void;
     onConsole?: (e: ConsoleMessage) => void;
@@ -60,6 +61,7 @@ export default class BrowserDriver {
   }): Promise<void> {
     const {
       url = 'http://localhost',
+      coverage = false,
       exposeFunctions = {},
       onLoad = noop,
       onConsole = noop,
@@ -95,6 +97,10 @@ export default class BrowserDriver {
       promises.push(this.page.exposeFunction(name, functionToExpose));
     }
     await Promise.all(promises);
+
+    if (coverage) {
+      await this.page.coverage.startJSCoverage();
+    }
 
     await this.page.goto(url);
   }

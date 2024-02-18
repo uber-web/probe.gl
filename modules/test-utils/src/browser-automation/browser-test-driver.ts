@@ -7,6 +7,7 @@ import {COLOR, addColor} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
 import BrowserDriver, {ServerConfiguration} from './browser-driver';
+import istanbul from 'puppeteer-to-istanbul';
 
 declare global {
   function browserTestDriver_fail(): void;
@@ -25,6 +26,8 @@ type BrowserTestDriverProps = {
   browser?: object;
   exposeFunctions?: any;
   url?: string;
+  /** Path to write code coverage output to */
+  coverage?: string;
 };
 
 export type DiffImagesOpts = DiffImagesOptions & {
@@ -80,6 +83,15 @@ export default class BrowserTestDriver extends BrowserDriver {
       }
 
       const result = await this._openPage(url, config);
+
+      if (config.coverage) {
+        const coverageResult = await this.page?.coverage.stopJSCoverage();
+        istanbul.write(coverageResult, {
+          includeHostname: false,
+          storagePath: config.coverage
+        });
+      }
+
       this._onFinish(result);
     } catch (error: unknown) {
       this._fail((error as Error).message || 'puppeteer run failes');
@@ -122,6 +134,7 @@ export default class BrowserTestDriver extends BrowserDriver {
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
           this.openPage({
             url: pageUrl,
+            coverage: Boolean(config.coverage),
             exposeFunctions,
             onConsole: event => this._onConsole(event),
             onError: reject

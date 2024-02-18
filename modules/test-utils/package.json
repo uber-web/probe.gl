@@ -36,7 +36,8 @@
     "@babel/runtime": "^7.0.0",
     "@probe.gl/log": "4.0.5",
     "@types/pngjs": "^6.0.1",
-    "pixelmatch": "^4.0.2"
+    "pixelmatch": "^4.0.2",
+    "puppeteer-to-istanbul": "^1.4.0"
   },
   "peerDependencies": {
     "puppeteer": ">=19"
