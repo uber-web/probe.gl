@@ -29,7 +29,7 @@
     "src"
   ],
   "sideEffects": [
-    "./src/init.ts"
+    "./dist/init.js"
   ],
   "browser": {},
   "dependencies": {
