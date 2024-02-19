@@ -23,24 +23,20 @@ async function startViteServer(opts) {
   };
 }
 
-async function runTest(testDriver) {
-  await testDriver.run({
-    title: 'Unit Tests',
-    server: {
-      port: 'auto',
-      start: startViteServer
-    },
-    headless: mode === 'headless',
-    onFinish: async success => {
-      if (!success) return;
-      const coverage = await testDriver.page.evaluate('window.__coverage__');
-      if (coverage) {
-        await fs.rm(CoverageOutputDir, {force: true, recursive: true});
-        await fs.mkdir(CoverageOutputDir);
-        await fs.writeFile(`${CoverageOutputDir}/out.json`, JSON.stringify(coverage), 'utf8');
-      }
+new BrowserTestDriver().run({
+  title: 'Unit Tests',
+  server: {
+    port: 'auto',
+    start: startViteServer
+  },
+  headless: mode === 'headless',
+  onFinish: async ({page, isSuccessful}) => {
+    if (!isSuccessful) return;
+    const coverage = await page.evaluate('window.__coverage__');
+    if (coverage) {
+      await fs.rm(CoverageOutputDir, {force: true, recursive: true});
+      await fs.mkdir(CoverageOutputDir);
+      await fs.writeFile(`${CoverageOutputDir}/out.json`, JSON.stringify(coverage), 'utf8');
     }
-  });
-}
-
-runTest(new BrowserTestDriver());
+  }
+});

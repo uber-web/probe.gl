@@ -1,7 +1,7 @@
 // probe.gl, MIT license
 /* eslint-disable camelcase */
 
-import {ScreenshotOptions} from 'puppeteer';
+import {ScreenshotOptions, Page} from 'puppeteer';
 import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
@@ -25,8 +25,8 @@ type BrowserTestDriverProps = {
   browser?: object;
   exposeFunctions?: any;
   url?: string;
-  onStart?: () => void | Promise<void>;
-  onFinish?: (success: boolean) => void | Promise<void>;
+  onStart?: (params: {page: Page}) => void | Promise<void>;
+  onFinish?: (params: {page: Page; isSuccessful: boolean}) => void | Promise<void>;
 };
 
 export type DiffImagesOpts = DiffImagesOptions & {
@@ -83,9 +83,11 @@ export default class BrowserTestDriver extends BrowserDriver {
 
       const result = await this._openPage(url, config);
 
-      if (config.onFinish) {
-        await config.onFinish(this.failures === 0);
-      }
+      await config.onFinish?.({
+        // @ts-ignore this.page is always populated after _openPage
+        page: this.page,
+        isSuccessful: this.failures === 0
+      });
 
       this._onFinish(result);
     } catch (error: unknown) {
@@ -133,9 +135,7 @@ export default class BrowserTestDriver extends BrowserDriver {
             onError: reject
           });
 
-          if (config.onStart) {
-            await config.onStart();
-          }
+          await config.onStart?.({page});
 
           await page.goto(pageUrl);
         })
