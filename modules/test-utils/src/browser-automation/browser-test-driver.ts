@@ -25,6 +25,8 @@ type BrowserTestDriverProps = {
   browser?: object;
   exposeFunctions?: any;
   url?: string;
+  onStart?: () => void | Promise<void>;
+  onFinish?: (success: boolean) => void | Promise<void>;
 };
 
 export type DiffImagesOpts = DiffImagesOptions & {
@@ -80,6 +82,11 @@ export default class BrowserTestDriver extends BrowserDriver {
       }
 
       const result = await this._openPage(url, config);
+
+      if (config.onFinish) {
+        await config.onFinish(this.failures === 0);
+      }
+
       this._onFinish(result);
     } catch (error: unknown) {
       this._fail((error as Error).message || 'puppeteer run failes');
@@ -91,7 +98,7 @@ export default class BrowserTestDriver extends BrowserDriver {
 
     return this.startBrowser(browserConfig).then(
       _ =>
-        new Promise<string>((resolve, reject) => {
+        new Promise<string>(async (resolve, reject) => {
           const exposeFunctions = {
             ...config.exposeFunctions,
             browserTestDriver_fail: () => this.failures++,
@@ -120,12 +127,17 @@ export default class BrowserTestDriver extends BrowserDriver {
             : url;
 
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.openPage({
-            url: pageUrl,
+          const page = await this.openPage({
             exposeFunctions,
             onConsole: event => this._onConsole(event),
             onError: reject
           });
+
+          if (config.onStart) {
+            await config.onStart();
+          }
+
+          await page.goto(pageUrl);
         })
     );
   }

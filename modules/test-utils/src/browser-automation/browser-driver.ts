@@ -57,9 +57,9 @@ export default class BrowserDriver {
     onLoad?: () => void;
     onConsole?: (e: ConsoleMessage) => void;
     onError?: (e: Error) => void;
-  }): Promise<void> {
+  }): Promise<Page> {
     const {
-      url = 'http://localhost',
+      url,
       exposeFunctions = {},
       onLoad = noop,
       onConsole = noop,
@@ -96,7 +96,11 @@ export default class BrowserDriver {
     }
     await Promise.all(promises);
 
-    await this.page.goto(url);
+    if (url) {
+      await this.page.goto(url);
+    }
+
+    return this.page;
   }
 
   async stopBrowser(): Promise<void> {

@@ -76,6 +76,8 @@ Parameters:
 * `exposeFunctions` (Object) - keys are function names to be added to the page's `window` object, and the values are callback functions to execute in Node.js. See [exposeFunction](https://github.com/GoogleChrome/puppeteer/blob/v1.11.0/docs/api.md#pageexposefunctionname-puppeteerfunction) for details.
 * `url` (String) - if supplied, will be used instead of the URL returned by the dev server.
 * `maxConsoleMessageLength` (Number) - used in `headless: true` mode to crop log messages that are piped to the console. Default `500`.
+* `onFinish` (Function) - callback when the test finishes running and the browser is about to close. Receives the following arguments:
+  - `success` (Boolean) - if all tests passed.
 
 ## Built-in Exposed Globals
 
