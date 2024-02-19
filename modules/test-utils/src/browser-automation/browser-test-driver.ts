@@ -1,7 +1,7 @@
 // probe.gl, MIT license
 /* eslint-disable camelcase */
 
-import {ScreenshotOptions} from 'puppeteer';
+import {ScreenshotOptions, Page} from 'puppeteer';
 import fs from 'fs';
 import {COLOR, addColor} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
@@ -25,6 +25,8 @@ type BrowserTestDriverProps = {
   browser?: object;
   exposeFunctions?: any;
   url?: string;
+  onStart?: (params: {page: Page}) => void | Promise<void>;
+  onFinish?: (params: {page: Page; isSuccessful: boolean}) => void | Promise<void>;
 };
 
 export type DiffImagesOpts = DiffImagesOptions & {
@@ -80,6 +82,13 @@ export default class BrowserTestDriver extends BrowserDriver {
       }
 
       const result = await this._openPage(url, config);
+
+      await config.onFinish?.({
+        // @ts-ignore this.page is always populated after _openPage
+        page: this.page,
+        isSuccessful: this.failures === 0
+      });
+
       this._onFinish(result);
     } catch (error: unknown) {
       this._fail((error as Error).message || 'puppeteer run failes');
@@ -91,7 +100,7 @@ export default class BrowserTestDriver extends BrowserDriver {
 
     return this.startBrowser(browserConfig).then(
       _ =>
-        new Promise<string>((resolve, reject) => {
+        new Promise<string>(async (resolve, reject) => {
           const exposeFunctions = {
             ...config.exposeFunctions,
             browserTestDriver_fail: () => this.failures++,
@@ -120,12 +129,15 @@ export default class BrowserTestDriver extends BrowserDriver {
             : url;
 
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this.openPage({
-            url: pageUrl,
+          const page = await this.openPage({
             exposeFunctions,
             onConsole: event => this._onConsole(event),
             onError: reject
           });
+
+          await config.onStart?.({page});
+
+          await page.goto(pageUrl);
         })
     );
   }

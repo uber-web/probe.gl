@@ -1,7 +1,9 @@
 import {BrowserTestDriver} from '@probe.gl/test-utils';
 import {createServer} from 'vite';
+import fs from 'fs/promises';
 
 const mode = process.argv[2];
+const CoverageOutputDir = './.nyc_output';
 
 async function startViteServer(opts) {
   const server = await createServer({
@@ -27,5 +29,14 @@ new BrowserTestDriver().run({
     port: 'auto',
     start: startViteServer
   },
-  headless: mode === 'headless'
+  headless: mode === 'headless',
+  onFinish: async ({page, isSuccessful}) => {
+    if (!isSuccessful) return;
+    const coverage = await page.evaluate('window.__coverage__');
+    if (coverage) {
+      await fs.rm(CoverageOutputDir, {force: true, recursive: true});
+      await fs.mkdir(CoverageOutputDir);
+      await fs.writeFile(`${CoverageOutputDir}/out.json`, JSON.stringify(coverage), 'utf8');
+    }
+  }
 });

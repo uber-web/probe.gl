@@ -1,5 +1,6 @@
 import {NodeGlobalsPolyfillPlugin} from '@esbuild-plugins/node-globals-polyfill';
 import {NodeModulesPolyfillPlugin} from '@esbuild-plugins/node-modules-polyfill';
+import istanbul from 'vite-plugin-istanbul';
 
 export default {
   optimizeDeps: {
@@ -16,5 +17,14 @@ export default {
         NodeModulesPolyfillPlugin()
       ]
     }
-  }
+  },
+  plugins: [
+    istanbul({
+      include: 'test/*',
+      exclude: ['node_modules'],
+      extension: ['.js', '.ts', '.cjs', '.mjs', '.jsx', '.tsx'],
+      // require the env var VITE_COVERAGE to equal true in order to instrument the code
+      requireEnv: true
+    })
+  ]
 };
