@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v4.0.6
+
+- feat(test-utils): add onStart/onFinish callbacks to BrowserTestDriver (#248)
+- fix(log): side effect declaration (#247)
+
 ## v4.0.5
 
 - [test-utils] Upgrade puppeteer (#244)

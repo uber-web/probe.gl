@@ -1,6 +1,6 @@
 {
   "name": "browser-test-vite-example",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "description": "@probe.gl/test-utils browser based tests example",
   "license": "MIT",
   "type": "module",
@@ -12,7 +12,7 @@
     "coverage": "VITE_COVERAGE=true npm run test && nyc report --reporter=text"
   },
   "dependencies": {
-    "@probe.gl/test-utils": "4.0.5",
+    "@probe.gl/test-utils": "4.0.6",
     "tape": "^4.5.1"
   },
   "devDependencies": {
