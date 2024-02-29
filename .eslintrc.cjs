@@ -3,6 +3,7 @@ const {getESLintConfig} = require('ocular-dev-tools/configuration');
 module.exports = getESLintConfig({
   react: '16.8.2',
   overrides: {
+    parser: '',
     parserOptions: {
       project: ['./tsconfig.json']
     },

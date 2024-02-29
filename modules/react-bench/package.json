@@ -31,7 +31,6 @@
     "src"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
     "css-loader": "^2.1.1",
     "react-table": "^6.10.0",
     "style-loader": "^1.1.3"

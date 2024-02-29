@@ -30,7 +30,6 @@
   ],
   "sideEffects": false,
   "dependencies": {
-    "@babel/runtime": "^7.0.0"
   },
   "peerDependencies": {
     "@probe.gl/stats": "^4.0.0"

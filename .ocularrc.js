@@ -1,6 +1,9 @@
+/* @type import('ocular-dev-tools').OcularConfig */
 export default {
+  babel: false,
+
   typescript: {
-    project: 'tsconfig.modules.json'
+    project: 'tsconfig.build.json'
   },
 
   lint: {
