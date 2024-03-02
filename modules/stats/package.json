@@ -3,7 +3,7 @@
   "description": "Stats object for reporting performance statistics",
   "license": "MIT",
   "type": "module",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "keywords": [
     "javascript",
     "profiling",
@@ -30,7 +30,5 @@
     "dist",
     "src"
   ],
-  "dependencies": {
-  },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }

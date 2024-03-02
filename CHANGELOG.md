@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.7
+
+- chore(build): Upgrade ocular-dev-tools (#249)
+
 ## v4.0.6
 
 - feat(test-utils): add onStart/onFinish callbacks to BrowserTestDriver (#248)
