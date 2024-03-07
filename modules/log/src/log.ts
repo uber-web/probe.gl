@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 import {VERSION, isBrowser} from '@probe.gl/env';
 import {LocalStorage} from './utils/local-storage';
-import {formatImage, formatTime, leftPad} from './utils/formatters';
+import {formatTime, leftPad} from './utils/formatters';
 import {addColor} from './utils/color';
 import {autobind} from './utils/autobind';
 import assert from './utils/assert';
@@ -156,7 +156,9 @@ export class Log {
   // Unconditional logging
 
   assert(condition: unknown, message?: string): asserts condition {
-    assert(condition, message);
+    if (!condition) {
+      throw new Error(message || 'Assertion failed');
+    }
   }
 
   /** Warn, but only once, no console flooding */
@@ -231,28 +233,6 @@ in a later version. Use \`${newUsage}\` instead`);
       );
     }
     return noop;
-  }
-
-  /** logs an image under Chrome */
-  image({
-    logLevel,
-    priority,
-    image,
-    message = '',
-    scale = 1
-  }: {
-    logLevel?: number;
-    priority?: number;
-    image: any;
-    message?: string;
-    scale?: number;
-  }): LogFunction {
-    if (!this._shouldLog(logLevel || priority)) {
-      return noop;
-    }
-    return isBrowser()
-      ? logImageInBrowser({image, message, scale})
-      : logImageInNode({image, message, scale});
   }
 
   time(logLevel, message) {
@@ -455,36 +435,6 @@ function decorateMessage(id, message, opts) {
     message = addColor(message, opts.color, opts.background);
   }
   return message;
-}
-
-/** @deprecated Function removed */
-function logImageInNode({image, message = '', scale = 1}) {
-  console.warn('removed');
-  return noop;
-}
-
-function logImageInBrowser({image, message = '', scale = 1}) {
-  if (typeof image === 'string') {
-    const img = new Image();
-    img.onload = () => {
-      const args = formatImage(img, message, scale);
-      console.log(...args);
-    };
-    img.src = image;
-    return noop;
-  }
-  const element = image.nodeName || '';
-  if (element.toLowerCase() === 'img') {
-    console.log(...formatImage(image, message, scale));
-    return noop;
-  }
-  if (element.toLowerCase() === 'canvas') {
-    const img = new Image();
-    img.onload = () => console.log(...formatImage(img, message, scale));
-    img.src = image.toDataURL();
-    return noop;
-  }
-  return noop;
 }
 
 function getTableHeader(table: Table): string {

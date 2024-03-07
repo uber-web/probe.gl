@@ -35,7 +35,7 @@
     "@types/tape-promise": "^4.0.1",
     "jsdoc-to-markdown": "^3.0.0",
     "jsdom": "^16.5.0",
-    "ocular-dev-tools": "2.0.0-alpha.26",
+    "ocular-dev-tools": "2.0.0-alpha.28",
     "pre-commit": "^1.2.2",
     "puppeteer": "^22.0.0",
     "react-dom": "^16.13.1",
@@ -44,5 +44,8 @@
   "pre-commit": [
     "test-fast"
   ],
-  "dependencies": {}
+  "volta": {
+    "node": "20.11.1",
+    "yarn": "4.1.1"
+  }
 }
