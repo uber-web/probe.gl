@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.0.8
+
+- fix(test-utils): meaningful console logs for headless test (#252)
+- chore: Cut deprecated exports/methods to save a few kilobytes (#250)
+- fix(test-utils): logging in BrowserDriver (#251)
+
 ## v4.0.7
 
 - chore(build): Upgrade ocular-dev-tools (#249)
