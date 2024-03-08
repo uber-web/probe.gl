@@ -48,7 +48,7 @@ export default class BrowserDriver {
     }
     this.browser = await puppeteer.launch(puppeteerOptions);
     const browserVersion = await this.browser.version();
-    this.logger.log(`Launched browser version ${browserVersion}`);
+    this.logger.log(`Launched browser version ${browserVersion}`)();
   }
 
   async openPage(options?: {
@@ -149,7 +149,7 @@ export default class BrowserDriver {
       await this.stopServer();
       process.exit(statusCode);
     } catch (error) {
-      this.logger.error(error instanceof Error ? error.message : String(error));
+      this.logger.error(error instanceof Error ? error.message : String(error))();
       process.exit(1);
     }
   }
