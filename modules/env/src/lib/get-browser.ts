@@ -21,8 +21,8 @@
 // This function is needed in initialization stages,
 // make sure it can be imported in isolation
 
-import isBrowser from './is-browser';
-import isElectron from './is-electron';
+import {isBrowser} from './is-browser';
+import {isElectron} from './is-electron';
 import {navigator} from './globals';
 
 declare global {
@@ -31,45 +31,36 @@ declare global {
   var mozInnerScreenX: number; // eslint-disable-line no-var
 }
 
-const window = globalThis;
-
 export function isMobile(): boolean {
-  return typeof window.orientation !== 'undefined';
+  return typeof globalThis.orientation !== 'undefined';
 }
 
 // Simple browser detection
 // `mockUserAgent` parameter allows user agent to be overridden for testing
 /* eslint-disable complexity */
-export default function getBrowser(
+export function getBrowser(
   mockUserAgent?: string
-): 'Node' | 'Electron' | 'Chrome' | 'Firefox' | 'Safari' | 'Edge' | 'IE' | 'Unknown' {
+): 'Node' | 'Electron' | 'Chrome' | 'Firefox' | 'Safari' | 'Edge' | 'Unknown' {
   if (!mockUserAgent && !isBrowser()) {
     return 'Node';
   }
-
   if (isElectron(mockUserAgent)) {
     return 'Electron';
   }
 
   const userAgent = mockUserAgent || navigator.userAgent || '';
-  // const appVersion = navigator_.appVersion || '';
 
   // NOTE: Order of tests matter, as many agents list Chrome etc.
   if (userAgent.indexOf('Edge') > -1) {
     return 'Edge';
   }
-  const isMSIE = userAgent.indexOf('MSIE ') !== -1;
-  const isTrident = userAgent.indexOf('Trident/') !== -1;
-  if (isMSIE || isTrident) {
-    return 'IE';
-  }
-  if (window.chrome) {
+  if (globalThis.chrome) {
     return 'Chrome';
   }
-  if (window.safari) {
+  if (globalThis.safari) {
     return 'Safari';
   }
-  if (window.mozInnerScreenX) {
+  if (globalThis.mozInnerScreenX) {
     return 'Firefox';
   }
   return 'Unknown';

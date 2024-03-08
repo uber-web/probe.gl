@@ -74,29 +74,3 @@ function formatArrayValue(v: any, options: FormatValueOptions) {
   const terminator = v.length > maxElts ? '...' : ']';
   return `${string}${terminator}`;
 }
-
-/**
- * Log an image to the console (uses browser specific console formatting styles)
- * Inspired by https://github.com/hughsk/console-image (MIT license)
- */
-export function formatImage(image: any, message: string, scale: number, maxWidth: number = 600) {
-  const imageUrl = image.src.replace(/\(/g, '%28').replace(/\)/g, '%29');
-
-  if (image.width > maxWidth) {
-    scale = Math.min(scale, maxWidth / image.width);
-  }
-
-  const width = image.width * scale;
-  const height = image.height * scale;
-
-  const style = [
-    'font-size:1px;',
-    `padding:${Math.floor(height / 2)}px ${Math.floor(width / 2)}px;`,
-    `line-height:${height}px;`,
-    `background:url(${imageUrl});`,
-    `background-size:${width}px ${height}px;`,
-    'color:transparent;'
-  ].join('');
-
-  return [`${message} %c+`, style];
-}
