@@ -1,9 +1,9 @@
 // probe.gl, MIT license
 /* eslint-disable camelcase */
 
-import {ScreenshotOptions, Page} from 'puppeteer';
+import {ScreenshotOptions, ConsoleMessage, Page} from 'puppeteer';
 import fs from 'fs';
-import {COLOR, addColor} from '@probe.gl/log';
+import {COLOR} from '@probe.gl/log';
 import diffImages, {DiffImagesOptions} from '../utils/diff-images';
 import * as eventDispatchers from '../utils/puppeteer-events';
 import BrowserDriver, {ServerConfiguration} from './browser-driver';
@@ -143,7 +143,7 @@ export default class BrowserTestDriver extends BrowserDriver {
   }
 
   /* eslint-disable no-console */
-  _onConsole(event) {
+  _onConsole(event: ConsoleMessage) {
     if (!this.headless) {
       // Do not mirror console messages if the browser is open
       return;
@@ -161,12 +161,13 @@ export default class BrowserTestDriver extends BrowserDriver {
         console.log(text);
         break;
 
-      case 'warning':
-        console.log(addColor(text, COLOR.YELLOW));
+      case 'warn':
+        console.warn(text);
         break;
 
       case 'error':
-        console.log(addColor(text, COLOR.RED));
+        const errorObject = event.args()[0]?.remoteObject();
+        console.error(errorObject?.description || text);
         break;
 
       default:
