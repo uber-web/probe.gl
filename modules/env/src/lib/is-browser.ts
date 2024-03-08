@@ -5,7 +5,8 @@ import {isElectron} from './is-electron';
 
 /** Check if in browser by duck-typing Node context */
 export function isBrowser(): boolean {
-  // @ts-expect-error
-  const isNode = typeof process === 'object' && !process?.browser;
+  const isNode =
+    // @ts-expect-error
+    typeof process === 'object' && String(process) === '[object process]' && !process?.browser;
   return !isNode || isElectron();
 }
