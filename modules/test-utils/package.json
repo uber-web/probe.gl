@@ -3,7 +3,7 @@
   "description": "JavaScript browser-based testing utilities",
   "license": "MIT",
   "type": "module",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "keywords": [
     "integration test",
     "render test"
@@ -33,7 +33,7 @@
     "puppeteer": false
   },
   "dependencies": {
-    "@probe.gl/log": "4.0.8",
+    "@probe.gl/log": "4.0.9",
     "@types/pngjs": "^6.0.1",
     "pixelmatch": "^4.0.2"
   },

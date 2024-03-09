@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.9
+
+- fix(env): Fix regression in isBrowser() check (#253)
+
 ## v4.0.8
 
 - fix(test-utils): meaningful console logs for headless test (#252)

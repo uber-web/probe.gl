@@ -3,7 +3,7 @@
   "description": "JavaScript debug logging for browser and Node",
   "license": "MIT",
   "type": "module",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "keywords": [
     "javascript",
     "profiling",
@@ -33,7 +33,7 @@
   ],
   "browser": {},
   "dependencies": {
-    "@probe.gl/env": "4.0.8"
+    "@probe.gl/env": "4.0.9"
   },
   "gitHead": "95541d68783bfd50cbaf9b2a15b3cb41f1ff8284"
 }
