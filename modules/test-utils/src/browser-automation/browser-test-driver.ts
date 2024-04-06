@@ -47,8 +47,8 @@ export type DiffImageResult = {
 
 declare global {
   function browserTestDriver_fail(): void;
-  function browserTestDriver_finish(): string;
-  function browserTestDriver_emulateInput(event: unknown): void;
+  function browserTestDriver_finish(message?: string): void;
+  function browserTestDriver_emulateInput(event: unknown): Promise<void>;
   function browserTestDriver_captureAndDiffScreen(opts: DiffImagesOpts): Promise<DiffImageResult>;
 }
 
