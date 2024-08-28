@@ -29,12 +29,12 @@ function getStatsObject() {
   return stats;
 }
 
-test('StatsWidget#import', t => {
+test('StatsWidget#import', (t) => {
   t.equals(typeof StatsWidget, 'function', 'Stats import OK');
   t.end();
 });
 
-test('StatsWidget#Constructor with no stats or options', t => {
+test('StatsWidget#Constructor with no stats or options', (t) => {
   const statsWidget = new StatsWidget(null);
   t.ok(statsWidget._container, 'Should create a dom container.');
   t.ok(statsWidget._header, 'Should create a dom header.');
@@ -54,7 +54,7 @@ test('StatsWidget#Constructor with no stats or options', t => {
   t.end();
 });
 
-test('StatsWidget#Constructor with container', t => {
+test('StatsWidget#Constructor with container', (t) => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});
@@ -63,7 +63,7 @@ test('StatsWidget#Constructor with container', t => {
   t.end();
 });
 
-test('StatsWidget#setStats', t => {
+test('StatsWidget#setStats', (t) => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});
@@ -83,7 +83,7 @@ test('StatsWidget#setStats', t => {
   t.end();
 });
 
-test('StatsWidget#collapse', t => {
+test('StatsWidget#collapse', (t) => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(getStatsObject(), {container});
@@ -106,7 +106,7 @@ test('StatsWidget#collapse', t => {
 });
 
 /* eslint-disable */
-test('StatsWidget#Update stats', t => {
+test('StatsWidget#Update stats', (t) => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});
@@ -141,7 +141,7 @@ test('StatsWidget#Update stats', t => {
   t.end();
 });
 
-test('StatsWidget#formatters', t => {
+test('StatsWidget#formatters', (t) => {
   // @ts-expect-error
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
@@ -149,7 +149,7 @@ test('StatsWidget#formatters', t => {
     container,
     formatters: {
       'GPU Memory': 'count',
-      Count: stat => `${stat.name}: ${(stat.count / 1000).toFixed(1)}k`
+      Count: (stat) => `${stat.name}: ${(stat.count / 1000).toFixed(1)}k`
     }
   });
   const stats = getStatsObject();
@@ -181,7 +181,7 @@ test('StatsWidget#formatters', t => {
   t.end();
 });
 
-test('StatsWidget#resetOnUpdate', t => {
+test('StatsWidget#resetOnUpdate', (t) => {
   // @ts-expect-error
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
@@ -204,7 +204,7 @@ test('StatsWidget#resetOnUpdate', t => {
   t.end();
 });
 
-test('StatsWidget#remove', t => {
+test('StatsWidget#remove', (t) => {
   const container = _global.document.createElement('div');
   container.id = 'test-stats-widget-container';
   const statsWidget = new StatsWidget(null, {container});

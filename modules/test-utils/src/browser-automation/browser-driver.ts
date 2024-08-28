@@ -76,7 +76,7 @@ export default class BrowserDriver {
     this.page.setDefaultNavigationTimeout(0);
 
     // attach events
-    const onRequestFail = evt => {
+    const onRequestFail = (evt) => {
       onError(new Error(`cannot load ${evt.url()}`));
     };
     this.page.on('console', onConsole);
@@ -166,10 +166,10 @@ async function startServerCLI(config: ServerConfiguration): Promise<ServerInstan
   const server = ChildProcess.spawn(command, args);
 
   return await new Promise((resolve, reject) => {
-    server.stdout.on('data', data => {
+    server.stdout.on('data', (data) => {
       console.log(data.toString());
     });
-    server.stderr.on('data', data => {
+    server.stderr.on('data', (data) => {
       console.error(data.toString());
     });
     server.on('close', onClose);

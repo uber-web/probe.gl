@@ -29,12 +29,12 @@ function createTestCanvas() {
   return canvas;
 }
 
-test('BrowserTestDriver#import', t => {
+test('BrowserTestDriver#import', (t) => {
   t.ok(BrowserTestDriver, 'BrowserTestDriver symbol imported');
   t.end();
 });
 
-test('BrowserTestDriver#ImageDiff', async t => {
+test('BrowserTestDriver#ImageDiff', async (t) => {
   if (typeof document === 'undefined' || !window.browserTestDriver_captureAndDiffScreen) {
     t.comment('ImageDiff only works in automated browser tests');
     t.end();

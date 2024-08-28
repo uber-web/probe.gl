@@ -28,14 +28,14 @@ const DEFAULT_CSS = {
 
 export type StatFormatter = (stat: Stat) => string;
 
-const DEFAULT_COUNT_FORMATTER = stat => `${stat.name}: ${stat.count}`;
+const DEFAULT_COUNT_FORMATTER = (stat) => `${stat.name}: ${stat.count}`;
 
 export const DEFAULT_FORMATTERS: Record<string, StatFormatter> = {
   count: DEFAULT_COUNT_FORMATTER,
-  averageTime: stat => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
-  totalTime: stat => `${stat.name}: ${formatTime(stat.time)}`,
-  fps: stat => `${stat.name}: ${Math.round(stat.getHz())}fps`,
-  memory: stat => `${stat.name}: ${formatMemory(stat.count)}`
+  averageTime: (stat) => `${stat.name}: ${formatTime(stat.getAverageTime())}`,
+  totalTime: (stat) => `${stat.name}: ${formatTime(stat.time)}`,
+  fps: (stat) => `${stat.name}: ${Math.round(stat.getHz())}fps`,
+  memory: (stat) => `${stat.name}: ${formatMemory(stat.count)}`
 };
 
 export type StatWidgetProps = {
@@ -131,7 +131,7 @@ export default class StatsWidget {
 
   _update(): void {
     // make sure that we clear the old text before drawing new text.
-    this.stats.forEach(stat => {
+    this.stats.forEach((stat) => {
       this._createDOMItem(stat.name);
       this._items[stat.name].innerHTML = this._getLines(stat).join('<BR>');
 
@@ -218,7 +218,7 @@ export default class StatsWidget {
 
   _createDOMStats(): void {
     if (this.stats instanceof Stats) {
-      this.stats.forEach(stat => {
+      this.stats.forEach((stat) => {
         this._createDOMItem(stat.name);
       });
     }

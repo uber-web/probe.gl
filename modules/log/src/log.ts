@@ -1,6 +1,6 @@
 // probe.gl, MIT license
 
-/* eslint-disable no-console */
+/* eslint-disable no-console,prefer-rest-params */
 import {VERSION, isBrowser} from '@probe.gl/env';
 import {LocalStorage} from './utils/local-storage';
 import {formatTime, leftPad} from './utils/formatters';

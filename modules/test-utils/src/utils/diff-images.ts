@@ -119,7 +119,7 @@ function parsePNG(source: string | Buffer): Promise<PNG> {
   if (source instanceof Buffer) {
     // puppeteer.screenshot returns a Buffer object
     return new Promise((resolve, reject) => {
-      image.parse(source, (error, data) => {
+      image.parse(source, (error) => {
         if (error) {
           reject(error);
         } else {

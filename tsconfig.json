@@ -12,7 +12,7 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noEmit": true,
+    "useDefineForClassFields": false,
     // "baseUrl" should be provided if "paths" are provided
     "baseUrl": ".",
 
@@ -55,7 +55,20 @@
       "@probe.gl/test-utils/*": ["modules/test-utils/src/*"],
       "@probe.gl/test-utils/test/*": ["modules/test-utils/test/*"],
       "test": ["test"]
-    }
+    },
+    "plugins": [
+      {
+        "transform": "@vis.gl/dev-tools/ts-transform-version-inline"
+      },
+      {
+        "transform": "@vis.gl/dev-tools/ts-transform-append-extension",
+        "after": true
+      },
+      {
+        "transform": "@vis.gl/dev-tools/ts-transform-append-extension",
+        "afterDeclarations": true
+      }
+    ]
   },
   "include":[
     "modules/**/src/**/*",

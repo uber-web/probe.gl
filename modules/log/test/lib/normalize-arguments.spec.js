@@ -28,7 +28,7 @@ const NORMALIZE_ARGUMENTS_TEST_CASES = [
   // }
 ];
 
-test('normalizeArguments', t => {
+test('normalizeArguments', (t) => {
   for (const tc of NORMALIZE_ARGUMENTS_TEST_CASES) {
     const opts = normalizeArguments({...tc.args});
 

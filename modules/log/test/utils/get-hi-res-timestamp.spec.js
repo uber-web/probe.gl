@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
 import {getHiResTimestamp} from '@probe.gl/log';
 
-test('getHiResTimestamp', t => {
+test('getHiResTimestamp', (t) => {
   const t1hr = getHiResTimestamp();
   const t1d = Date.now();
   t.equals(typeof getHiResTimestamp, 'function', 'getHiResTimestamp imported OK');

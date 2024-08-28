@@ -98,48 +98,48 @@ export default class BrowserTestDriver extends BrowserDriver {
   _openPage(url: string, config: BrowserTestDriverProps): Promise<string> {
     const browserConfig = Object.assign({}, config.browser, {headless: this.headless});
 
-    return this.startBrowser(browserConfig).then(
-      _ =>
-        new Promise<string>(async (resolve, reject) => {
-          const exposeFunctions = {
-            ...config.exposeFunctions,
-            browserTestDriver_fail: () => this.failures++,
-            browserTestDriver_finish: message => resolve(message),
-            browserTestDriver_emulateInput: event => this._emulateInput(event),
-            browserTestDriver_captureAndDiffScreen: opts => this._captureAndDiff(opts)
-          };
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    return new Promise<string>(async (resolve, reject) => {
+      await this.startBrowser(browserConfig);
 
-          // Puppeteer can only inject functions, not values, into the global scope
-          // In headless mode, we inject the function so it's truthy
-          // In non-headless mode, we don't inject the function so it's undefined
-          if (this.headless) {
-            exposeFunctions.browserTestDriver_isHeadless = () => true;
-          }
+      const exposeFunctions = {
+        ...config.exposeFunctions,
+        browserTestDriver_fail: () => this.failures++,
+        browserTestDriver_finish: (message) => resolve(message),
+        browserTestDriver_emulateInput: (event) => this._emulateInput(event),
+        browserTestDriver_captureAndDiffScreen: (opts) => this._captureAndDiff(opts)
+      };
 
-          this.logger.log({
-            message: 'Loading page in browser...',
-            color: COLOR.BRIGHT_YELLOW
-          })();
+      // Puppeteer can only inject functions, not values, into the global scope
+      // In headless mode, we inject the function so it's truthy
+      // In non-headless mode, we don't inject the function so it's undefined
+      if (this.headless) {
+        exposeFunctions.browserTestDriver_isHeadless = () => true;
+      }
 
-          // resolve URL
-          const pageUrl: string = config.url
-            ? config.url.startsWith('http')
-              ? config.url
-              : `${url.replace(/\/$/, '')}/${config.url.replace(/^\//, '')}`
-            : url;
+      this.logger.log({
+        message: 'Loading page in browser...',
+        color: COLOR.BRIGHT_YELLOW
+      })();
 
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          const page = await this.openPage({
-            exposeFunctions,
-            onConsole: event => this._onConsole(event),
-            onError: reject
-          });
+      // resolve URL
+      const pageUrl: string = config.url
+        ? config.url.startsWith('http')
+          ? config.url
+          : `${url.replace(/\/$/, '')}/${config.url.replace(/^\//, '')}`
+        : url;
 
-          await config.onStart?.({page});
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      const page = await this.openPage({
+        exposeFunctions,
+        onConsole: (event) => this._onConsole(event),
+        onError: reject
+      });
 
-          await page.goto(pageUrl);
-        })
-    );
+      await config.onStart?.({page});
+
+      await page.goto(pageUrl);
+    });
   }
 
   /* eslint-disable no-console */
@@ -273,7 +273,7 @@ export default class BrowserTestDriver extends BrowserDriver {
       message: `Writing screenshot to ${filename}`,
       color: COLOR.BRIGHT_YELLOW
     })();
-    fs.writeFile(filename, data, error => {
+    fs.writeFile(filename, data, (error) => {
       if (error) {
         this.logger.log({
           message: `Save screenshot failed: ${error.message}`,

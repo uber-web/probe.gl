@@ -1,7 +1,7 @@
 import test from 'tape-promise/tape';
 import {formatTime, formatMemory} from '@probe.gl/stats-widget/format-utils';
 
-test('StatsWidget#formatTime', t => {
+test('StatsWidget#formatTime', (t) => {
   t.equals(typeof formatTime, 'function', 'formatTime import OK');
 
   t.equals(formatTime(1), '1.00ms');
@@ -12,7 +12,7 @@ test('StatsWidget#formatTime', t => {
   t.end();
 });
 
-test('StatsWidget#formatMemory', t => {
+test('StatsWidget#formatMemory', (t) => {
   t.equals(typeof formatMemory, 'function', 'formatMemory import OK');
 
   t.equals(formatMemory(1), '1 bytes');

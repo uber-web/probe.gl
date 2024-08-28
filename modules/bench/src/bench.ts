@@ -30,7 +30,7 @@ export type BenchProps = {
   minIterations?: number;
 };
 
-export type BenchTestFunction = (testArgs?: unknown) => unknown | Promise<unknown>;
+export type BenchTestFunction = <T>(testArgs?: T) => T | Promise<T>;
 export type BenchInitFunction = () => unknown;
 
 /** Options for a specific test case */
@@ -162,6 +162,7 @@ export class Bench {
   }
 
   /** Not yet implemented */
+  // eslint-disable-next-line
   calibrate(id?: string, func1?: Function, func2?: Function, props?: {}): this {
     return this;
   }
@@ -276,7 +277,7 @@ export class Bench {
 
 // Helper function to promisify setTimeout
 function addDelay(timeout: number): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), timeout);
   });
 }
@@ -290,14 +291,10 @@ function runCalibrationTests({testCases}: {testCases: Record<string, BenchTestCa
   }
 }
 
-function logEntry(
-  logFunction: LogFunction,
-  testCase: BenchTestCase | null,
-  logEntry: LogEntry
-): void {
+function logEntry(logFunction: LogFunction, testCase: BenchTestCase | null, entry: LogEntry): void {
   const priority = globalThis.probe.priority || 10;
   if ((testCase?.priority || 0) <= priority) {
-    logFunction({...logEntry});
+    logFunction({...entry});
   }
 }
 
