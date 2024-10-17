@@ -58,14 +58,14 @@
     },
     "plugins": [
       {
-        "transform": "@vis.gl/dev-tools/ts-transform-version-inline"
+        "transform": "@vis.gl/ts-plugins/ts-transform-version-inline"
       },
       {
-        "transform": "@vis.gl/dev-tools/ts-transform-append-extension",
+        "transform": "@vis.gl/ts-plugins/ts-transform-append-extension",
         "after": true
       },
       {
-        "transform": "@vis.gl/dev-tools/ts-transform-append-extension",
+        "transform": "@vis.gl/ts-plugins/ts-transform-append-extension",
         "afterDeclarations": true
       }
     ]

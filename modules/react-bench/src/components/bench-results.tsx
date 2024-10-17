@@ -2,7 +2,7 @@
 import React, {Component, FC, PropsWithChildren} from 'react';
 
 import ReactTable from 'react-table';
-import '../react-table.css';
+// import '../react-table.css';
 
 function getPercent(score: number): number {
   // Log scale between 100K - 100M, 0-3

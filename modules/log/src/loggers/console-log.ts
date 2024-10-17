@@ -1,23 +1,26 @@
-// probe.gl, MIT license
+// probe.gl
+// SPDX-License-Identifier: MIT
+// Copyright (c) vis.gl contributors
 
 /* eslint-disable no-console,prefer-rest-params */
 import {VERSION, isBrowser} from '@probe.gl/env';
-import {LocalStorage} from './utils/local-storage';
-import {formatTime, leftPad} from './utils/formatters';
-import {addColor} from './utils/color';
-import {autobind} from './utils/autobind';
-import assert from './utils/assert';
-import {getHiResTimestamp} from './utils/hi-res-timestamp';
+import {Logger, LogFunction} from './logger';
+import {LocalStorage} from '../utils/local-storage';
+import {formatTime, leftPad} from '../utils/formatters';
+import {addColor} from '../utils/color';
+import {autobind} from '../utils/autobind';
+import assert from '../utils/assert';
+import {getHiResTimestamp} from '../utils/hi-res-timestamp';
 
 /** "Global" log configuration settings */
-type LogConfiguration = {
+type ConsoleLogConfiguration = {
   enabled?: boolean;
   level?: number;
   [key: string]: unknown;
 };
 
 /** Options when logging a message */
-type LogOptions = {
+type ConsoleLogOptions = {
   method?: Function;
   time?: boolean;
   total?: number;
@@ -28,8 +31,6 @@ type LogOptions = {
   nothrottle?: boolean;
   args?: any;
 };
-
-type LogFunction = () => void;
 
 type Table = Record<string, any>;
 
@@ -42,7 +43,7 @@ const originalConsole = {
   error: console.error
 };
 
-const DEFAULT_LOG_CONFIGURATION: Required<LogConfiguration> = {
+const DEFAULT_LOG_CONFIGURATION: Required<ConsoleLogConfiguration> = {
   enabled: true,
   level: 0
 };
@@ -54,14 +55,14 @@ const ONCE = {once: true};
 
 /** A console wrapper */
 
-export class Log {
+export class ConsoleLog implements Logger {
   static VERSION = VERSION;
 
   id: string;
   VERSION: string = VERSION;
   _startTs: number = getHiResTimestamp();
   _deltaTs: number = getHiResTimestamp();
-  _storage: LocalStorage<LogConfiguration>;
+  _storage: LocalStorage<ConsoleLogConfiguration>;
   userData = {};
 
   // TODO - fix support from throttling groups
@@ -70,7 +71,7 @@ export class Log {
   constructor({id} = {id: ''}) {
     this.id = id;
     this.userData = {};
-    this._storage = new LocalStorage<LogConfiguration>(
+    this._storage = new LocalStorage<ConsoleLogConfiguration>(
       `__probe-${this.id}__`,
       DEFAULT_LOG_CONFIGURATION
     );
@@ -298,7 +299,7 @@ in a later version. Use \`${newUsage}\` instead`);
     message?: unknown,
     method?: Function,
     args?: IArguments,
-    opts?: LogOptions
+    opts?: ConsoleLogOptions
   ): LogFunction {
     if (this._shouldLog(logLevel)) {
       // normalized opts + timings
